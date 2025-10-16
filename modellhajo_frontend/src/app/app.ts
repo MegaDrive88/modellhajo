@@ -15,6 +15,7 @@ export class App {
   protected name = '';
   protected result = '';
   protected send(){
-    this.http.get<any>(`http://127.0.0.1:8000/api/hello/${this.name}`).subscribe(data=>this.result=data.message)
+    // this.http.get<any>(`http://127.0.0.1:8000/api/hello/${this.name}`).subscribe(data=>this.result=data.message) // laravel
+    // this.http.get<any>(`http://127.0.0.1:8001/hello/${this.name}`).subscribe(data=>this.result=data.message) // node
   }
 }
