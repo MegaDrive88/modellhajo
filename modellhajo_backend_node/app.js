@@ -1,16 +1,11 @@
+import connection_data from './database';
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
 
 const app = express();
 
-const pool = new Pool({
-  user: 'postgres',
-  host: '192.168.1.115',
-  database: 'ADAM',
-  password: 'arb8468mdsRt',
-  port: 5432
-});
+const pool = new Pool(connection_data);
 
 (async () => {
   const client = await pool.connect();
