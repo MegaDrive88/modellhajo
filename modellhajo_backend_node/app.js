@@ -1,7 +1,7 @@
-import connection_data from './database';
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
+const connection_data = require('./database.js')
 
 const app = express();
 
