@@ -1,0 +1,10 @@
+input{
+    margin-bottom: 10px;
+}
+button{
+    background-color: var(--mat-sys-primary);
+    color: white;
+    &:hover{
+        background-color: color-mix(in srgb, var(--mat-sys-primary), white 25%);;
+    }
+}
