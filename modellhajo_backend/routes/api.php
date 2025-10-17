@@ -17,8 +17,17 @@ Route::get('/hello/{name}',function ($name) {
 });
 
 Route::get('/login/{user}/{isEmail}/{pwdhash}',function ($user, $isEmail, $pwdhash) {
-    $result = UserModel::where($isEmail ? 'email' : 'felhasznalonev', $user)->whereRaw(
+    $column = $isEmail == "true" ? 'email' : 'felhasznalonev';
+    $result = UserModel::where($column, $user)->whereRaw(
         "REGEXP_LIKE(jelszo, '^[A-Z]".$pwdhash."[A-Z]$')"
-    )->get();
-    return response()->json($result);
+    )->take(1)->get();
+    if (count($result) == 0){
+         return response()->json([
+            "success" => false,
+        ]);
+    }
+    return response()->json([
+        "success" => true,
+        "user" => $result[0]
+    ]);
 });
