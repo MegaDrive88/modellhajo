@@ -1,10 +1,10 @@
 <div class="container">
-    <h2>Írd ide a neved:</h2>
-    <div class="row">
-        <input type="text" [(ngModel)]="name" class="form-control">
-        <button class="btn btn-primary" (click)="send()">Küldés</button>
+    <div class="col-10 col-md-4 mx-auto mt-1">
+        <h3 class="text-center">Modellhajó - bejelentkezés</h3>
+        <input type="text" class="form-control" [(ngModel)]="usernameOrEmail" placeholder="E-mail cím vagy felhaszálónév">
+        <input type="text" class="form-control" [(ngModel)]="pwd" placeholder="Jelszó">
+        <button class="btn w-100" (click)="sendLoginData()">Bejelentkezés</button>
     </div>
-    <h4>Válasz a szervertől: <span>{{result}}</span></h4>
 </div>
 
 <router-outlet />
