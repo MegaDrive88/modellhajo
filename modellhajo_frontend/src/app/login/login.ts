@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { DataService } from './../data.service';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -16,22 +17,25 @@ import User from '../../interfaces/user.interface';
 export class Login extends App {
   protected usernameOrEmail = ''
   protected pwd = ''
-  protected loginAttempts = 0
-  protected sendLoginData(){
+  // protected loginAttempts = 0
+  protected loginSuccess = true
+  protected async sendLoginData(){
     const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$/
     const isEmail = emailRegex.test(this.usernameOrEmail)    
     const hashedPwd = Md5.hashStr(`PasswordSalted${this.pwd}`)
-    this.loginAttempts++
+    // this.loginAttempts++
+    this.loginSuccess = true
     this.http.get<{success:boolean, user?:User}>(`http://127.0.0.1:8000/api/login/${this.usernameOrEmail}/${isEmail}/${hashedPwd}`).subscribe(
       (data)=>{
+        this.loginSuccess = data.success
         if(data.success){
-          this.user = data.user;
+          this.dataService.setUser(data.user!)
           this.isLoggedIn = true;
           this.router.navigateByUrl("/homepage")
         }
       },
       error=>{
-        console.log("hiba");
+        alert("Szerverhiba, próbálja újra később!")
       }
     )
   }

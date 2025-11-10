@@ -4,6 +4,7 @@ import { RouterOutlet, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import User from '../interfaces/user.interface';
+import { DataService } from './data.service';
 
 @Component({
   selector: 'app-root',
@@ -14,10 +15,11 @@ import User from '../interfaces/user.interface';
 export class App implements OnInit{
   protected http = inject(HttpClient);
   protected router = inject(Router);
+  protected dataService = inject(DataService);
   protected isLoggedIn = false;
   protected rememberMe = false;
   protected user:User|undefined;
   ngOnInit(): void {
-      
+      this.user = this.dataService.getUser()
   }
 }
