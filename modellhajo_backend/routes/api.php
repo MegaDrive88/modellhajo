@@ -31,3 +31,25 @@ Route::get('/login/{user}/{isEmail}/{pwdhash}',function ($user, $isEmail, $pwdha
         "user" => $result[0]
     ]);
 });
+
+Route::patch('/updateUser/{id}/{dispname}/{username}/{email}', function ($id, $dispname, $username, $email){
+    $user = UserModel::find($id);
+    if (!$user) {
+        return response()->json(['success' => false, 'error' => 'user not found']);
+    }
+    $user->megjeleno_nev = $dispname;
+    $user->felhasznalonev = $username;
+    $user->email = $email;
+    try{
+        $user->save();
+        return response()->json([
+            'success' => true,
+            'user' => $user
+        ]);
+    } catch (QueryException $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e
+        ]);
+    }
+});
