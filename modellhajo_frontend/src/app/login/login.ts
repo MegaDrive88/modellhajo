@@ -16,18 +16,22 @@ import User from '../../interfaces/user.interface';
 export class Login extends App {
   protected usernameOrEmail = ''
   protected pwd = ''
+  protected loginAttempts = 0
   protected sendLoginData(){
     const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$/
     const isEmail = emailRegex.test(this.usernameOrEmail)    
     const hashedPwd = Md5.hashStr(`PasswordSalted${this.pwd}`)
+    this.loginAttempts++
     this.http.get<{success:boolean, user?:User}>(`http://127.0.0.1:8000/api/login/${this.usernameOrEmail}/${isEmail}/${hashedPwd}`).subscribe(
       (data)=>{
         if(data.success){
-          console.log(data.user);
+          this.user = data.user;
+          this.isLoggedIn = true;
+          this.router.navigateByUrl("/homepage")
         }
-        else {
-          console.log("user not found");
-        }
+      },
+      error=>{
+        console.log("hiba");
       }
     )
   }

@@ -8,3 +8,19 @@ button{
         background-color: color-mix(in srgb, var(--mat-sys-primary), white 25%);;
     }
 }
+.formError{
+    color: #EE5C6C;
+    text-align: left;
+    font-size: small;
+    margin: 5px 0 10px 5px;
+}
+.loginError{
+    background-color: #EE5C6C;
+    text-align: left;
+    font-size: small;
+    padding: 5px;
+    margin-top: 10px;
+    border: 1px solid var(--mat-sys-error);
+    border-radius: 5px;
+    color: darkred;
+}
