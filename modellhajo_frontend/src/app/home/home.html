@@ -1,4 +1,23 @@
-<div class="container">
-    
-</div>
+@if (user) {
+    <div class="container">
+        <h3>Bejelentkezve, mint: {{user.megjeleno_nev}}</h3><br>
+        <h4>Adatok módosítása:</h4>
+        <form action="" #f="ngForm" (ngSubmit)="updateUserData()">
+            <form-group [placeholder]="'Megjelenő név'" [property_val]="userCopy!.megjeleno_nev" [property_name]="'megjeleno_nev'" (editEvent)="editEvent($event)"></form-group>
+            <form-group [placeholder]="'Felhasználónév'" [property_val]="userCopy!.felhasznalonev" [property_name]="'felhasznalonev'" (editEvent)="editEvent($event)"></form-group>
+            <form-group [placeholder]="'E-mail'" [property_val]="userCopy!.email" [property_name]="'email'" (editEvent)="editEvent($event)"></form-group>
+            <!-- Jelszó módosítás: -- lenyitos menu, ne latszodjon mindig
+            <form-group [placeholder]="'Jelenlegi jelszó'"></form-group>
+            <form-group [placeholder]="'Új jelszó'"></form-group>
+            <form-group [placeholder]="'Új jelszó még egyszer'"></form-group> -->
+            <div class="row">
+                <button type="submit" class="btn col-md-1" [disabled]="f.invalid">Mentés</button>
+                <button type="button" id="cancelBTN" class="btn col-md-1" (click)="cancelBtnClick()">Mégse</button>
+            </div>
+        </form>
+    </div>
+}
+@else {
+    {{router.navigateByUrl("/login")}}
+}
 <router-outlet />

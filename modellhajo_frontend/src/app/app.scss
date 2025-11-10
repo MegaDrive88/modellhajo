@@ -24,3 +24,11 @@ button{
     border-radius: 5px;
     color: darkred;
 }
+#cancelBTN{
+    margin-left: 10px;
+    background-color: var(--mat-sys-inverse-primary);
+    color: black;
+    &:hover{
+        color: white;
+    }
+}
