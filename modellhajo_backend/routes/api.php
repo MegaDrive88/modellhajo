@@ -32,24 +32,49 @@ Route::get('/login/{user}/{isEmail}/{pwdhash}',function ($user, $isEmail, $pwdha
     ]);
 });
 
-Route::patch('/updateUser/{id}/{dispname}/{username}/{email}', function ($id, $dispname, $username, $email){
+Route::patch('/updateUser/{id}', function ($id, Request $request){
     $user = UserModel::find($id);
     if (!$user) {
         return response()->json(['success' => false, 'error' => 'user not found']);
     }
-    $user->megjeleno_nev = $dispname;
-    $user->felhasznalonev = $username;
-    $user->email = $email;
+    $user->megjeleno_nev = $request->input("megjeleno_nev");
+    $user->felhasznalonev = $request->input("felhasznalonev");
+    $user->email = $request->input("email");
+
     try{
         $user->save();
         return response()->json([
             'success' => true,
             'user' => $user
         ]);
-    } catch (QueryException $e) {
+    } catch (\Exception $e) {
         return response()->json([
             'success' => false,
             'error' => $e
+        ]);
+    }
+});
+
+Route::patch('/updatePassword/{id}', function ($id, Request $request) {
+    $user = UserModel::find($id);
+    if (!$user) {
+        return response()->json(['success' => false, 'error' => 'user not found']);
+    }
+    if (rtrim(ltrim($user->jelszo, 1), 1) == md5($request->input("old_password"))){
+        if($request->input("new_password") == $request->input("conf_password")){
+            $user->jelszo = chr(rand(65, 90)).md5("PasswordSalted".$request->input("new_password")).chr(rand(65, 90));
+        }
+        else{
+        return response()->json([
+            'success' => false,
+            'error' => "passwords dont match"
+        ]);
+        }
+    }
+    else{
+        return response()->json([
+            'success' => false,
+            'error' => "incorrect password"
         ]);
     }
 });

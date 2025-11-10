@@ -1,18 +1,17 @@
-import { DataService } from './../data.service';
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Md5 } from 'ts-md5';
-import { App } from '../app';
-import User from '../../interfaces/user.interface';
+import { App } from '../../app';
+import User from '../../../interfaces/user.interface';
 
 
 @Component({
   selector: 'login-root',
   imports: [RouterOutlet, FormsModule, CommonModule],
   templateUrl: './login.html',
-  styleUrl: '../app.scss'
+  styleUrl: '../../app.scss'
 })
 export class Login extends App {
   protected usernameOrEmail = ''
@@ -30,7 +29,6 @@ export class Login extends App {
         this.loginSuccess = data.success
         if(data.success){
           this.dataService.setUser(data.user!)
-          this.isLoggedIn = true;
           this.router.navigateByUrl("/homepage")
         }
       },
