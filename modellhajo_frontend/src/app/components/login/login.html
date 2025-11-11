@@ -7,14 +7,14 @@
             @if (err.invalid && (err.dirty || err.touched)){
                 <p class="formError">Felhaszbálóvév megadása kötelező</p>
             }
-            <input type="text" class="form-control" [(ngModel)]="pwd" placeholder="Jelszó" name="pwd">
+            <input type="password" class="form-control" [(ngModel)]="pwd" placeholder="Jelszó" name="pwd">
             <!-- <div class="form-check">
                 <input type="checkbox" class="form-check-input" id="stayLoggedIn"> 
                 <label for="stayLoggedIn" class="form-check-label">Maradjak bejelentkezve</label>
             </div> -->
             <button type="submit" class="btn w-100" [disabled]="f.invalid">Bejelentkezés</button>
             @if (!loginSuccess){
-                <p class="loginError">Hibás felhasználónév vagy jelszó!</p>
+                <p class="errorBox">Hibás felhasználónév vagy jelszó!</p>
             }
         </form>
     </div>

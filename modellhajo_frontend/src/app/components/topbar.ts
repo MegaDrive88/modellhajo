@@ -15,10 +15,5 @@ import { App } from "../app";
 })
 export class TopBar extends App { 
     @Input() username: string = ''
-    logout(){
-        this.dataService.clearUser()
-        this.user = undefined
-        this.router.navigateByUrl("/login")
-    }
 }
  

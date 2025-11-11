@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import User from '../interfaces/user.interface';
 import { DataService } from './data.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -20,5 +21,16 @@ export class App implements OnInit{
   protected user:User|undefined;
   ngOnInit(): void {
       this.user = this.dataService.getUser()
+  }
+  private translate = inject(TranslateService);
+  constructor() {
+    this.translate.addLangs(['en', 'hu']);
+    this.translate.setFallbackLang('hu');
+    this.translate.use('hu');
+  }
+  logout(){
+    this.dataService.clearUser()
+    this.user = undefined
+    this.router.navigateByUrl("/login")
   }
 }

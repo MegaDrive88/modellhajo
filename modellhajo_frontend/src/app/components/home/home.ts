@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -6,11 +6,12 @@ import { App } from '../../app';
 import User from '../../../interfaces/user.interface';
 import { FormGroup } from "../formgroup";
 import { TopBar } from '../topbar';
+import { TranslatePipe } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'home-root',
-  imports: [RouterOutlet, FormsModule, CommonModule, FormGroup, TopBar],
+  imports: [RouterOutlet, FormsModule, CommonModule, FormGroup, TopBar, TranslatePipe],
   templateUrl: './home.html',
   styleUrl: '../../app.scss'
 })
@@ -22,37 +23,52 @@ export class Home extends App implements OnInit {
     new_password: "",
     conf_password: ""
   }
+  protected userDataErrorString = ''
+  protected pwdErrorString = ''
+  protected formEnabled = false;
   override ngOnInit(): void {
       super.ngOnInit()
       this.userCopy = structuredClone(this.user)
+      this.updateFormEnabled()
   }
   editEvent($event: { field: string; value: any }){
+
     if(!$event.field.includes("password"))
       (this.userCopy as any)[$event.field] = $event.value
+    else 
+      (this.pwdModel as any)[$event.field] = $event.value
+    this.updateFormEnabled()
+
   }
   cancelBtnClick(){
       this.userCopy = structuredClone(this.user)
   }
   async updateUserData(){
+    (document.querySelector(".successBox") as any).style.display = "none"
+    this.userDataErrorString = ""
+    this.pwdErrorString = ""
     this.http.patch<any>(`http://127.0.0.1:8000/api/updateUser/${this.userCopy!.id}`, this.userCopy).subscribe(
       (data)=>{
         if(data.success){
           this.user = data.user
           localStorage.setItem('modellhajoUser', JSON.stringify(this.user));
+          (document.querySelector(".successBox") as any).style.display = "inline-block"
         }
         else
-          console.log(data.error);
+          this.userDataErrorString = data.error
       }
-    )
-    if(this.pwdUpdaterVisible){
-      this.http.patch<any>(`http://127.0.0.1:8000/api/updatePassword/${this.userCopy!.id}`, this.userCopy).subscribe(
+    )    
+    if(this.pwdUpdaterVisible){ // kulon mentes gomb?
+      this.http.patch<any>(`http://127.0.0.1:8000/api/updatePassword/${this.userCopy!.id}`, this.pwdModel).subscribe(
         (data)=>{
           if(data.success){
             this.user = data.user
             localStorage.setItem('modellhajoUser', JSON.stringify(this.user));
+            alert("Sikeres jelszó változtatás, kérjük jelentkezzen be újra!")
+            this.logout()
           }
           else
-            console.log(data.error);
+            this.pwdErrorString = data.error
         }
       )
     }
@@ -63,5 +79,11 @@ export class Home extends App implements OnInit {
       (document.querySelector("#pwdtoggler") as any).textContent = "ʌ"
     else
       (document.querySelector("#pwdtoggler") as any).textContent = "v"
+    this.updateFormEnabled()
+  }
+  private updateFormEnabled(){
+    this.formEnabled = (this.pwdUpdaterVisible ? 
+                       Object.keys(this.pwdModel).every(x => (this.pwdModel as any)[x] != "") : true) &&
+                       Object.keys(this.userCopy!).every(x => (this.userCopy as any)[x] != "")
   }
 }

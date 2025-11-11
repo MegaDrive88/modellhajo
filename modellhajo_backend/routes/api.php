@@ -4,26 +4,30 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\UserModel;
 
+// $output = new Symfony\Component\Console\Output\ConsoleOutput();
+
+
 Route::get('/',function () {
     return response()->json([
         'status' => 'ok',
     ]);
 });
 
-Route::get('/hello/{name}',function ($name) {
-    return response()->json([
-        "message" => "Hello, ".$name
-    ]);
-});
+// Route::get('/hello/{name}',function ($name) {
+//     return response()->json([
+//         "message" => "Hello, ".$name
+//     ]);
+// });
 
 Route::get('/login/{user}/{isEmail}/{pwdhash}',function ($user, $isEmail, $pwdhash) {
-    $column = $isEmail == "true" ? 'email' : 'felhasznalonev';
+    $column = $isEmail == "true" ? 'email' : 'felhasznalonev'; 
     $result = UserModel::where($column, $user)->whereRaw(
         "REGEXP_LIKE(jelszo, '^[A-Z]".$pwdhash."[A-Z]$')"
     )->take(1)->get();
     if (count($result) == 0){
          return response()->json([
             "success" => false,
+            "error" => "LOGIN_FAILED"
         ]);
     }
     return response()->json([
@@ -35,12 +39,23 @@ Route::get('/login/{user}/{isEmail}/{pwdhash}',function ($user, $isEmail, $pwdha
 Route::patch('/updateUser/{id}', function ($id, Request $request){
     $user = UserModel::find($id);
     if (!$user) {
-        return response()->json(['success' => false, 'error' => 'user not found']);
+        return response()->json(['success' => false, 'error' => 'USER_NOT_FOUND']);
+    }
+    if($request->input("megjeleno_nev") == "" || $request->input("felhasznalonev") == "" || $request->input("email") == ""){
+        return response()->json(['success' => false, 'error' => 'EMPTY_FIELD']);
     }
     $user->megjeleno_nev = $request->input("megjeleno_nev");
     $user->felhasznalonev = $request->input("felhasznalonev");
-    $user->email = $request->input("email");
-
+    $emails = UserModel::select("email")->where('id', '<>', $user->id)->pluck('email')->toArray();
+    if (!in_array($request->input("email"), $emails)) {
+        $user->email = $request->input("email");
+    }
+    else{
+        return response()->json([
+            "success" => false,
+            "error" => "EMAIL_NOT_UNIQUE"
+        ]);
+    }
     try{
         $user->save();
         return response()->json([
@@ -58,23 +73,45 @@ Route::patch('/updateUser/{id}', function ($id, Request $request){
 Route::patch('/updatePassword/{id}', function ($id, Request $request) {
     $user = UserModel::find($id);
     if (!$user) {
-        return response()->json(['success' => false, 'error' => 'user not found']);
+        return response()->json(['success' => false, 'error' => 'USER_NOT_FOUND']);
     }
-    if (rtrim(ltrim($user->jelszo, 1), 1) == md5($request->input("old_password"))){
+    if($request->input("old_password") == "" || $request->input("new_password") == "" || $request->input("conf_password") == ""){
+        return response()->json(['success' => false, 'error' => 'EMPTY_FIELD']);
+    }
+    if (substr($user->jelszo, 1, -1) == md5("PasswordSalted".$request->input("old_password"))){
         if($request->input("new_password") == $request->input("conf_password")){
-            $user->jelszo = chr(rand(65, 90)).md5("PasswordSalted".$request->input("new_password")).chr(rand(65, 90));
+            if(!($request->input("new_password") == $request->input("old_password")))
+                $user->jelszo = chr(rand(65, 90)).md5("PasswordSalted".$request->input("new_password")).chr(rand(65, 90));
+            else{
+                return response()->json([
+                    'success' => false,
+                    'error' => "PASSWORD_NOT_NEW"
+                ]);
+            }
+            try{
+                $user->save();
+                return response()->json([
+                    'success' => true,
+                    'user' => $user
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'error' => $e
+                ]);
+            }
         }
         else{
         return response()->json([
             'success' => false,
-            'error' => "passwords dont match"
+            'error' => "PASSWORD_MISMATCH"
         ]);
         }
     }
     else{
         return response()->json([
             'success' => false,
-            'error' => "incorrect password"
+            'error' => "INCORRECT_PASSWORD"
         ]);
     }
 });

@@ -13,7 +13,9 @@ import { FormsModule } from "@angular/forms";
             <input (ngModelChange)="ontype($event)" type="text" class="form-control" [(ngModel)]="property_val" placeholder="{{placeholder}}" required #err="ngModel" name="dispname">
         </div>
     </div>
-    <!-- hibakezeles -->
+    @if (err.invalid && (err.dirty || err.touched)){
+        <p class="formError">{{placeholder}} nem lehet üres érték</p>
+    }
   `,
   styleUrl: '../app.scss'
 })

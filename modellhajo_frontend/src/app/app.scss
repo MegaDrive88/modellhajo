@@ -14,7 +14,7 @@ button{
     font-size: small;
     margin: 5px 0 10px 5px;
 }
-.loginError{
+.errorBox{
     background-color: #EE5C6C;
     text-align: left;
     font-size: small;
@@ -23,6 +23,12 @@ button{
     border: 1px solid var(--mat-sys-error);
     border-radius: 5px;
     color: darkred;
+}
+.successBox{
+    @extend .errorBox;
+    background-color: lightgreen;
+    color: darkgreen;
+    border: 1px solid green;
 }
 #cancelBTN{
     margin-left: 10px;
