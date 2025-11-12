@@ -82,6 +82,10 @@ export class Home extends App implements OnInit {
     this.updateFormEnabled()
   }
   private updateFormEnabled(){
+    if(!this.userCopy) {
+      this.formEnabled = false
+      return
+    }
     this.formEnabled = (this.pwdUpdaterVisible ? 
                        Object.keys(this.pwdModel).every(x => (this.pwdModel as any)[x] != "") : true) &&
                        Object.keys(this.userCopy!).every(x => (this.userCopy as any)[x] != "")

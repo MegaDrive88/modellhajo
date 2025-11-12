@@ -23,16 +23,18 @@ Route::get('/login/{user}/{isEmail}/{pwdhash}',function ($user, $isEmail, $pwdha
     $column = $isEmail == "true" ? 'email' : 'felhasznalonev'; 
     $result = UserModel::where($column, $user)->whereRaw(
         "REGEXP_LIKE(jelszo, '^[A-Z]".$pwdhash."[A-Z]$')"
-    )->take(1)->get();
-    if (count($result) == 0){
+    )->first();
+    if (!$result){
          return response()->json([
             "success" => false,
             "error" => "LOGIN_FAILED"
         ]);
     }
+    $token = $result->createToken('login-token')->plainTextToken;
     return response()->json([
         "success" => true,
-        "user" => $result[0]
+        "user" => $result,
+        "access_token" => $token
     ]);
 });
 

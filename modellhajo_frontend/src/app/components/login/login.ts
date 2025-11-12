@@ -24,7 +24,7 @@ export class Login extends App {
     const hashedPwd = Md5.hashStr(`PasswordSalted${this.pwd}`)
     // this.loginAttempts++
     this.loginSuccess = true
-    this.http.get<{success:boolean, user?:User}>(`http://127.0.0.1:8000/api/login/${this.usernameOrEmail}/${isEmail}/${hashedPwd}`).subscribe(
+    this.http.get<{success:boolean, user?:User, access_token?:string}>(`http://127.0.0.1:8000/api/login/${this.usernameOrEmail}/${isEmail}/${hashedPwd}`).subscribe(
       (data)=>{
         this.loginSuccess = data.success
         if(data.success){
