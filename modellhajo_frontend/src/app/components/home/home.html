@@ -3,9 +3,9 @@
         <topbar [username]="user.megjeleno_nev"></topbar>
         <h4>Adatok módosítása:</h4>
         <form action="" #f="ngForm" (ngSubmit)="updateUserData()">
-            <form-group [placeholder]="'Megjelenő név'" [property_val]="userCopy!.megjeleno_nev" [property_name]="'megjeleno_nev'" (editEvent)="editEvent($event)"></form-group>
-            <form-group [placeholder]="'Felhasználónév'" [property_val]="userCopy!.felhasznalonev" [property_name]="'felhasznalonev'" (editEvent)="editEvent($event)"></form-group>
-            <form-group [placeholder]="'E-mail'" [property_val]="userCopy!.email" [property_name]="'email'" (editEvent)="editEvent($event)"></form-group>
+            <form-group [disabled]="pwdUpdaterVisible" [placeholder]="'Megjelenő név'" [property_val]="userCopy!.megjeleno_nev" [property_name]="'megjeleno_nev'" (editEvent)="editEvent($event)"></form-group>
+            <form-group [disabled]="pwdUpdaterVisible" [placeholder]="'Felhasználónév'" [property_val]="userCopy!.felhasznalonev" [property_name]="'felhasznalonev'" (editEvent)="editEvent($event)"></form-group>
+            <form-group [disabled]="pwdUpdaterVisible" [placeholder]="'E-mail'" [property_val]="userCopy!.email" [property_name]="'email'" (editEvent)="editEvent($event)"></form-group>
             @if (userDataErrorString != ''){
                 <p class="errorBox col-md-4">{{userDataErrorString | translate}}</p>
             }

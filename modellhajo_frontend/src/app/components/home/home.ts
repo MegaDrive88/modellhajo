@@ -47,18 +47,20 @@ export class Home extends App implements OnInit {
     (document.querySelector(".successBox") as any).style.display = "none"
     this.userDataErrorString = ""
     this.pwdErrorString = ""
-    this.http.patch<any>(`http://127.0.0.1:8000/api/updateUser/${this.userCopy!.id}`, this.userCopy).subscribe(
-      (data)=>{
-        if(data.success){
-          this.user = data.user
-          localStorage.setItem('modellhajoUser', JSON.stringify(this.user));
-          (document.querySelector(".successBox") as any).style.display = "inline-block"
+    if(!this.pwdUpdaterVisible){
+      this.http.patch<any>(`http://127.0.0.1:8000/api/updateUser/${this.userCopy!.id}`, this.userCopy).subscribe(
+        (data)=>{
+          if(data.success){
+            this.user = data.user
+            localStorage.setItem('modellhajoUser', JSON.stringify(this.user));
+            (document.querySelector(".successBox") as any).style.display = "inline-block"
+          }
+          else
+            this.userDataErrorString = data.error
         }
-        else
-          this.userDataErrorString = data.error
-      }
-    )    
-    if(this.pwdUpdaterVisible){ // kulon mentes gomb?
+      )
+    }
+    else{ 
       this.http.patch<any>(`http://127.0.0.1:8000/api/updatePassword/${this.userCopy!.id}`, this.pwdModel).subscribe(
         (data)=>{
           if(data.success){
@@ -87,7 +89,7 @@ export class Home extends App implements OnInit {
       return
     }
     this.formEnabled = (this.pwdUpdaterVisible ? 
-                       Object.keys(this.pwdModel).every(x => (this.pwdModel as any)[x] != "") : true) &&
-                       Object.keys(this.userCopy!).every(x => (this.userCopy as any)[x] != "")
+                       Object.keys(this.pwdModel).every(x => (this.pwdModel as any)[x] != "") : 
+                       Object.keys(this.userCopy!).every(x => (this.userCopy as any)[x] != ""))
   }
 }

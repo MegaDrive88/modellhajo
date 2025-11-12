@@ -30,7 +30,7 @@ Route::get('/login/{user}/{isEmail}/{pwdhash}',function ($user, $isEmail, $pwdha
             "error" => "LOGIN_FAILED"
         ]);
     }
-    $token = $result->createToken('login-token')->plainTextToken;
+    $token = $result->createToken('login-token', ["test_ability"])->plainTextToken; // switch case
     return response()->json([
         "success" => true,
         "user" => $result,

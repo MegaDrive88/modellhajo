@@ -29,6 +29,7 @@ export class Login extends App {
         this.loginSuccess = data.success
         if(data.success){
           this.dataService.setUser(data.user!)
+          localStorage.setItem("modellhajoUserAccessToken", data.access_token!)
           this.router.navigateByUrl("/homepage")
         }
       },

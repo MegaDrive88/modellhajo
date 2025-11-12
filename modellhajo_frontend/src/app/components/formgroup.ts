@@ -10,7 +10,7 @@ import { FormsModule } from "@angular/forms";
     <div class="form-group row">
         <label for="inputPassword" class="col-md-2 col-form-label">{{placeholder}}: </label>
         <div class="col-md-3">
-            <input (ngModelChange)="ontype($event)" type="text" class="form-control" [(ngModel)]="property_val" placeholder="{{placeholder}}" required #err="ngModel" name="dispname">
+            <input [disabled]="disabled" (ngModelChange)="ontype($event)" type="{{type}}" class="form-control" [(ngModel)]="property_val" placeholder="{{placeholder}}" required #err="ngModel" name="dispname">
         </div>
     </div>
     @if (err.invalid && (err.dirty || err.touched)){
@@ -23,6 +23,8 @@ export class FormGroup {
     @Input() placeholder = ''
     @Input() property_val = ''
     @Input() property_name = ''
+    @Input() type = 'text'
+    @Input() disabled = false
     @Output() editEvent = new EventEmitter()
     protected ontype(value: any) {
         this.editEvent.emit({ field: this.property_name, value: value })
