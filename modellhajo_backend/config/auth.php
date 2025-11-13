@@ -61,8 +61,8 @@ return [
 
     'providers' => [
         'users' => [
-            'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\UserModel::class),
+            'driver' => 'database',
+            'table' => 't_felhasznalok',
         ],
 
         // 'users' => [
