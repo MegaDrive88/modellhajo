@@ -8,8 +8,8 @@ import { FormsModule } from "@angular/forms";
   imports: [FormsModule, CommonModule],
   template:`
     <div class="form-group row">
-        <label for="inputPassword" class="col-md-2 col-form-label">{{placeholder}}: </label>
-        <div class="col-md-3">
+        <label for="inputPassword" class="col-md-5 col-form-label">{{placeholder}}: </label>
+        <div class="col-md-7">
             <input [disabled]="disabled" (ngModelChange)="ontype($event)" type="{{type}}" class="form-control" [(ngModel)]="property_val" placeholder="{{placeholder}}" required #err="ngModel" name="dispname">
         </div>
     </div>

@@ -13,6 +13,7 @@
                 <label for="stayLoggedIn" class="form-check-label">Maradjak bejelentkezve</label>
             </div> -->
             <button type="submit" class="btn w-100" [disabled]="f.invalid">Bejelentkezés</button>
+            <a href="/register" style="float: right;">Nincs fiókja?</a>
             @if (!loginSuccess){
                 <p class="errorBox">Hibás felhasználónév vagy jelszó!</p>
             }

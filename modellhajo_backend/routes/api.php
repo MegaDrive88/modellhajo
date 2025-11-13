@@ -19,10 +19,10 @@ Route::get('/',function () {
 //     ]);
 // });
 
-Route::get('/login/{user}/{isEmail}/{pwdhash}',function ($user, $isEmail, $pwdhash) {
-    $column = $isEmail == "true" ? 'email' : 'felhasznalonev'; 
-    $result = UserModel::where($column, $user)->whereRaw(
-        "REGEXP_LIKE(jelszo, '^[A-Z]".$pwdhash."[A-Z]$')"
+Route::post('/login', function (Request $request) {
+    $column = $request->input("isEmail") ? 'email' : 'felhasznalonev'; 
+    $result = UserModel::where($column, $request->input("user"))->whereRaw(
+        "REGEXP_LIKE(jelszo, '^[A-Z]".$request->input("pwdHash")."[A-Z]$')"
     )->first();
     if (!$result){
          return response()->json([
@@ -83,7 +83,7 @@ Route::patch('/updateUser/{id}', function ($id, Request $request){
 
 Route::patch('/updatePassword/{id}', function ($id, Request $request) {
     $user = UserModel::find($id);
-    if (!$user) {
+    if (!$user) { // token integ
         return response()->json(['success' => false, 'error' => 'USER_NOT_FOUND']);
     }
     if($request->input("old_password") == "" || $request->input("new_password") == "" || $request->input("conf_password") == ""){
@@ -125,4 +125,8 @@ Route::patch('/updatePassword/{id}', function ($id, Request $request) {
             'error' => "INCORRECT_PASSWORD"
         ]);
     }
+});
+
+Route::post('/createAccount', function (Request $request){
+
 });

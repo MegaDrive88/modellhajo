@@ -2,14 +2,15 @@
     <div class="container" style="margin-top: 5px;">
         <topbar [username]="user.megjeleno_nev"></topbar>
         <h4>Adatok módosítása:</h4>
-        <form action="" #f="ngForm" (ngSubmit)="updateUserData()">
+        <form action="" #f="ngForm" (ngSubmit)="updateUserData()" class="col-md-5">
             <form-group [disabled]="pwdUpdaterVisible" [placeholder]="'Megjelenő név'" [property_val]="userCopy!.megjeleno_nev" [property_name]="'megjeleno_nev'" (editEvent)="editEvent($event)"></form-group>
             <form-group [disabled]="pwdUpdaterVisible" [placeholder]="'Felhasználónév'" [property_val]="userCopy!.felhasznalonev" [property_name]="'felhasznalonev'" (editEvent)="editEvent($event)"></form-group>
-            <form-group [disabled]="pwdUpdaterVisible" [placeholder]="'E-mail'" [property_val]="userCopy!.email" [property_name]="'email'" (editEvent)="editEvent($event)"></form-group>
+            <form-group [disabled]="pwdUpdaterVisible" [placeholder]="'E-mail'" [property_val]="userCopy!.email" [property_name]="'email'" (editEvent)="editEvent($event)" [type]="'email'"></form-group>
+            <!-- email ellenorzes  -->
             @if (userDataErrorString != ''){
-                <p class="errorBox col-md-4">{{userDataErrorString | translate}}</p>
+                <p class="errorBox col-12">{{userDataErrorString | translate}}</p>
             }
-            <p class="successBox col-md-4" style="display: none;">{{"SUCCESS" | translate}}</p><br>
+            <p class="successBox col-12" style="display: none;">{{"SUCCESS" | translate}}</p><br>
             Jelszó módosítás 
             <button type="button" class="btn" style="font-size: smaller; margin-bottom: 10px;" (click)="togglePwdUpdate()" id="pwdtoggler">v</button>
             <div [hidden]="!pwdUpdaterVisible">
@@ -21,8 +22,8 @@
                 }
             </div>
             <div class="row">
-                <button type="submit" class="btn col-md-1" [disabled]="!formEnabled">Mentés</button>
-                <button type="button" id="cancelBTN" class="btn col-md-1" (click)="cancelBtnClick()">Mégse</button>
+                <button type="submit" class="btn col-md-2" [disabled]="!formEnabled">Mentés</button>
+                <button type="button" id="cancelBTN" class="btn col-md-2" (click)="cancelBtnClick()">Mégse</button>
             </div>
         </form>
     </div>
