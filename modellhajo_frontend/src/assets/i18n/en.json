@@ -1,5 +1,6 @@
 {
     "EMAIL_NOT_UNIQUE": "An account already exists with the given e-mail address",
+    "USERNAME_NOT_UNIQUE": "An account already exists with the given username",
     "PASSWORD_MISMATCH": "The provided passwords don't match",
     "INCORRECT_PASSWORD": "Incorrect password",
     "PASSWORD_NOT_NEW": "New and old password cannot be the same",

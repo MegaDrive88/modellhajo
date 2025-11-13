@@ -14,6 +14,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrl: './app.scss'
 })
 export class App implements OnInit{
+  protected readonly PORT = 8001
   protected http = inject(HttpClient);
   protected router = inject(Router);
   protected dataService = inject(DataService);

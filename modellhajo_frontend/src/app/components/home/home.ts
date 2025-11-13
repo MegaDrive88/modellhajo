@@ -48,7 +48,7 @@ export class Home extends App implements OnInit {
     this.userDataErrorString = ""
     this.pwdErrorString = ""
     if(!this.pwdUpdaterVisible){
-      this.http.patch<any>(`http://127.0.0.1:8000/api/updateUser/${this.userCopy!.id}`, this.userCopy).subscribe(
+      this.http.patch<any>(`http://127.0.0.1:${this.PORT}/api/updateUser/${this.userCopy!.id}`, this.userCopy).subscribe(
         (data)=>{
           if(data.success){
             this.user = data.user
@@ -61,7 +61,7 @@ export class Home extends App implements OnInit {
       )
     }
     else{ 
-      this.http.patch<any>(`http://127.0.0.1:8000/api/updatePassword/${this.userCopy!.id}`, this.pwdModel).subscribe(
+      this.http.patch<any>(`http://127.0.0.1:${this.PORT}/api/updatePassword/${this.userCopy!.id}`, this.pwdModel).subscribe(
         (data)=>{
           if(data.success){
             this.user = data.user

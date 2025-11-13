@@ -47,7 +47,16 @@ Route::patch('/updateUser/{id}', function ($id, Request $request){
         return response()->json(['success' => false, 'error' => 'EMPTY_FIELD']);
     }
     $user->megjeleno_nev = $request->input("megjeleno_nev");
-    $user->felhasznalonev = $request->input("felhasznalonev");
+    $users = UserModel::select("felhasznalonev")->where('id', '<>', $user->id)->pluck('felhasznalonev')->toArray(); //kulon func
+    if (!in_array($request->input("felhasznalonev"), $users)) {
+        $user->felhasznalonev = $request->input("felhasznalonev");
+    }
+    else{
+        return response()->json([
+            "success" => false,
+            "error" => "USERNAME_NOT_UNIQUE"
+        ]);
+    }
     $emails = UserModel::select("email")->where('id', '<>', $user->id)->pluck('email')->toArray();
     if (!in_array($request->input("email"), $emails)) {
         $user->email = $request->input("email");
