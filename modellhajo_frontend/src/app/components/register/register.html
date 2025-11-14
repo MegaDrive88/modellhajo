@@ -3,6 +3,11 @@
         <h3 class="text-center">Modellhajó - regisztráció</h3>
         <form #f="ngForm" >
             <form-group [placeholder]="'Megjelenő név'" [property_val]="newUser!.megjeleno_nev" [property_name]="'megjeleno_nev'"></form-group>
+            <form-group [placeholder]="'Felhasználónév'" [property_val]="newUser!.felhasznalonev" [property_name]="'felhasznalonev'"></form-group>
+            <form-group [placeholder]="'E-mail cím'" [property_val]="newUser!.email" [property_name]="'email'" [type]="'email'"></form-group>
+            <form-group [placeholder]="'Jelszó'" [property_val]="'####'" [property_name]="'####'" [type]="'password'"></form-group>
+            <form-group [placeholder]="'Jelszó újra'" [property_val]="'####'" [property_name]="'#### '" [type]="'password'"></form-group>
+            <a href="/login" style="float: right;">Már van fiókja?</a>
         </form>
     </div>
 </div>

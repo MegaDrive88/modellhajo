@@ -10,11 +10,12 @@ import { FormsModule } from "@angular/forms";
     <div class="form-group row">
         <label for="inputPassword" class="col-md-5 col-form-label">{{placeholder}}: </label>
         <div class="col-md-7">
-            <input [disabled]="disabled" (ngModelChange)="ontype($event)" type="{{type}}" class="form-control" [(ngModel)]="property_val" placeholder="{{placeholder}}" required #err="ngModel" name="dispname">
+            <input [disabled]="disabled" (ngModelChange)="ontype($event)" [email]="type == 'email'" type="{{type}}" class="form-control" [(ngModel)]="property_val" placeholder="{{placeholder}}" required #err="ngModel" name="dispname">
         </div>
     </div>
     @if (err.invalid && (err.dirty || err.touched)){
-        <p class="formError">{{placeholder}} nem lehet üres érték</p>
+        <p class="formError" *ngIf="err.errors && err.errors['required']">{{placeholder}} nem lehet üres érték</p>
+        <p class="formError" *ngIf="err.errors && err.errors['email']">Hibás e-mail cím formátum</p>
     }
   `,
   styleUrl: '../app.scss'

@@ -5,7 +5,7 @@
         <form #f="ngForm" (ngSubmit)="sendLoginData()">
             <input type="text" class="form-control" [(ngModel)]="usernameOrEmail" placeholder="E-mail cím vagy felhaszálónév" required #err="ngModel" name="usernameOrEmail">
             @if (err.invalid && (err.dirty || err.touched)){
-                <p class="formError">Felhaszbálóvév megadása kötelező</p>
+                <p class="formError">Felhasználóvév megadása kötelező</p>
             }
             <input type="password" class="form-control" [(ngModel)]="pwd" placeholder="Jelszó" name="pwd">
             <!-- <div class="form-check">

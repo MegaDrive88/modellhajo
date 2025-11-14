@@ -41,7 +41,12 @@ export class Home extends App implements OnInit {
 
   }
   cancelBtnClick(){
-      this.userCopy = structuredClone(this.user)
+    this.userCopy = structuredClone(this.user)
+    this.pwdModel = {
+      old_password: "",
+      new_password: "",
+      conf_password: ""
+    }
   }
   async updateUserData(){
     (document.querySelector(".successBox") as any).style.display = "none"

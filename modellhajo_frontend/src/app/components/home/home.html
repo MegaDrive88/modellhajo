@@ -14,9 +14,9 @@
             Jelszó módosítás 
             <button type="button" class="btn" style="font-size: smaller; margin-bottom: 10px;" (click)="togglePwdUpdate()" id="pwdtoggler">v</button>
             <div [hidden]="!pwdUpdaterVisible">
-                <form-group [placeholder]="'Jelenlegi jelszó'" [property_val]="pwdModel.old_password" [property_name]="'old_password'" (editEvent)="editEvent($event)"></form-group>
-                <form-group [placeholder]="'Új jelszó'" [property_val]="pwdModel.new_password" [property_name]="'new_password'" (editEvent)="editEvent($event)"></form-group>
-                <form-group [placeholder]="'Új jelszó még egyszer'" [property_val]="pwdModel.conf_password" [property_name]="'conf_password'" (editEvent)="editEvent($event)"></form-group>
+                <form-group [placeholder]="'Jelenlegi jelszó'" [property_val]="pwdModel.old_password" [property_name]="'old_password'" (editEvent)="editEvent($event)" [type]="'password'"></form-group>
+                <form-group [placeholder]="'Új jelszó'" [property_val]="pwdModel.new_password" [property_name]="'new_password'" (editEvent)="editEvent($event)" [type]="'password'"></form-group>
+                <form-group [placeholder]="'Új jelszó még egyszer'" [property_val]="pwdModel.conf_password" [property_name]="'conf_password'" (editEvent)="editEvent($event)" [type]="'password'"></form-group>
                 @if (pwdErrorString != ''){
                     <p class="errorBox col-md-4">{{pwdErrorString | translate}}</p>
                 }

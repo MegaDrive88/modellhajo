@@ -14,5 +14,10 @@ import User from '../../../interfaces/user.interface';
   styleUrl: '../../app.scss'
 })
 export class Register extends App {
-  protected newUser:any = {megjeleno_nev :"saasda"} // class interface helyett?
+  protected newUser: Omit<User, "id" | "szerepkor_id"> = {
+    megjeleno_nev: "",
+    felhasznalonev: "",
+    email: "",
+    jelszo: ""
+  } // class interface helyett?
 }
