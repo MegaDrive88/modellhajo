@@ -30,7 +30,8 @@ Route::post('/login', function (Request $request) {
             "error" => "LOGIN_FAILED"
         ]);
     }
-    $token = $result->createToken('login-token', ["test_ability"])->plainTextToken; // switch case
+    $token = $result->createToken('login-token', ["test11111"])->plainTextToken; // switch case
+    //adatbazisba teszi
     return response()->json([
         "success" => true,
         "user" => $result,
@@ -128,8 +129,6 @@ Route::patch('/updatePassword/{id}', function ($id, Request $request) {
 });
 
 Route::post('/createAccount', function (Request $request){
-    $output = new Symfony\Component\Console\Output\ConsoleOutput();
-    $output->writeln($request);
     $user = new UserModel();
     if($request->input("felhasznalonev") == "" || $request->input("megjeleno_nev") == "" || $request->input("email") == "" || $request->input("password") == "" || $request->input("conf_password") == "")
         return response()->json([
@@ -175,3 +174,17 @@ Route::post('/createAccount', function (Request $request){
         "error" => "PASSWORD_MISMATCH"
     ]);
 });
+
+
+Route::middleware('auth:sanctum')->get('/testtt', function (Request $request) {
+
+    // $request->validate([
+    //     'email' => 'required|email',
+    //     'password' => 'required',
+    // ]);
+    return response()->json([
+        'success' => true
+    ]);
+});
+//middleware(['auth:api', 'scopes:test'])->
+//middleware('auth:sanctum')->

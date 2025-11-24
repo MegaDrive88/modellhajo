@@ -40,6 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'api' => [
+            'driver' => 'sanctum', 
+            'provider' => 'users'
+        ]
     ],
 
     /*
@@ -61,8 +65,8 @@ return [
 
     'providers' => [
         'users' => [
-            'driver' => 'database',
-            'table' => 't_felhasznalok',
+            'driver' => 'eloquent',
+            'model' => App\Models\UserModel::class,
         ],
 
         // 'users' => [

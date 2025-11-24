@@ -10,6 +10,7 @@ class UserModel extends Authenticatable
 {
     use HasApiTokens;
     protected $table = 't_felhasznalok';
+    protected $primaryKey = 'id';
     public $timestamps = false;
     protected $fillable = [
         'felhasznalonev',

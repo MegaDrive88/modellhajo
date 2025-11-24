@@ -7,6 +7,7 @@ import User from '../../../interfaces/user.interface';
 import { FormGroup } from "../formgroup";
 import { TopBar } from '../topbar';
 import { TranslatePipe } from '@ngx-translate/core';
+import { HttpHeaders } from '@angular/common/http';
 
 
 @Component({
@@ -96,5 +97,24 @@ export class Home extends App implements OnInit {
     this.formEnabled = (this.pwdUpdaterVisible ? 
                        Object.keys(this.pwdModel).every(x => (this.pwdModel as any)[x] != "") : 
                        Object.keys(this.userCopy!).every(x => (this.userCopy as any)[x] != ""))
+  }
+
+
+
+
+  protected testButtonResult = "--"
+  protected testButtonClick(){
+    const token = localStorage.getItem("modellhajoUserAccessToken")!;
+    console.log(token);
+    
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    this.http.get<any>(`http://127.0.0.1:${this.PORT}/api/testtt`, { headers })
+      .subscribe({
+        next: res => console.log(res),
+        error: err => console.error(err)
+      });
   }
 }
