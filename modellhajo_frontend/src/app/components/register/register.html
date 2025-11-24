@@ -1,12 +1,16 @@
 <div class="container">
     <div class="col-10 col-md-4 mx-auto mt-1">
         <h3 class="text-center">Modellhajó - regisztráció</h3>
-        <form #f="ngForm" >
-            <form-group [placeholder]="'Megjelenő név'" [property_val]="newUser!.megjeleno_nev" [property_name]="'megjeleno_nev'"></form-group>
-            <form-group [placeholder]="'Felhasználónév'" [property_val]="newUser!.felhasznalonev" [property_name]="'felhasznalonev'"></form-group>
-            <form-group [placeholder]="'E-mail cím'" [property_val]="newUser!.email" [property_name]="'email'" [type]="'email'"></form-group>
-            <form-group [placeholder]="'Jelszó'" [property_val]="'####'" [property_name]="'####'" [type]="'password'"></form-group>
-            <form-group [placeholder]="'Jelszó újra'" [property_val]="'####'" [property_name]="'#### '" [type]="'password'"></form-group>
+        <form #f="ngForm" (ngSubmit)="sendRegisterData()">
+            <form-group [placeholder]="'Megjelenő név'" [property_val]="newUser!.megjeleno_nev" [property_name]="'megjeleno_nev'" (editEvent)="editEvent($event)"></form-group>
+            <form-group [placeholder]="'Felhasználónév'" [property_val]="newUser!.felhasznalonev" [property_name]="'felhasznalonev'" (editEvent)="editEvent($event)"></form-group>
+            <form-group [placeholder]="'E-mail cím'" [property_val]="newUser!.email" [property_name]="'email'" [type]="'email'" (editEvent)="editEvent($event)"></form-group>
+            <form-group [placeholder]="'Jelszó'" [property_val]="pwdModel.password" [property_name]="'password'" [type]="'password'" (editEvent)="editEvent($event)"></form-group>
+            <form-group [placeholder]="'Jelszó újra'" [property_val]="pwdModel.conf_password" [property_name]="'conf_password'" [type]="'password'" (editEvent)="editEvent($event)"></form-group>
+            @if (errorString != ''){
+                <p class="errorBox col-12">{{errorString | translate}}</p>
+            }
+            <button type="submit" class="btn w-100" [disabled]="f.invalid">Regisztráció</button>
             <a href="/login" style="float: right;">Már van fiókja?</a>
         </form>
     </div>

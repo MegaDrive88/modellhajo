@@ -5,19 +5,46 @@ import { CommonModule } from '@angular/common';
 import { App } from '../../app';
 import { FormGroup } from "../formgroup";
 import User from '../../../interfaces/user.interface';
+import { TranslatePipe } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'register-root',
-  imports: [RouterOutlet, FormsModule, CommonModule, FormGroup],
+  imports: [RouterOutlet, FormsModule, CommonModule, FormGroup, TranslatePipe],
   templateUrl: './register.html',
   styleUrl: '../../app.scss'
 })
 export class Register extends App {
-  protected newUser: Omit<User, "id" | "szerepkor_id"> = {
+  protected newUser: Omit<User, "id" | "szerepkor_id" | "jelszo"> = {
     megjeleno_nev: "",
     felhasznalonev: "",
     email: "",
-    jelszo: ""
-  } // class interface helyett?
+  }
+  protected pwdModel:any = {
+    password : "",
+    conf_password : ""
+  }
+  protected errorString = ""
+  editEvent($event: { field: string; value: any }){
+    if(!$event.field.includes("password"))
+      (this.newUser as any)[$event.field] = $event.value
+    else 
+      (this.pwdModel as any)[$event.field] = $event.value
+  }
+  protected sendRegisterData(){
+    this.http.post<any>(`http://127.0.0.1:${this.PORT}/api/createAccount`, {...this.newUser, ...this.pwdModel}).subscribe(
+      (data)=>{
+        if(data.success){
+          alert("Sikeres felhasználó létrehozás")
+          this.router.navigateByUrl("/login")
+        }
+        else{
+          this.errorString = data.error
+        }
+      },
+      error=>{
+        alert("Szerverhiba, próbálja újra később!")
+      }
+    )
+  }
 }
