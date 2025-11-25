@@ -32,8 +32,16 @@ Route::post('/login', function (Request $request) {
             "error" => "LOGIN_FAILED"
         ]);
     }
-    $token = $result->createToken('login-token', ["test11111"])->plainTextToken; // switch case
-    //adatbazisba teszi
+    $ROLE_ABILITIES = [
+        ["accept_roles"],
+        [],
+        [],
+        [],
+        []
+    ];
+
+    $token = $result->createToken('modellhajo-login-token', $ROLE_ABILITIES[$result->szerepkor_id-1])->plainTextToken;
+
     return response()->json([
         "success" => true,
         "user" => $result,
@@ -84,7 +92,7 @@ Route::patch('/updateUser/{id}', function ($id, Request $request){
     }
 });
 
-Route::patch('/updatePassword/{id}', function ($id, Request $request) {
+Route::middleware("auth:sanctum")->patch('/updatePassword/{id}', function ($id, Request $request) {
     $user = UserModel::find($id);
     if (!$user) { // token integ
         return response()->json(['success' => false, 'error' => 'USER_NOT_FOUND']);
@@ -174,17 +182,5 @@ Route::post('/createAccount', function (Request $request){
     else return response()->json([
         "success" => false,
         "error" => "PASSWORD_MISMATCH"
-    ]);
-});
-
-
-Route::middleware('auth:sanctum')->get('/testtt', function (Request $request) {
-$token = $request->bearerToken(); // gets the token from the Authorization header
-    $user = auth('sanctum')->user();  // or auth('api')->user() depending on your guard
-
-    return response()->json([
-        'auth_header' => $request->header('Authorization'),
-        'bearer_token' => $token,
-        'user' => $user,
     ]);
 });

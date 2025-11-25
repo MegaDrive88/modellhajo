@@ -67,7 +67,11 @@ export class Home extends App implements OnInit {
       )
     }
     else{ 
-      this.http.patch<any>(`http://127.0.0.1:${this.PORT}/api/updatePassword/${this.userCopy!.id}`, this.pwdModel).subscribe(
+      const headers = new HttpHeaders({
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${this.dataService.getToken()}`
+      }); //MUKODIK
+      this.http.patch<any>(`http://127.0.0.1:${this.PORT}/api/updatePassword/${this.userCopy!.id}`, this.pwdModel, {headers}).subscribe(
         (data)=>{
           if(data.success){
             this.user = data.user
@@ -97,23 +101,5 @@ export class Home extends App implements OnInit {
     this.formEnabled = (this.pwdUpdaterVisible ? 
                        Object.keys(this.pwdModel).every(x => (this.pwdModel as any)[x] != "") : 
                        Object.keys(this.userCopy!).every(x => (this.userCopy as any)[x] != ""))
-  }
-
-
-
-
-  protected testButtonResult = "--"
-  protected testButtonClick(){
-    const token = localStorage.getItem("modellhajoUserAccessToken")!;
-    const headers = new HttpHeaders({
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${token.trim().replaceAll("\"", "")}`
-    });
-
-    this.http.get<any>(`http://127.0.0.1:${this.PORT}/api/testtt`, { headers })
-      .subscribe({
-        next: res => console.log(res),
-        error: err => console.error(err)
-      });
   }
 }

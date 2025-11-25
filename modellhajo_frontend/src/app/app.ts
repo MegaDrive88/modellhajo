@@ -29,7 +29,7 @@ export class App implements OnInit{
     this.translate.setFallbackLang('hu');
     this.translate.use('hu');
   }
-  logout(){
+  logout(){ // backend hivas , token torles stb
     this.dataService.clearUser()
     this.user = undefined
     this.router.navigateByUrl("/login")

@@ -15,10 +15,11 @@ import { TranslatePipe } from '@ngx-translate/core';
   styleUrl: '../../app.scss'
 })
 export class Register extends App {
-  protected newUser: Omit<User, "id" | "szerepkor_id" | "jelszo"> = {
+  protected newUser: Omit<User, "id" | "jelszo"> = {
     megjeleno_nev: "",
     felhasznalonev: "",
     email: "",
+    szerepkor_id: -1
   }
   protected pwdModel:any = {
     password : "",
@@ -30,6 +31,9 @@ export class Register extends App {
       (this.newUser as any)[$event.field] = $event.value
     else 
       (this.pwdModel as any)[$event.field] = $event.value
+  }
+  updateRoleId(event:any){
+    this.newUser.szerepkor_id = event.target.value
   }
   protected sendRegisterData(){
     this.http.post<any>(`http://127.0.0.1:${this.PORT}/api/createAccount`, {...this.newUser, ...this.pwdModel}).subscribe(

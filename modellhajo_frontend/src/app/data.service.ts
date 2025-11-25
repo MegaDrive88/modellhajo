@@ -7,6 +7,7 @@ import User from '../interfaces/user.interface';
 })
 export class DataService {
   private user: User|undefined;
+  private token: string|undefined;
 
   setUser(value: User) {
     this.user = value;
@@ -21,5 +22,15 @@ export class DataService {
   clearUser() {
     this.user = undefined;
     localStorage.removeItem('modellhajoUser');
+  }
+
+  setToken(value: string){
+    this.token = value
+    localStorage.setItem('modellhajoUserAccessToken', value);
+  }
+  
+  getToken(): string|undefined {
+    if (!this.token && localStorage.getItem('modellhajoUserAccessToken')) this.token = localStorage.getItem("modellhajoUserAccessToken")!.trim().replaceAll("\"", "")
+    return this.token;
   }
 }
