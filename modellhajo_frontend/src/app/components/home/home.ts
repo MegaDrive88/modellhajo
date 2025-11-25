@@ -105,10 +105,9 @@ export class Home extends App implements OnInit {
   protected testButtonResult = "--"
   protected testButtonClick(){
     const token = localStorage.getItem("modellhajoUserAccessToken")!;
-    console.log(token);
-    
     const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${token.trim().replaceAll("\"", "")}`
     });
 
     this.http.get<any>(`http://127.0.0.1:${this.PORT}/api/testtt`, { headers })

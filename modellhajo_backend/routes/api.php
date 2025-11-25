@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\UserModel;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 // $output = new Symfony\Component\Console\Output\ConsoleOutput();
 
@@ -177,14 +179,12 @@ Route::post('/createAccount', function (Request $request){
 
 
 Route::middleware('auth:sanctum')->get('/testtt', function (Request $request) {
+$token = $request->bearerToken(); // gets the token from the Authorization header
+    $user = auth('sanctum')->user();  // or auth('api')->user() depending on your guard
 
-    // $request->validate([
-    //     'email' => 'required|email',
-    //     'password' => 'required',
-    // ]);
     return response()->json([
-        'success' => true
+        'auth_header' => $request->header('Authorization'),
+        'bearer_token' => $token,
+        'user' => $user,
     ]);
 });
-//middleware(['auth:api', 'scopes:test'])->
-//middleware('auth:sanctum')->
