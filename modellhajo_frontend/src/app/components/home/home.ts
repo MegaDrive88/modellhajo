@@ -53,7 +53,6 @@ export class Home extends App implements OnInit {
     )
   }
   editEvent($event: { field: string; value: any }){
-
     if(!$event.field.includes("password"))
       (this.userCopy as any)[$event.field] = $event.value
     else 
@@ -118,5 +117,24 @@ export class Home extends App implements OnInit {
                        Object.keys(this.pwdModel).every(x => (this.pwdModel as any)[x] != "") : 
                        Object.keys(this.userCopy!).filter(item => typeof (this.userCopy as any)[item] === "string").every(x => (this.userCopy as any)[x] != ""))
                         //sufni megoldas, mmsz id el fogja rontani xdd
-    }
+  }
+  acceptRoleRequest(id:number, desired_role:number){
+    this.http.patch<{success:boolean}>(`http://127.0.0.1:${this.PORT}/api/acceptRoleRequest`, {id: id, desired_role: desired_role}, {headers: this.headers}).subscribe(
+      data => {
+        if(data.success)
+          this.deleteRoleRequest(id)
+      },
+      error => console.log(error)
+    )
+  }
+  deleteRoleRequest(id:number){
+    this.http.delete(`http://127.0.0.1:${this.PORT}/api/deleteRoleRequest`, {
+      headers: this.headers,
+      body: {id: id}
+    }).subscribe(
+      data => {},
+      error => console.log(error)
+      
+    )
+  }
 }

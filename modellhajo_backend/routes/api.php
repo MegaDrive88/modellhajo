@@ -199,10 +199,18 @@ Route::middleware(["auth:sanctum", "ability:admin"])->get('/getRoleRequests', fu
     );
 });
 
-Route::middleware(["auth:sanctum", "ability:admin"])->patch('/acceptRoleRequest', function (Request $request){
+// Route::middleware(["auth:sanctum", "ability:admin"])->patch('/acceptRoleRequest', function (Request $request){
+//     $user = UserModel::find($request->input("id"));
+//     $user->szerepkor_id = $request->input("desired_role");
+//     $user->save();
+//     return response()->json([
+//         "success" => true
+//     ]);
+// });
 
-});
-
-Route::middleware(["auth:sanctum", "ability:admin"])->delete('/declineRoleRequest', function (Request $request){
-
-});
+// Route::middleware(["auth:sanctum", "ability:admin"])->delete('/deleteRoleRequest', function (Request $request){
+//     $deleted = DesiredRoleModel::where('id', $request->input('id'))->delete();
+//     return response()->json([
+//         "success" => $deleted,
+//     ]);
+// }); --- refactor

@@ -47,7 +47,7 @@
                                     <td>{{req.user.email}}</td>
                                     <td>{{req.user.role.szerepkor_nev}}</td>
                                     <td>{{req.desired_role.szerepkor_nev}}</td>
-                                    <td class="text-center"><button class="btn btn-success" data-id="{{req.id}}">✓</button></td>
+                                    <td class="text-center"><button class="btn btn-success" (click)="acceptRoleRequest(req.id, req.desired_role.id)">✓</button></td>
                                     <td class="text-center"><button class="btn btn-danger" data-id="{{req.id}}">X</button></td>
                                 </tr>
                             }
