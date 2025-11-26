@@ -15,28 +15,25 @@ import { TranslatePipe } from '@ngx-translate/core';
   styleUrl: '../../app.scss'
 })
 export class Register extends App {
-  protected newUser: Omit<User, "id" | "jelszo"> = {
+  protected newUser: any = {
     megjeleno_nev: "",
     felhasznalonev: "",
     email: "",
-    szerepkor_id: -1
-  }
-  protected pwdModel:any = {
     password : "",
-    conf_password : ""
+    conf_password : "",
+    desired_role : 4,
+    mmszid: ""
   }
+
   protected errorString = ""
   editEvent($event: { field: string; value: any }){
-    if(!$event.field.includes("password"))
       (this.newUser as any)[$event.field] = $event.value
-    else 
-      (this.pwdModel as any)[$event.field] = $event.value
   }
   updateRoleId(event:any){
     this.newUser.szerepkor_id = event.target.value
   }
   protected sendRegisterData(){
-    this.http.post<any>(`http://127.0.0.1:${this.PORT}/api/createAccount`, {...this.newUser, ...this.pwdModel}).subscribe(
+    this.http.post<any>(`http://127.0.0.1:${this.PORT}/api/createAccount`, this.newUser).subscribe(
       (data)=>{
         if(data.success){
           alert("Sikeres felhasználó létrehozás")

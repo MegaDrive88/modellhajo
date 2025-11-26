@@ -15,6 +15,10 @@ class UserModel extends Authenticatable
         'felhasznalonev',
         'email',
         'jelszo',
-        'megjeleno_nev'
+        'megjeleno_nev',
+        'mmsz_id'
     ];
+    public function role(){
+        return $this->belongsTo(RoleModel::class, 'szerepkor_id', 'id');
+    }
 }

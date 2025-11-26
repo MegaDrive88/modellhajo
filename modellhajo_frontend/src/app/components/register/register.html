@@ -2,22 +2,21 @@
     <div class="col-10 col-md-4 mx-auto mt-1">
         <h3 class="text-center">Modellhajó - regisztráció</h3>
         <form #f="ngForm" (ngSubmit)="sendRegisterData()">
-            <form-group [placeholder]="'Megjelenő név'" [property_val]="newUser!.megjeleno_nev" [property_name]="'megjeleno_nev'" (editEvent)="editEvent($event)"></form-group>
-            <form-group [placeholder]="'Felhasználónév'" [property_val]="newUser!.felhasznalonev" [property_name]="'felhasznalonev'" (editEvent)="editEvent($event)"></form-group>
-            <form-group [placeholder]="'E-mail cím'" [property_val]="newUser!.email" [property_name]="'email'" [type]="'email'" (editEvent)="editEvent($event)"></form-group>
-            <form-group [placeholder]="'Jelszó'" [property_val]="pwdModel.password" [property_name]="'password'" [type]="'password'" (editEvent)="editEvent($event)"></form-group>
-            <form-group [placeholder]="'Jelszó újra'" [property_val]="pwdModel.conf_password" [property_name]="'conf_password'" [type]="'password'" (editEvent)="editEvent($event)"></form-group>
-            <select style="margin-bottom: 10px;" name="szerepkor_id" class="form-select" [(ngModel)]="newUser.szerepkor_id" (change)="updateRoleId($event)">
-                <option value="-1">-- Válasszon szerepkört --</option>
+            <form-group [placeholder]="'Megjelenő név'" [property_val]="newUser.megjeleno_nev" [property_name]="'megjeleno_nev'" (editEvent)="editEvent($event)"></form-group>
+            <form-group [placeholder]="'Felhasználónév'" [property_val]="newUser.felhasznalonev" [property_name]="'felhasznalonev'" (editEvent)="editEvent($event)"></form-group>
+            <form-group [placeholder]="'E-mail cím'" [property_val]="newUser.email" [property_name]="'email'" [type]="'email'" (editEvent)="editEvent($event)"></form-group>
+            <form-group [placeholder]="'Jelszó'" [property_val]="newUser.password" [property_name]="'password'" [type]="'password'" (editEvent)="editEvent($event)"></form-group>
+            <form-group [placeholder]="'Jelszó újra'" [property_val]="newUser.conf_password" [property_name]="'conf_password'" [type]="'password'" (editEvent)="editEvent($event)"></form-group>
+            Szerepkör:
+            <select style="margin-bottom: 10px;" name="szerepkor_id" class="form-select" [(ngModel)]="newUser.desired_role" (change)="updateRoleId($event)">
+                <option value="4">Vendég</option>
                 <option value="1">Rendező</option>
                 <option value="2">Versenyző</option>
                 <option value="5">Versenyző támogatója</option>
                 <option value="3">Segítő</option>
-                <option value="4">Vendég</option>
             </select>
-            @if (newUser.szerepkor_id == 2 || newUser.szerepkor_id == 5){
-                <form-group [placeholder]="'MMSz tagsági azonosító (opcionális)'" [property_val]="'####'" [property_name]="'mmszid'" [type]="'text'" (editEvent)="editEvent($event)"></form-group>
-                még nem opcionális lmao
+            @if (newUser.desired_role == 2 || newUser.desired_role == 5){
+                <form-group [required]="false" [placeholder]="'MMSz tagsági azonosító (opcionális)'" [property_val]="newUser.mmszid" [property_name]="'mmszid'" [type]="'text'" (editEvent)="editEvent($event)"></form-group>
             }
             @if (errorString != ''){
                 <p class="errorBox col-12">{{errorString | translate}}</p>

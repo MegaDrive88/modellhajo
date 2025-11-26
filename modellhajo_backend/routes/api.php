@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\UserModel;
+use App\Models\DesiredRoleModel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -33,14 +34,14 @@ Route::post('/login', function (Request $request) {
         ]);
     }
     $ROLE_ABILITIES = [
-        ["accept_roles"],
-        [],
-        [],
-        [],
-        []
+        ["organizer"],
+        ["competitor"],
+        ["helper"],
+        ["guest"],
+        ["supporter"]
     ];
 
-    $token = $result->createToken('modellhajo-login-token', $ROLE_ABILITIES[$result->szerepkor_id-1])->plainTextToken;
+    $token = $result->createToken('modellhajo-login-token', array_merge($ROLE_ABILITIES[$result->szerepkor_id-1], $result->isadmin ? ["admin"] : []))->plainTextToken;
 
     return response()->json([
         "success" => true,
@@ -49,7 +50,7 @@ Route::post('/login', function (Request $request) {
     ]);
 });
 
-Route::patch('/updateUser/{id}', function ($id, Request $request){
+Route::middleware("auth:sanctum")->patch('/updateUser/{id}', function ($id, Request $request){
     $user = UserModel::find($id);
     if (!$user) {
         return response()->json(['success' => false, 'error' => 'USER_NOT_FOUND']);
@@ -94,7 +95,7 @@ Route::patch('/updateUser/{id}', function ($id, Request $request){
 
 Route::middleware("auth:sanctum")->patch('/updatePassword/{id}', function ($id, Request $request) {
     $user = UserModel::find($id);
-    if (!$user) { // token integ
+    if (!$user) {
         return response()->json(['success' => false, 'error' => 'USER_NOT_FOUND']);
     }
     if($request->input("old_password") == "" || $request->input("new_password") == "" || $request->input("conf_password") == ""){
@@ -173,14 +174,35 @@ Route::post('/createAccount', function (Request $request){
 
     if ($request->input("password") == $request->input("conf_password")){
         $user->jelszo = chr(rand(65, 90)).md5("PasswordSalted".$request->input("password")).chr(rand(65, 90));
-        $user->save();
-        return response()->json([
-            "success" => true,
-            "user" => $user
-        ]);
     }
     else return response()->json([
         "success" => false,
         "error" => "PASSWORD_MISMATCH"
     ]);
+    $user->save(); // itt lesz id-je az usernek
+    $roleRequest = new DesiredRoleModel();
+    $roleRequest->felhasznalo_id = $user->id;
+    $roleRequest->szerepkor_id = $request->input("desired_role");
+    $roleRequest->save();
+    return response()->json([
+        "success" => true,
+        "user" => $user
+    ]);
+});
+
+Route::middleware("auth:sanctum")->get('/checkAdmin', function (Request $request){
+    return $request->user()->isadmin;
+});
+
+Route::middleware(["auth:sanctum", "ability:admin"])->get('/getRoleRequests', function (Request $request){
+    return response()->json(DesiredRoleModel::with(["user.role", "desired_role"])->get()
+    );
+});
+
+Route::middleware(["auth:sanctum", "ability:admin"])->patch('/acceptRoleRequest', function (Request $request){
+
+});
+
+Route::middleware(["auth:sanctum", "ability:admin"])->delete('/declineRoleRequest', function (Request $request){
+
 });

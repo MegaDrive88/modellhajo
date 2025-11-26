@@ -8,6 +8,7 @@ import { FormGroup } from "../formgroup";
 import { TopBar } from '../topbar';
 import { TranslatePipe } from '@ngx-translate/core';
 import { HttpHeaders } from '@angular/common/http';
+import RoleReq from '../../../interfaces/role_request.interface';
 
 
 @Component({
@@ -27,10 +28,29 @@ export class Home extends App implements OnInit {
   protected userDataErrorString = ''
   protected pwdErrorString = ''
   protected formEnabled = false;
+  protected userIsAdmin = false;
+  protected headers: HttpHeaders|undefined;
+  protected roleRequests: RoleReq[] = []
   override ngOnInit(): void {
       super.ngOnInit()
       this.userCopy = structuredClone(this.user)
       this.updateFormEnabled()
+      this.headers = new HttpHeaders({
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${this.dataService.getToken()}`
+      });
+      this.checkAdmin()
+  }
+  checkAdmin(){
+    this.http.get<boolean>(`http://127.0.0.1:${this.PORT}/api/checkAdmin`, {headers: this.headers}).subscribe(
+      data => {
+        this.userIsAdmin = data
+        this.http.get<RoleReq[]>(`http://127.0.0.1:${this.PORT}/api/getRoleRequests`, {headers: this.headers}).subscribe(
+          data => this.roleRequests = data
+        )
+      },
+      error => console.log(error)        
+    )
   }
   editEvent($event: { field: string; value: any }){
 
@@ -54,7 +74,7 @@ export class Home extends App implements OnInit {
     this.userDataErrorString = ""
     this.pwdErrorString = ""
     if(!this.pwdUpdaterVisible){
-      this.http.patch<any>(`http://127.0.0.1:${this.PORT}/api/updateUser/${this.userCopy!.id}`, this.userCopy).subscribe(
+      this.http.patch<any>(`http://127.0.0.1:${this.PORT}/api/updateUser/${this.userCopy!.id}`, this.userCopy, {headers: this.headers}).subscribe(
         (data)=>{
           if(data.success){
             this.user = data.user
@@ -67,11 +87,7 @@ export class Home extends App implements OnInit {
       )
     }
     else{ 
-      const headers = new HttpHeaders({
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${this.dataService.getToken()}`
-      }); //MUKODIK
-      this.http.patch<any>(`http://127.0.0.1:${this.PORT}/api/updatePassword/${this.userCopy!.id}`, this.pwdModel, {headers}).subscribe(
+      this.http.patch<any>(`http://127.0.0.1:${this.PORT}/api/updatePassword/${this.userCopy!.id}`, this.pwdModel, {headers: this.headers}).subscribe(
         (data)=>{
           if(data.success){
             this.user = data.user
@@ -100,6 +116,7 @@ export class Home extends App implements OnInit {
     }
     this.formEnabled = (this.pwdUpdaterVisible ? 
                        Object.keys(this.pwdModel).every(x => (this.pwdModel as any)[x] != "") : 
-                       Object.keys(this.userCopy!).every(x => (this.userCopy as any)[x] != ""))
-  }
+                       Object.keys(this.userCopy!).filter(item => typeof (this.userCopy as any)[item] === "string").every(x => (this.userCopy as any)[x] != ""))
+                        //sufni megoldas, mmsz id el fogja rontani xdd
+    }
 }
