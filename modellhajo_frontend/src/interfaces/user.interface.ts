@@ -7,5 +7,7 @@ export default interface User{
     jelszo: string;
     megjeleno_nev: string;
     szerepkor_id: number;
-    role: Role
+    szerepkort_elfogadta: number;
+    szerepkor_elfogadva: Date;
+    role: Role;
 }

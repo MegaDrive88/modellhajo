@@ -8,7 +8,6 @@ import { FormGroup } from "../formgroup";
 import { TopBar } from '../topbar';
 import { TranslatePipe } from '@ngx-translate/core';
 import { HttpHeaders } from '@angular/common/http';
-import RoleReq from '../../../interfaces/role_request.interface';
 
 
 @Component({
@@ -30,7 +29,7 @@ export class Home extends App implements OnInit {
   protected formEnabled = false;
   protected userIsAdmin = false;
   protected headers: HttpHeaders|undefined;
-  protected roleRequests: RoleReq[] = []
+  protected roleRequests: User[] = []
   override ngOnInit(): void {
       super.ngOnInit()
       this.userCopy = structuredClone(this.user)
@@ -45,11 +44,17 @@ export class Home extends App implements OnInit {
     this.http.get<boolean>(`http://127.0.0.1:${this.PORT}/api/checkAdmin`, {headers: this.headers}).subscribe(
       data => {
         this.userIsAdmin = data
-        this.http.get<RoleReq[]>(`http://127.0.0.1:${this.PORT}/api/getRoleRequests`, {headers: this.headers}).subscribe(
-          data => this.roleRequests = data
-        )
+        if(this.userIsAdmin){
+          this.getRoleRequests()
+        }
+        
       },
       error => console.log(error)        
+    )
+  }
+  getRoleRequests(){
+    this.http.get<User[]>(`http://127.0.0.1:${this.PORT}/api/getRoleRequests`, {headers: this.headers}).subscribe(
+      data => this.roleRequests = data
     )
   }
   editEvent($event: { field: string; value: any }){
@@ -68,7 +73,7 @@ export class Home extends App implements OnInit {
       conf_password: ""
     }
   }
-  async updateUserData(){
+  updateUserData(){
     (document.querySelector(".successBox") as any).style.display = "none"
     this.userDataErrorString = ""
     this.pwdErrorString = ""
@@ -118,23 +123,13 @@ export class Home extends App implements OnInit {
                        Object.keys(this.userCopy!).filter(item => typeof (this.userCopy as any)[item] === "string").every(x => (this.userCopy as any)[x] != ""))
                         //sufni megoldas, mmsz id el fogja rontani xdd
   }
-  acceptRoleRequest(id:number, desired_role:number){
-    this.http.patch<{success:boolean}>(`http://127.0.0.1:${this.PORT}/api/acceptRoleRequest`, {id: id, desired_role: desired_role}, {headers: this.headers}).subscribe(
+  decideRoleRequest(id:number, verdict: boolean){
+    this.http.patch<{success:boolean}>(`http://127.0.0.1:${this.PORT}/api/decideRoleRequest/${verdict}`, {id: id}, {headers: this.headers}).subscribe(
       data => {
         if(data.success)
-          this.deleteRoleRequest(id)
+          this.getRoleRequests()
       },
       error => console.log(error)
-    )
-  }
-  deleteRoleRequest(id:number){
-    this.http.delete(`http://127.0.0.1:${this.PORT}/api/deleteRoleRequest`, {
-      headers: this.headers,
-      body: {id: id}
-    }).subscribe(
-      data => {},
-      error => console.log(error)
-      
     )
   }
 }

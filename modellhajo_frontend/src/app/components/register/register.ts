@@ -21,7 +21,7 @@ export class Register extends App {
     email: "",
     password : "",
     conf_password : "",
-    desired_role : 4,
+    szerepkor_id: 4,
     mmszid: ""
   }
 

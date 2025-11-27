@@ -170,7 +170,7 @@ Route::post('/createAccount', function (Request $request){
         ]);
     }
 
-    $user->szerepkor_id = 4;
+    $user->szerepkor_id = $request->input("szerepkor_id");
 
     if ($request->input("password") == $request->input("conf_password")){
         $user->jelszo = chr(rand(65, 90)).md5("PasswordSalted".$request->input("password")).chr(rand(65, 90));
@@ -179,11 +179,7 @@ Route::post('/createAccount', function (Request $request){
         "success" => false,
         "error" => "PASSWORD_MISMATCH"
     ]);
-    $user->save(); // itt lesz id-je az usernek
-    $roleRequest = new DesiredRoleModel();
-    $roleRequest->felhasznalo_id = $user->id;
-    $roleRequest->szerepkor_id = $request->input("desired_role");
-    $roleRequest->save();
+    $user->save();
     return response()->json([
         "success" => true,
         "user" => $user
@@ -195,22 +191,22 @@ Route::middleware("auth:sanctum")->get('/checkAdmin', function (Request $request
 });
 
 Route::middleware(["auth:sanctum", "ability:admin"])->get('/getRoleRequests', function (Request $request){
-    return response()->json(DesiredRoleModel::with(["user.role", "desired_role"])->get()
+    return response()->json(
+        UserModel::with("role")->whereRaw('szerepkor_id <> 4 AND szerepkort_elfogadta IS NULL')->get()
     );
 });
 
-// Route::middleware(["auth:sanctum", "ability:admin"])->patch('/acceptRoleRequest', function (Request $request){
-//     $user = UserModel::find($request->input("id"));
-//     $user->szerepkor_id = $request->input("desired_role");
-//     $user->save();
-//     return response()->json([
-//         "success" => true
-//     ]);
-// });
-
-// Route::middleware(["auth:sanctum", "ability:admin"])->delete('/deleteRoleRequest', function (Request $request){
-//     $deleted = DesiredRoleModel::where('id', $request->input('id'))->delete();
-//     return response()->json([
-//         "success" => $deleted,
-//     ]);
-// }); --- refactor
+Route::middleware(["auth:sanctum", "ability:admin"])->patch('/decideRoleRequest/{verdict}', function ($verdict, Request $request){
+    $user = UserModel::find($request->input("id"));
+    if($verdict){
+        $user->szerepkort_elfogadta = $request->user()->id;
+        $user->szerepkor_elfogadva = now();
+        $user->save();
+    } else {
+        $user->szerepkor_id = 4; // vagy valahogy jelenlegi szerepkor utolagos valtas eseten
+        $user->save();
+    }
+    return response()->json([
+        "success" => true
+    ]);
+});

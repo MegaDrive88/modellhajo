@@ -1,4 +1,5 @@
-@if (user) {
+@if (user) { 
+    <!-- ehelyett tokent nezni? -->
     <div class="container" style="margin-top: 5px;">
         <topbar [username]="user.megjeleno_nev"></topbar>
         <div class="row">
@@ -11,6 +12,14 @@
                     <p class="errorBox col-12">{{userDataErrorString | translate}}</p>
                 }
                 <p class="successBox col-12" style="display: none;">{{"SUCCESS" | translate}}</p><br>
+                <select name="szerepkor_id" [(ngModel)]="userCopy!.szerepkor_id" class="form-select">
+                    <option value="4">Vendég</option>
+                    <option value="1">Rendező</option>
+                    <option value="2">Versenyző</option>
+                    <option value="5">Versenyző támogatója</option>
+                    <option value="3">Segítő</option>
+                </select>
+                <br>
                 Jelszó módosítás 
                 <button type="button" class="btn" style="font-size: smaller; margin-bottom: 10px;" (click)="togglePwdUpdate()" id="pwdtoggler">v</button>
                 <div [hidden]="!pwdUpdaterVisible">
@@ -34,7 +43,6 @@
                             <tr>
                                 <td>Felhasználó</td>
                                 <td>E-mail</td>
-                                <td>Jelenlegi szerepkör</td>
                                 <td>Kívánt szerepkör</td>
                                 <td class="text-center">Elfogad</td>
                                 <td class="text-center">Elutasít</td>
@@ -43,12 +51,11 @@
                         <tbody>
                             @for (req of roleRequests; track $index) {
                                 <tr>
-                                    <td>{{req.user.megjeleno_nev}}</td>
-                                    <td>{{req.user.email}}</td>
-                                    <td>{{req.user.role.szerepkor_nev}}</td>
-                                    <td>{{req.desired_role.szerepkor_nev}}</td>
-                                    <td class="text-center"><button class="btn btn-success" (click)="acceptRoleRequest(req.id, req.desired_role.id)">✓</button></td>
-                                    <td class="text-center"><button class="btn btn-danger" data-id="{{req.id}}">X</button></td>
+                                    <td>{{req.megjeleno_nev}}</td>
+                                    <td>{{req.email}}</td>
+                                    <td>{{req.role.szerepkor_nev}}</td>
+                                    <td class="text-center"><button class="btn btn-success" (click)="decideRoleRequest(req.id, true)">✓</button></td>
+                                    <td class="text-center"><button class="btn btn-danger" (click)="decideRoleRequest(req.id, false)">X</button></td>
                                 </tr>
                             }
                         </tbody>
