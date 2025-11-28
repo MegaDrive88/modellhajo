@@ -1,2 +1,63 @@
-
+@if (user) { 
+    <!-- ehelyett tokent nezni? -->
+    <div class="container" style="margin-top: 5px;">
+        <topbar [username]="user.megjeleno_nev"></topbar>
+        <div class="row">
+            <form action="" #f="ngForm" (ngSubmit)="updateUserData()" class="col-md-5">
+                <h4>Adatok módosítása:</h4>
+                <form-group [disabled]="pwdUpdaterVisible" [placeholder]="'Megjelenő név'" [property_val]="userCopy!.megjeleno_nev" [property_name]="'megjeleno_nev'" (editEvent)="editEvent($event)"></form-group>
+                <form-group [disabled]="pwdUpdaterVisible" [placeholder]="'Felhasználónév'" [property_val]="userCopy!.felhasznalonev" [property_name]="'felhasznalonev'" (editEvent)="editEvent($event)"></form-group>
+                <form-group [disabled]="pwdUpdaterVisible" [placeholder]="'E-mail'" [property_val]="userCopy!.email" [property_name]="'email'" (editEvent)="editEvent($event)" [type]="'email'"></form-group>
+                @if (userDataErrorString != ''){
+                    <p class="errorBox col-12">{{userDataErrorString | translate}}</p>
+                }
+                <p class="successBox col-12" style="display: none;">{{"SUCCESS" | translate}}</p><br>
+                Jelszó módosítás 
+                <button type="button" class="btn" style="font-size: smaller; margin-bottom: 10px;" (click)="togglePwdUpdate()" id="pwdtoggler">v</button>
+                <div [hidden]="!pwdUpdaterVisible">
+                    <form-group [placeholder]="'Jelenlegi jelszó'" [property_val]="pwdModel.old_password" [property_name]="'old_password'" (editEvent)="editEvent($event)" [type]="'password'"></form-group>
+                    <form-group [placeholder]="'Új jelszó'" [property_val]="pwdModel.new_password" [property_name]="'new_password'" (editEvent)="editEvent($event)" [type]="'password'"></form-group>
+                    <form-group [placeholder]="'Új jelszó még egyszer'" [property_val]="pwdModel.conf_password" [property_name]="'conf_password'" (editEvent)="editEvent($event)" [type]="'password'"></form-group>
+                    @if (pwdErrorString != ''){
+                        <p class="errorBox col-md-4">{{pwdErrorString | translate}}</p>
+                    }
+                </div>
+                <div class="row">
+                    <button type="submit" class="btn col-md-2" [disabled]="!formEnabled">Mentés</button>
+                    <button type="button" id="cancelBTN" class="btn col-md-2" (click)="cancelBtnClick()">Mégse</button>
+                </div>
+            </form>
+            <div class="col-md-7">
+                @if (userIsAdmin) {
+                    <h4>Szerepkör kérések:</h4>
+                    <table class="col-12 table table-striped">
+                        <thead>
+                            <tr>
+                                <td>Felhasználó</td>
+                                <td>E-mail</td>
+                                <td>Kívánt szerepkör</td>
+                                <td class="text-center">Elfogad</td>
+                                <td class="text-center">Elutasít</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (req of roleRequests; track $index) {
+                                <tr>
+                                    <td>{{req.megjeleno_nev}}</td>
+                                    <td>{{req.email}}</td>
+                                    <td>{{req.role.szerepkor_nev}}</td>
+                                    <td class="text-center"><button class="btn btn-success" (click)="decideRoleRequest(req.id, true)">✓</button></td>
+                                    <td class="text-center"><button class="btn btn-danger" (click)="decideRoleRequest(req.id, false)">X</button></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+}
+@else {
+    {{router.navigateByUrl("/login")}}
+}
 <router-outlet />

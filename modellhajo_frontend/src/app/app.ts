@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { RouterOutlet, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -20,8 +20,25 @@ export class App implements OnInit{
   protected dataService = inject(DataService);
   protected rememberMe = false;
   protected user:User|undefined;
+  protected headers: HttpHeaders|undefined;
+  
   ngOnInit(): void {
-      this.user = this.dataService.getUser()
+      this.user = this.dataService.getUser() // nem lesz ez itt jo
+      this.headers = new HttpHeaders({
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${this.dataService.getToken()}`
+      });
+      if (this.user)
+        this.http.get<boolean>(`http://127.0.0.1:${this.PORT}/api/checkTokenExpired`, {headers: {'Authorization': `Bearer ${this.dataService.getToken()}`}}).subscribe(
+          data=>{},
+          error=>{
+            if (error.status == 401){
+              alert("Lejárt a munkamenet, kérjük jelentkezzen be újra!")
+              this.logout()
+            }
+          }
+        )
+      
   }
   private translate = inject(TranslateService);
   constructor() {

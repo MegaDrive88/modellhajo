@@ -22,7 +22,7 @@ import { FormsModule } from "@angular/forms";
 })
 export class FormGroup { 
     @Input() placeholder = ''
-    @Input() property_val = ''
+    @Input() property_val:any = ''
     @Input() property_name = ''
     @Input() required = true
     @Input() type = 'text'

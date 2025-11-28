@@ -1,0 +1,48 @@
+@if (user) { 
+    <!-- csak rendezo btw -->
+    <div class="container" style="margin-top: 5px;">
+        <topbar [username]="user.megjeleno_nev"></topbar>
+        <div class="row">
+            <div class="col-md-6">
+                <form #f="ngForm" (ngSubmit)="sendCompetitionData()">
+                    <h4>Verseny felvétele</h4>
+                    <form-group [placeholder]="'Verseny neve'" [property_val]="newComp.nev" [property_name]="'nev'"></form-group>
+                    <form-group [placeholder]="'Verseny helyszíne(terkep)'" [property_val]="newComp.helyszin" [property_name]="'helyszin'"></form-group>
+                    <div class="row">
+                        <div class="col-6">
+                            <form-group [placeholder]="'Verseny kezdete'" [property_val]="newComp.kezdet" [property_name]="'kezdet'" [type]="'date'"></form-group>
+                        </div>
+                        <div class="col-6">
+                            <form-group [placeholder]="'Verseny vége'" [property_val]="newComp.veg" [property_name]="'veg'" [type]="'date'"></form-group>
+                        </div>
+                    </div>
+                    <form-group [placeholder]="'Megjelenési dátum:'" [property_val]="newComp.megjelenik" [property_name]="'megjelenik'" [type]="'date'"></form-group>
+                    <form-group [placeholder]="'Nevezési határidő:'" [property_val]="newComp.nevezesi_hatarido" [property_name]="'nevezesi_hatarido'" [type]="'date'"></form-group>
+                    <form-group [placeholder]="'Leírás(textarea?)'" [property_val]="newComp.nev" [property_name]="'nev'"></form-group>
+                    <select name="" id="">egyesuletek</select>
+                    <!-- <form-group [placeholder]="'nevezesi dijak'" [property_val]="newComp.nev" [property_name]="'nev'"></form-group> -->
+                    <input type="file" class="form-control" id="competitionThumbnail">
+                    <button type="submit" class="btn">Rögzít</button>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <h4>Versenyeim</h4>
+                <table class="col-12 table table-striped">
+                    <thead>
+                        <tr>
+                            <td>Név</td> // lenyitos ize
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+@else {
+    {{router.navigateByUrl("/login")}}
+}
+<router-outlet />

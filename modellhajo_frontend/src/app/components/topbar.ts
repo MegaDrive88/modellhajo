@@ -9,7 +9,12 @@ import { App } from "../app";
   imports: [FormsModule, CommonModule],
   template:`
     <button class="btn" style="float: right;" (click)="logout()">Kijelentkezés</button>
-    <h3>Bejelentkezve, mint: {{username}}</h3><br>
+    <div class="row">
+      <h3 class="col">Bejelentkezve, mint: {{username}}</h3>
+      <a class="col" href="/homepage">Dashboard</a>
+      <a class="col" href="/account">Adatok módosítása</a>
+      <a class="col" href="/competitions">Versenyek</a>
+    </div>
   `,
   styleUrl: '../app.scss'
 })

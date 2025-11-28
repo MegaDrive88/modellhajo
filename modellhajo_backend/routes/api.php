@@ -210,3 +210,22 @@ Route::middleware(["auth:sanctum", "ability:admin"])->patch('/decideRoleRequest/
         "success" => true
     ]);
 });
+
+Route::middleware(["auth:sanctum"])->get('checkTokenExpired', function (Request $request){
+    return true;
+});
+
+Route::middleware(["auth:sanctum", "ability:organizer"])->post('/uploadCompetitionThumbnail', function (Request $request) {
+    $path = $request->file('thumbnail')->store('thumbnails', 'public');
+    $url = Storage::url($path);
+    return response()->json([
+        'success' => true,
+        'path' => $path, // /storage/thumbnails/...
+        'url' => $url, // thumbnails/..
+        'filename' => basename($path), // xyz.png, valami hash
+    ]);
+});
+
+Route::middleware(["auth:sanctum", "ability:organizer"])->post('/createCompetition', function (Request $request){
+
+});

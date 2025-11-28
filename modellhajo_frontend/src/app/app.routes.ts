@@ -3,11 +3,13 @@ import { Login } from './components/login/login';
 import { Home } from './components/home/home';
 import { Register } from './components/register/register';
 import { Account } from './components/account/account';
+import { Competitions } from './components/competitions/competitions';
 
 export const routes: Routes = [
     {path: '', component: Login}, // landing esetleg
     {path: 'login', component: Login},
     {path: 'homepage', component: Home},
     {path: 'register', component: Register},
-    {path: 'account', component: Account}
+    {path: 'account', component: Account},
+    {path: 'competitions', component: Competitions},
 ];
