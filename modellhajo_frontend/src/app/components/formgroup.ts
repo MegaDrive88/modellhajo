@@ -8,9 +8,9 @@ import { FormsModule } from "@angular/forms";
   imports: [FormsModule, CommonModule],
   template:`
     <div class="form-group row">
-        <label for="inputPassword" class="col-md-5 col-form-label">{{placeholder}}: </label>
+        <label for="{{property_name}}" class="col-md-5 col-form-label">{{placeholder}}{{required ? '*' : ''}}: </label>
         <div class="col-md-7">
-            <input [disabled]="disabled" (ngModelChange)="ontype($event)" [email]="type == 'email'" type="{{type}}" class="form-control" [(ngModel)]="property_val" placeholder="{{placeholder}}" [required]="required" #err="ngModel" name="dispname">
+            <input [disabled]="disabled" (ngModelChange)="ontype($event)" [email]="type == 'email'" type="{{type}}" class="form-control" [(ngModel)]="property_val" placeholder="{{placeholder}}" [required]="required" #err="ngModel" name="{{property_name}}" [min]="0">
         </div>
     </div>
     @if (err.invalid && (err.dirty || err.touched)){

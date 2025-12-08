@@ -37,7 +37,7 @@ export class Account extends App implements OnInit {
       this.checkAdmin()
   }
   checkAdmin(){
-    this.http.get<boolean>(`http://127.0.0.1:${this.PORT}/api/checkAdmin`, {headers: this.headers}).subscribe(
+    this.http.get<boolean>(`${this.API_URL}/checkAdmin`, {headers: this.headers}).subscribe(
       data => {
         this.userIsAdmin = data
         if(this.userIsAdmin){
@@ -49,7 +49,7 @@ export class Account extends App implements OnInit {
     )
   }
   getRoleRequests(){
-    this.http.get<User[]>(`http://127.0.0.1:${this.PORT}/api/getRoleRequests`, {headers: this.headers}).subscribe(
+    this.http.get<User[]>(`${this.API_URL}/getRoleRequests`, {headers: this.headers}).subscribe(
       data => this.roleRequests = data
     )
   }
@@ -74,7 +74,7 @@ export class Account extends App implements OnInit {
     this.userDataErrorString = ""
     this.pwdErrorString = ""
     if(!this.pwdUpdaterVisible){
-      this.http.patch<any>(`http://127.0.0.1:${this.PORT}/api/updateUser/${this.userCopy!.id}`, this.userCopy, {headers: this.headers}).subscribe(
+      this.http.patch<any>(`${this.API_URL}/updateUser/${this.userCopy!.id}`, this.userCopy, {headers: this.headers}).subscribe(
         (data)=>{
           if(data.success){
             this.user = data.user
@@ -87,7 +87,7 @@ export class Account extends App implements OnInit {
       )
     }
     else{ 
-      this.http.patch<any>(`http://127.0.0.1:${this.PORT}/api/updatePassword/${this.userCopy!.id}`, this.pwdModel, {headers: this.headers}).subscribe(
+      this.http.patch<any>(`${this.API_URL}/updatePassword/${this.userCopy!.id}`, this.pwdModel, {headers: this.headers}).subscribe(
         (data)=>{
           if(data.success){
             this.user = data.user
@@ -120,7 +120,7 @@ export class Account extends App implements OnInit {
                         //sufni megoldas, mmsz id el fogja rontani xdd
   }
   decideRoleRequest(id:number, verdict: boolean){
-    this.http.patch<{success:boolean}>(`http://127.0.0.1:${this.PORT}/api/decideRoleRequest/${verdict}`, {id: id}, {headers: this.headers}).subscribe(
+    this.http.patch<{success:boolean}>(`${this.API_URL}/decideRoleRequest/${verdict}`, {id: id}, {headers: this.headers}).subscribe(
       data => {
         if(data.success)
           this.getRoleRequests()

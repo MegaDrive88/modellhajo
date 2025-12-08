@@ -38,3 +38,20 @@ button:not(.btn-success, .btn-danger){
         color: white;
     }
 }
+.competitions-list{
+    // & :last-child{
+    //     border: 0 !important;
+    // }
+    & div.competition-row{
+        width: 100%;
+        background-color: white;
+        height: 40px;
+        border-bottom: 1px solid darkgray;
+        padding: 10px;
+        & button{
+            float: right;
+        }
+    }
+    border-radius: 10px;
+    overflow: hidden;
+}

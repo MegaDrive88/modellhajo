@@ -33,7 +33,7 @@ export class Register extends App {
     this.newUser.szerepkor_id = event.target.value
   }
   protected sendRegisterData(){
-    this.http.post<any>(`http://127.0.0.1:${this.PORT}/api/createAccount`, this.newUser).subscribe(
+    this.http.post<any>(`${this.API_URL}/createAccount`, this.newUser).subscribe(
       (data)=>{
         if(data.success){
           alert("Sikeres felhasználó létrehozás")

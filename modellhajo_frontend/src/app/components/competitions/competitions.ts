@@ -18,17 +18,20 @@ import Competition from '../../../interfaces/competition.interface';
   styleUrl: '../../app.scss'
 })
 export class Competitions extends App implements OnInit {
-    protected newComp: Omit<Competition, "id" | "letrehozo_id"> = {
-        kezdet: new Date(),
-        veg: new Date(),
+    protected associations:any[] = []
+    protected formEnabled:boolean = false
+    protected userCompetitions:Competition[] = []
+    protected newComp: Omit<Competition, "id" | "letrehozo_id"> = { // kategoriak -- Andras
+        kezdet: new Date().toISOString().split('T')[0],
+        veg: new Date().toISOString().split('T')[0],
         nev: '',
-        evszam: null,
+        evszam: null, //nincs
         helyszin: '',
-        megjelenik: new Date(),
-        nevezesi_hatarido: new Date(),
+        megjelenik: new Date().toISOString().split('T')[0],
+        nevezesi_hatarido: new Date().toISOString().split('T')[0],
         gps_x: null,
         gps_y: null,
-        szervezo_egyesulet: null,
+        szervezo_egyesulet: -1,
         leiras: null,
         nevezesi_dij_junior: 0,
         nevezesi_dij_normal: 0,
@@ -38,9 +41,21 @@ export class Competitions extends App implements OnInit {
     }
     override ngOnInit(): void {
         super.ngOnInit()
+        this.http.get<{success:boolean, data:any[]}>(`${this.API_URL}/getAllAssociations`).subscribe(
+            data=>{
+                this.associations = data.data
+            }
+        )
+        this.http.get<{success:boolean, data:Competition[]}>(`${this.API_URL}/getUserCompetitions`, {headers: this.headers}).subscribe(
+            data=>{                
+                this.userCompetitions = data.data
+            }
+        )
+        
     }
     editEvent($event: { field: string; value: any }){
-        // (this.userCopy as any)[$event.field] = $event.value
+        (this.newComp as any)[$event.field] = $event.value
+        this.updateFormEnabled()        
     }
     sendCompetitionData(){
         const imageUploader = document.querySelector("#competitionThumbnail") as HTMLInputElement
@@ -50,7 +65,7 @@ export class Competitions extends App implements OnInit {
             original_name = file.name
             const formdata = new FormData()
             formdata.append("thumbnail", file)
-            this.http.post<any>(`http://127.0.0.1:${this.PORT}/api/uploadCompetitionThumbnail`, formdata, {headers: this.headers}).subscribe(
+            this.http.post<any>(`${this.API_URL}/uploadCompetitionThumbnail`, formdata, {headers: this.headers}).subscribe(
                 data=>{
                   this.newComp.kep_fajlnev = original_name
                   this.newComp.kep_url = data.url
@@ -58,8 +73,36 @@ export class Competitions extends App implements OnInit {
                 error=>console.log(error)
             )
         }
-        this.http.post<any>(`http://127.0.0.1:${this.PORT}/api/uploadCompetitionThumbnail`, this.newComp, {headers: this.headers}).subscribe(
-
+        
+        this.http.post<any>(`${this.API_URL}/createCompetition`, this.newComp, {headers: this.headers}).subscribe(
+            data=> {
+                if (data.success) {
+                    alert("Sikeres verseny létrehozás")
+                    location.reload()
+                }
+            },
+            error => console.log(error)
         )
+    }
+    updateFormEnabled(){
+        this.formEnabled = ( // datumok
+            this.newComp.nev != "" &&
+            this.newComp.helyszin != "" &&
+            this.newComp.szervezo_egyesulet != -1 &&
+            this.newComp.nev != "" &&
+            this.newComp.nevezesi_dij_junior > 0 &&
+            this.newComp.nevezesi_dij_normal > 0 &&
+            this.newComp.nevezesi_dij_senior > 0
+        )
+    }
+    assocSelectorChange(){
+        this.newComp.szervezo_egyesulet = Number((document.querySelector("#assocSelector") as HTMLSelectElement).value)
+        this.updateFormEnabled()        
+    }
+    toggleDropdown(event:MouseEvent){
+        let sender = event.target! as HTMLButtonElement
+        if(sender.textContent == 'V') sender.textContent = '<'
+        else sender.textContent = 'V'
+
     }
 }

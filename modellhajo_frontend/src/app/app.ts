@@ -14,7 +14,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrl: './app.scss'
 })
 export class App implements OnInit{
-  protected readonly PORT = 8000
+  protected readonly API_URL = 'http://127.0.0.1:8000/api'
   protected http = inject(HttpClient);
   protected router = inject(Router);
   protected dataService = inject(DataService);
@@ -28,16 +28,16 @@ export class App implements OnInit{
         'Accept': 'application/json',
         'Authorization': `Bearer ${this.dataService.getToken()}`
       });
-      if (this.user)
-        this.http.get<boolean>(`http://127.0.0.1:${this.PORT}/api/checkTokenExpired`, {headers: {'Authorization': `Bearer ${this.dataService.getToken()}`}}).subscribe(
-          data=>{},
-          error=>{
-            if (error.status == 401){
-              alert("Lejárt a munkamenet, kérjük jelentkezzen be újra!")
-              this.logout()
-            }
-          }
-        )
+      // if (this.user)
+      //   this.http.get<boolean>(`${this.API_URL}/checkTokenExpired`, {headers: {'Authorization': `Bearer ${this.dataService.getToken()}`}}).subscribe(
+      //     data=>{},
+      //     error=>{
+      //       if (error.status == 401){
+      //         alert("Lejárt a munkamenet, kérjük jelentkezzen be újra!")
+      //         this.logout()
+      //       }
+      //     }
+      //   )
       
   }
   private translate = inject(TranslateService);

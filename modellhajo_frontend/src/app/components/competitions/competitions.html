@@ -6,38 +6,50 @@
             <div class="col-md-6">
                 <form #f="ngForm" (ngSubmit)="sendCompetitionData()">
                     <h4>Verseny felvétele</h4>
-                    <form-group [placeholder]="'Verseny neve'" [property_val]="newComp.nev" [property_name]="'nev'"></form-group>
-                    <form-group [placeholder]="'Verseny helyszíne(terkep)'" [property_val]="newComp.helyszin" [property_name]="'helyszin'"></form-group>
+                    <form-group (editEvent)="editEvent($event)" (editEvent)="editEvent($event)" [placeholder]="'Verseny neve'" [property_val]="newComp.nev" [property_name]="'nev'"></form-group>
+                    <form-group (editEvent)="editEvent($event)" [placeholder]="'Verseny helyszíne(terkep)'" [property_val]="newComp.helyszin" [property_name]="'helyszin'"></form-group>
                     <div class="row">
                         <div class="col-6">
-                            <form-group [placeholder]="'Verseny kezdete'" [property_val]="newComp.kezdet" [property_name]="'kezdet'" [type]="'date'"></form-group>
+                            <form-group (editEvent)="editEvent($event)" [placeholder]="'Verseny kezdete'" [property_val]="newComp.kezdet" [property_name]="'kezdet'" [type]="'date'"></form-group>
                         </div>
                         <div class="col-6">
-                            <form-group [placeholder]="'Verseny vége'" [property_val]="newComp.veg" [property_name]="'veg'" [type]="'date'"></form-group>
+                            <form-group (editEvent)="editEvent($event)" [placeholder]="'Verseny vége'" [property_val]="newComp.veg" [property_name]="'veg'" [type]="'date'"></form-group>
                         </div>
                     </div>
-                    <form-group [placeholder]="'Megjelenési dátum:'" [property_val]="newComp.megjelenik" [property_name]="'megjelenik'" [type]="'date'"></form-group>
-                    <form-group [placeholder]="'Nevezési határidő:'" [property_val]="newComp.nevezesi_hatarido" [property_name]="'nevezesi_hatarido'" [type]="'date'"></form-group>
-                    <form-group [placeholder]="'Leírás(textarea?)'" [property_val]="newComp.nev" [property_name]="'nev'"></form-group>
-                    <select name="" id="">egyesuletek</select>
-                    <!-- <form-group [placeholder]="'nevezesi dijak'" [property_val]="newComp.nev" [property_name]="'nev'"></form-group> -->
+                    <!-- versenyszezon -->
+                    <form-group [required]="false" (editEvent)="editEvent($event)" [placeholder]="'Évad/szezon'" [property_val]="newComp.evszam" [property_name]="'evszam'"></form-group>
+                    <form-group (editEvent)="editEvent($event)" [placeholder]="'Megjelenési dátum:'" [property_val]="newComp.megjelenik" [property_name]="'megjelenik'" [type]="'date'"></form-group>
+                    <form-group (editEvent)="editEvent($event)" [placeholder]="'Nevezési határidő:'" [property_val]="newComp.nevezesi_hatarido" [property_name]="'nevezesi_hatarido'" [type]="'date'"></form-group>
+                    <form-group (editEvent)="editEvent($event)" [placeholder]="'Leírás(textarea?)'" [property_val]="newComp.leiras" [property_name]="'leiras'"></form-group>
+                    Szervező egyesület*:
+                    <select name="egyesulet" class="form-select" id="assocSelector" (change)="assocSelectorChange()">
+                        <option value="-1">-- Kérem válasszon --</option>
+                        @for (item of associations; track $index) {
+                            <option value="{{item.id}}">{{item.nev}}</option>
+                        }
+                    </select>
+                    <br>
+                    <form-group (editEvent)="editEvent($event)" [placeholder]="'Junior nevezési díj'" [property_val]="newComp.nevezesi_dij_junior" [property_name]="'nevezesi_dij_junior'" [type]="'number'"></form-group>
+                    <form-group (editEvent)="editEvent($event)" [placeholder]="'Teljes árú nevezési díj'" [property_val]="newComp.nevezesi_dij_normal" [property_name]="'nevezesi_dij_normal'" [type]="'number'"></form-group>
+                    <form-group (editEvent)="editEvent($event)" [placeholder]="'Senior nevezési díj'" [property_val]="newComp.nevezesi_dij_senior" [property_name]="'nevezesi_dij_senior'" [type]="'number'"></form-group>
+                    Borítókép
                     <input type="file" class="form-control" id="competitionThumbnail">
-                    <button type="submit" class="btn">Rögzít</button>
+                    <button type="submit" class="btn" [disabled]="!formEnabled">Rögzít</button>
                 </form>
             </div>
             <div class="col-md-6">
                 <h4>Versenyeim</h4>
-                <table class="col-12 table table-striped">
-                    <thead>
-                        <tr>
-                            <td>Név</td> // lenyitos ize
-                            
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                    </tbody>
-                </table>
+                <div class="competitions-list">
+                @for (item of userCompetitions; track item.id) {
+                    <div class="competition-row">
+                        {{item.nev}}
+                        <button (click)="toggleDropdown($event)">V</button>
+                    </div>
+                    <div [ngClass]="`competition-dropdown-${item.id}`" [hidden]="true">
+                        Helyszín: {{item.helyszin}}
+                    </div>
+                }
+                </div>
             </div>
         </div>
     </div>

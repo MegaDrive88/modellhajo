@@ -1,13 +1,13 @@
 export default interface Competition{
     id: number;
-    kezdet: Date;
-    veg: Date;
+    kezdet: Date | string;
+    veg: Date | string;
     nev: string;
     evszam: string | null; // number inkabb?
     letrehozo_id: number;
     helyszin: string;
-    megjelenik: Date;
-    nevezesi_hatarido: Date;
+    megjelenik: Date | string;
+    nevezesi_hatarido: Date | string;
     gps_x: number | null;
     gps_y: number | null;
     szervezo_egyesulet: number | null;

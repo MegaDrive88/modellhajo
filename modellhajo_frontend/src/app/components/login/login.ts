@@ -29,7 +29,7 @@ export class Login extends App {
       isEmail: isEmail,
       pwdHash: hashedPwd
     }
-    this.http.post<{success:boolean, user?:User, access_token?:string}>(`http://127.0.0.1:${this.PORT}/api/login`, loginModel).subscribe(
+    this.http.post<{success:boolean, user?:User, access_token?:string}>(`${this.API_URL}/login`, loginModel).subscribe(
       (data)=>{
         this.loginSuccess = data.success
         if(data.success){

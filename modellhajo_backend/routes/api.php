@@ -2,8 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\UserModel;
-use App\Models\DesiredRoleModel;
+use App\Models\UserModel; 
+use App\Models\RoleModel;
+use App\Models\AssociationModel;
+use App\Models\CompetitionModel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -227,5 +229,25 @@ Route::middleware(["auth:sanctum", "ability:organizer"])->post('/uploadCompetiti
 });
 
 Route::middleware(["auth:sanctum", "ability:organizer"])->post('/createCompetition', function (Request $request){
+    $competition = CompetitionModel::create([
+        ...$request->all(),
+        'letrehozo_id' => $request->user()->id,
+    ]);
+    return response()->json([
+        'success' => true,
+    ]);
+});
 
+Route::get('/getAllAssociations', function (){
+    return response()->json([
+        'success' => true,
+        'data' => AssociationModel::all()
+    ]);
+});
+
+Route::middleware(["auth:sanctum", "ability:organizer"])->get('/getUserCompetitions', function (Request $request){
+    return response()->json([
+        'success' => true,
+        'data' => CompetitionModel::where('letrehozo_id', '=', $request->user()->id)->get()
+    ]);
 });
