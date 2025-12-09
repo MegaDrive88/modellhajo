@@ -50,8 +50,35 @@ button:not(.btn-success, .btn-danger){
         padding: 10px;
         & button{
             float: right;
+            border: 0;
+            border-radius: 5px;
+            width: 22px;
         }
     }
     border-radius: 10px;
+    border: 1px solid grey;
     overflow: hidden;
+}
+[class^="competition-dropdown-"]{
+    background-color: #f0f0f0;
+    padding: 15px;
+    & img{
+        float: left;
+        width: 60px;
+    }
+    & ul{
+        display: inline-block;
+    }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    appearance: textfield;
+    -moz-appearance:textfield;
+    text-align: right;
 }

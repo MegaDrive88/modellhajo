@@ -8,7 +8,7 @@ import { FormsModule } from "@angular/forms";
   imports: [FormsModule, CommonModule],
   template:`
     <div class="form-group row">
-        <label for="{{property_name}}" class="col-md-5 col-form-label">{{placeholder}}{{required ? '*' : ''}}: </label>
+        <label for="{{property_name}}" class="col-md-5 col-form-label">{{placeholder}}<span *ngIf="required" style="color:red;">*</span>: </label>
         <div class="col-md-7">
             <input [disabled]="disabled" (ngModelChange)="ontype($event)" [email]="type == 'email'" type="{{type}}" class="form-control" [(ngModel)]="property_val" placeholder="{{placeholder}}" [required]="required" #err="ngModel" name="{{property_name}}" [min]="0">
         </div>

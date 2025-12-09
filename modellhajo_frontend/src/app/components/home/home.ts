@@ -12,7 +12,7 @@ import { HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'home-root',
-  imports: [RouterOutlet, FormsModule, CommonModule, FormGroup, TopBar, TranslatePipe],
+  imports: [RouterOutlet, FormsModule, CommonModule, TopBar],
   templateUrl: './home.html',
   styleUrl: '../../app.scss'
 })

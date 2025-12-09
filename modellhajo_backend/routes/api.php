@@ -6,6 +6,8 @@ use App\Models\UserModel;
 use App\Models\RoleModel;
 use App\Models\AssociationModel;
 use App\Models\CompetitionModel;
+use App\Models\CompetitionCategoryModel;
+use App\Models\CategoryModel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -18,11 +20,6 @@ Route::get('/',function () {
     ]);
 });
 
-// Route::get('/hello/{name}',function ($name) {
-//     return response()->json([
-//         "message" => "Hello, ".$name
-//     ]);
-// });
 
 Route::post('/login', function (Request $request) {
     $column = $request->input("isEmail") ? 'email' : 'felhasznalonev';
@@ -235,19 +232,35 @@ Route::middleware(["auth:sanctum", "ability:organizer"])->post('/createCompetiti
     ]);
     return response()->json([
         'success' => true,
+        'compId' => $competition->id
     ]);
 });
 
-Route::get('/getAllAssociations', function (){
+Route::get('/getAssociationsAndCategories', function (){
     return response()->json([
         'success' => true,
-        'data' => AssociationModel::all()
+        'associations' => AssociationModel::all(),
+        'categories' => CategoryModel::all()
     ]);
 });
+
 
 Route::middleware(["auth:sanctum", "ability:organizer"])->get('/getUserCompetitions', function (Request $request){
     return response()->json([
         'success' => true,
         'data' => CompetitionModel::where('letrehozo_id', '=', $request->user()->id)->get()
+    ]);
+});
+
+Route::middleware(["auth:sanctum", "ability:organizer"])->post('/createCompetitionCategories', function (Request $request){
+    $compid = $request->input("compId");
+    foreach ($request->input("categs") as $value) {
+        CompetitionCategoryModel::create([
+            'versenyid' => $compid,
+            'kategoriaid' => $value
+        ]);
+    }
+    return response()->json([
+        'success' => true,
     ]);
 });

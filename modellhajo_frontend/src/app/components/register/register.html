@@ -1,6 +1,6 @@
 <div class="container">
     <div class="col-10 col-md-4 mx-auto mt-1">
-        <h3 class="text-center">Modellhajó - regisztráció</h3>
+        <h3 class="text-center">Modellhajó - Felhasználó regisztráció</h3>
         <form #f="ngForm" (ngSubmit)="sendRegisterData()">
             <form-group [placeholder]="'Megjelenő név'" [property_val]="newUser.megjeleno_nev" [property_name]="'megjeleno_nev'" (editEvent)="editEvent($event)"></form-group>
             <form-group [placeholder]="'Felhasználónév'" [property_val]="newUser.felhasznalonev" [property_name]="'felhasznalonev'" (editEvent)="editEvent($event)"></form-group>

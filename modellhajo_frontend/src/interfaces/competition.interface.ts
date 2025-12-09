@@ -12,9 +12,9 @@ export default interface Competition{
     gps_y: number | null;
     szervezo_egyesulet: number | null;
     leiras: string | null;
-    nevezesi_dij_junior: number;
-    nevezesi_dij_normal: number;
-    nevezesi_dij_senior: number;
+    nevezesi_dij_junior: number | null;
+    nevezesi_dij_normal: number | null;
+    nevezesi_dij_senior: number | null;
     kep_url: string | null;
     kep_fajlnev: string | null;
 }
