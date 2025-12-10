@@ -13,6 +13,7 @@ import { App } from "../app";
       <h3 class="col">Bejelentkezve, mint: {{username}}</h3>
       <a class="col" href="/homepage">Dashboard</a>
       <a class="col" href="/account">Adatok módosítása</a>
+      <!-- <a class="col" href="/--">Felhasználókarbantartás(admin only)</a> -->
       <a class="col" href="/competitions">Versenyek</a>
     </div>
   `,

@@ -226,8 +226,21 @@ Route::middleware(["auth:sanctum", "ability:organizer"])->post('/uploadCompetiti
 });
 
 Route::middleware(["auth:sanctum", "ability:organizer"])->post('/createCompetition', function (Request $request){
+    $evszam = $request->input("evszam");
+    if ($request->input("evszam") == ""){
+        $evszam = explode('-', $request->input("kezdet"))[0];
+    }
+    $data = $request->validate([
+        'nev' => 'required',
+        'helyszin' => 'required',
+        'nevezesi_dij_junior' => 'required|min:0',
+        'nevezesi_dij_normal' => 'required|min:0',
+        'nevezesi_dij_senior' => 'required|min:0',
+        'szervezo_egyesulet' => 'min:1',
+    ]);
     $competition = CompetitionModel::create([
         ...$request->all(),
+        'evszam' => $evszam,
         'letrehozo_id' => $request->user()->id,
     ]);
     return response()->json([
@@ -264,3 +277,20 @@ Route::middleware(["auth:sanctum", "ability:organizer"])->post('/createCompetiti
         'success' => true,
     ]);
 });
+
+Route::middleware(["auth:sanctum", "ability:organizer"])->get('/getCompetitionCategories/{compid}', function ($compid, Request $request){
+    $data = CompetitionCategoryModel::with("category")->where('versenyid', '=', $compid)->get();
+    return response()->json([
+        'success' => true,
+        'categories' => $data
+    ]);
+});
+
+Route::middleware(["auth:sanctum", "ability:organizer"])->delete('/deleteCompetition/{compid}', function ($compid, Request $request){
+    CompetitionCategoryModel::where('versenyid', '=', $compid)->delete();
+    CompetitionModel::find($compid)->delete(); // foreign key miatt nemjo
+    return response()->json([
+        'success' => true,
+    ]);
+});
+

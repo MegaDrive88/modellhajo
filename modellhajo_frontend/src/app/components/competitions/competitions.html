@@ -16,21 +16,23 @@
                             <form-group (editEvent)="editEvent($event)" [placeholder]="'Verseny vége'" [property_val]="newComp.veg" [property_name]="'veg'" [type]="'date'"></form-group>
                         </div>
                     </div>
-                    <!-- <form-group [required]="false" (editEvent)="editEvent($event)" [placeholder]="'Évad/szezon'" [property_val]="newComp.evszam" [property_name]="'evszam'" [type]="'number'"></form-group> -->
-                    <!-- nem formgroup lesz -->
+                    <p class="formError" *ngIf="this.newComp.kezdet > this.newComp.veg">Kezdeti dátum nem lehet a végdátum után</p>
+
                     <div class="row">
                         <div class="col-md-5">
                             <label for="evszam" class="col-md-5 col-form-label">Évad/szezon:</label>
                         </div>
                         <div class="col-md-7">
-                            <input type="text" name="evszam" class="form-control" placeholder="Üres esetén a megrendezés éve" [(ngModel)]="newComp.evszam">
+                            <input type="text" name="evszam" class="form-control" placeholder="Üres esetén a megrendezés éve" [(ngModel)]="newComp.evszam" (input)="updateFormEnabled()">
+                            <p class="formError" *ngIf="newComp.evszam?.length != 0 && newComp.evszam?.length != 4">Vagy egy évszámot adjon meg, vagy hagyja üresen</p>
+
                         </div>
                     </div>
                     <form-group (editEvent)="editEvent($event)" [placeholder]="'Megjelenési dátum'" [property_val]="newComp.megjelenik" [property_name]="'megjelenik'" [type]="'date'"></form-group>
                     <form-group (editEvent)="editEvent($event)" [placeholder]="'Nevezési határidő'" [property_val]="newComp.nevezesi_hatarido" [property_name]="'nevezesi_hatarido'" [type]="'date'"></form-group>
-                    Leírás<span style="color: red;">*</span>
-                    <textarea [(ngModel)]="newComp.leiras" name="leiras" class="form-control">
-
+                    <p class="formError" *ngIf="this.newComp.nevezesi_hatarido > this.newComp.kezdet">Nevezési határidő a verseny kezdete előtt kell legyen</p>
+                    Leírás:
+                    <textarea [(ngModel)]="newComp.leiras" name="leiras" class="form-control" placeholder="Verseny leírása (opcionális)">
                     </textarea>
                     Szervező egyesület<span style="color: red;">*</span>:
                     <select name="egyesulet" class="form-select" id="assocSelector" (change)="assocSelectorChange()">
@@ -42,8 +44,9 @@
 
                     <br>Kategóriák<span style="color: red;">*</span>
                     <ng-select 
-                        [multiple]="true" bindLabel="nev" bindValue="id" [items]="categories" placeholder="Válasszon legalább egyet" name="competitionCategories" [(ngModel)]="competitionCategories">
+                        #catSelector="ngModel" [multiple]="true" bindLabel="nev" bindValue="id" [items]="categories" placeholder="Válasszon legalább egyet" name="competitionCategories" [(ngModel)]="newCompetitionCategories" (change)="updateFormEnabled()">
                     </ng-select>
+                    <p class="formError" *ngIf="catSelector.touched && newCompetitionCategories.length == 0">Válasszon legalább 1 kategóriát</p>
                     <br>
                     <form-group (editEvent)="editEvent($event)" [placeholder]="'Junior nevezési díj (Ft)'" [property_val]="newComp.nevezesi_dij_junior" [property_name]="'nevezesi_dij_junior'" [type]="'number'"></form-group>
                     <form-group (editEvent)="editEvent($event)" [placeholder]="'Teljes árú nevezési díj (Ft)'" [property_val]="newComp.nevezesi_dij_normal" [property_name]="'nevezesi_dij_normal'" [type]="'number'"></form-group>
@@ -72,11 +75,18 @@
                             <li>Verseny ideje: {{item.kezdet}} - {{item.veg}}</li>
                             <li>Versenyszezon: {{item.evszam}}</li>
                             <li>Nevezési határidő: {{item.nevezesi_hatarido}}</li>
-                            <li>Leírás: {{item.leiras}}</li>
+                            <li *ngIf="item.leiras">Leírás: {{item.leiras}}</li>
                             <li>Kategóriák:</li>
+                                <ul>
+                                    @for (cat of categoriesByCompetition | categoryFilter:item.id; track $index) {
+                                        <li>
+                                            {{cat.nev}}
+                                        </li>
+                                    }
+                                </ul>
                         </ul>
                         <br>
-                        --törlés--
+                        <button class="btn" (click)="deleteCompetition(item.id)">Törlés</button>
                     </div>
                 }
                 </div>

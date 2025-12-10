@@ -13,4 +13,7 @@ class CompetitionCategoryModel extends Model
         'versenyid',
         'kategoriaid'
     ];
+    public function category(){
+        return $this->belongsTo(CategoryModel::class, 'kategoriaid', 'id');
+    }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -14,18 +14,26 @@ import Category from '../../../interfaces/category.interface';
 import Association from '../../../interfaces/association.interface';
 
 
+@Pipe({ name: 'categoryFilter' })
+export class CategoryFilterPipe implements PipeTransform {
+  transform(list: any[], id: number) {
+    return list.filter(x => x.id === id)[0].categories;
+  }
+}
+
 @Component({
   selector: 'competitions-root',
-  imports: [RouterOutlet, FormsModule, CommonModule, FormGroup, TopBar, NgSelectModule],
+  imports: [RouterOutlet, FormsModule, CommonModule, FormGroup, TopBar, NgSelectModule, CategoryFilterPipe],
   templateUrl: './competitions.html',
   styleUrl: '../../app.scss'
 })
 export class Competitions extends App implements OnInit {
     protected associations: Association[] = []
     protected categories: Category[] = []
-    protected competitionCategories: number[] = []
+    protected newCompetitionCategories: number[] = []
     protected formEnabled: boolean = false
     protected userCompetitions: Competition[] = []
+    protected categoriesByCompetition: {id:number,categories:Category[]}[] = []
     protected newComp: Omit<Competition, "id" | "letrehozo_id"> = {
         kezdet: new Date().toISOString().split('T')[0],
         veg: new Date().toISOString().split('T')[0],
@@ -38,7 +46,7 @@ export class Competitions extends App implements OnInit {
         gps_y: null,
         szervezo_egyesulet: -1,
         leiras: null,
-        nevezesi_dij_junior: null, //nullable kene
+        nevezesi_dij_junior: null,
         nevezesi_dij_normal: null,
         nevezesi_dij_senior: null,
         kep_url: null,
@@ -55,6 +63,19 @@ export class Competitions extends App implements OnInit {
         this.http.get<{success:boolean, data:Competition[]}>(`${this.API_URL}/getUserCompetitions`, {headers: this.headers}).subscribe(
             data=>{                
                 this.userCompetitions = data.data
+                for(let comp of this.userCompetitions){
+                    this.http.get<any>(`${this.API_URL}/getCompetitionCategories/${comp.id}`, {headers: this.headers}).subscribe(
+                        data=> {
+                            if(data.success) this.categoriesByCompetition.push({
+                                id: comp.id,
+                                categories: data.categories.map((x:any)=>x.category)
+                            })
+                            console.log(this.categoriesByCompetition);
+
+                        },
+                        error=>console.log(error)
+                    )
+                }
             }
         )
         
@@ -79,7 +100,7 @@ export class Competitions extends App implements OnInit {
         this.http.post<any>(`${this.API_URL}/createCompetition`, this.newComp, {headers: this.headers}).subscribe(
             data=> {
                 if (data.success) {
-                    this.http.post<any>(`${this.API_URL}/createCompetitionCategories`, { compId: data.compId, categs: this.competitionCategories}, {headers: this.headers}).subscribe(
+                    this.http.post<any>(`${this.API_URL}/createCompetitionCategories`, { compId: data.compId, categs: this.newCompetitionCategories}, {headers: this.headers}).subscribe(
                         data => {
                             if (data.success) {
                                 alert("Sikeres verseny létrehozás")
@@ -93,16 +114,17 @@ export class Competitions extends App implements OnInit {
         )
     }
     updateFormEnabled(){
-        this.formEnabled = ( // datumok
+        this.formEnabled = (
             this.newComp.nev != "" &&
             this.newComp.helyszin != "" &&
             this.newComp.szervezo_egyesulet != -1 &&
-            this.newComp.nev != "" &&
             this.newComp.nevezesi_dij_junior != null && this.newComp.nevezesi_dij_junior > 0 &&
             this.newComp.nevezesi_dij_normal != null && this.newComp.nevezesi_dij_normal > 0 &&
             this.newComp.nevezesi_dij_senior != null && this.newComp.nevezesi_dij_senior > 0 &&
             (this.newComp.evszam?.length == 4 || this.newComp.evszam?.length == 0) &&
-            this.competitionCategories.length > 0
+            this.newCompetitionCategories.length > 0 &&
+            this.newComp.kezdet <= this.newComp.veg && 
+            this.newComp.nevezesi_hatarido <= this.newComp.kezdet
         )
     }
     assocSelectorChange(){
@@ -120,4 +142,15 @@ export class Competitions extends App implements OnInit {
             (document.querySelector(`.competition-dropdown-${id}`)! as HTMLDivElement).hidden = true
         }
     }
+    deleteCompetition(id: number){
+        if (confirm("Biztosan törölni szeretné?")) {
+            this.http.delete<any>(`${this.API_URL}/deleteCompetition/${id}`, {headers: this.headers}).subscribe(
+                data=>{
+                    if(data.success) location.reload()
+                },
+                error => console.log(error)
+            )
+        }
+    }
 }
+
