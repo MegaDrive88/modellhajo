@@ -1,5 +1,4 @@
 @if(!user){
-<div class="container">
     <div class="col-10 col-md-4 mx-auto mt-1">
         <h3 class="text-center">Modellhajó - bejelentkezés</h3>
         <form #f="ngForm" (ngSubmit)="sendLoginData()">
@@ -19,7 +18,6 @@
             }
         </form>
     </div>
-</div>
 } @else {
     {{router.navigateByUrl("/homepage")}}
 }

@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
 import { RouterOutlet, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -34,17 +34,21 @@ export class App implements OnInit{
         },
         error => console.log(error)        
       )
-      // if (this.user)
-      //   this.http.get<boolean>(`${this.API_URL}/checkTokenExpired`, {headers: {'Authorization': `Bearer ${this.dataService.getToken()}`}}).subscribe(
-      //     data=>{},
-      //     error=>{
-      //       if (error.status == 401){
-      //         alert("Lejárt a munkamenet, kérjük jelentkezzen be újra!")
-      //         this.logout()
-      //       }
-      //     }
-      //   )
       
+      
+  }
+  ngAfterViewInit(){ // elegansabb megoldas van?
+    if (this.user)
+      this.http.get<boolean>(`${this.API_URL}/checkTokenExpired`, {headers: this.headers }).subscribe(
+      data=>{},
+      error=>{
+        if (error.status == 401){
+          alert("Lejárt a munkamenet, kérjük jelentkezzen be újra!")
+          this.logout()
+        }
+      }
+    )
+    
   }
   private translate = inject(TranslateService);
   constructor() {

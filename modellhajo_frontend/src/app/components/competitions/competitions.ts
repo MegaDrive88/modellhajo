@@ -17,7 +17,7 @@ import Association from '../../../interfaces/association.interface';
 @Pipe({ name: 'categoryFilter' })
 export class CategoryFilterPipe implements PipeTransform {
   transform(list: any[], id: number) {
-    return list.filter(x => x.id === id)[0].categories;
+    return list.filter(x => x.id === id)[0].categories; // nemjo vmiert
   }
 }
 

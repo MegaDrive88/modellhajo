@@ -6,6 +6,7 @@ use App\Models\UserModel;
 use App\Models\RoleModel;
 use App\Models\AssociationModel;
 use App\Models\CompetitionModel;
+use App\Models\MenuItemModel;
 use App\Models\CompetitionCategoryModel;
 use App\Models\CategoryModel;
 use Illuminate\Support\Facades\Hash;
@@ -288,9 +289,16 @@ Route::middleware(["auth:sanctum", "ability:organizer"])->get('/getCompetitionCa
 
 Route::middleware(["auth:sanctum", "ability:organizer"])->delete('/deleteCompetition/{compid}', function ($compid, Request $request){
     CompetitionCategoryModel::where('versenyid', '=', $compid)->delete();
-    CompetitionModel::find($compid)->delete(); // foreign key miatt nemjo
+    CompetitionModel::find($compid)->delete();
     return response()->json([
         'success' => true,
     ]);
 });
 
+Route::middleware(["auth:sanctum"])->get('/getMenuItems/{roleId}', function ($roleId, Request $request){
+    $data = MenuItemModel::where('szerepkor_id', '=', $roleId)->get(); // elfogadast is nezni
+    return response()->json([
+        'success' => true,
+        'items' => $data
+    ]);
+});

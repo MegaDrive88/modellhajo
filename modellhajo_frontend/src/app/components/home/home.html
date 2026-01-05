@@ -1,8 +1,6 @@
 @if (user) { 
     <!-- ehelyett tokent nezni? -->
-    <div class="container" style="margin-top: 5px;">
-        <topbar [username]="user.megjeleno_nev"></topbar>
-    </div>
+    <topbar [username]="user.megjeleno_nev"></topbar>
 }
 @else {
     {{router.navigateByUrl("/login")}}
