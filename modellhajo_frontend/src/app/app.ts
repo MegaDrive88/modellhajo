@@ -21,13 +21,19 @@ export class App implements OnInit{
   protected rememberMe = false;
   protected user:User|undefined;
   protected headers: HttpHeaders|undefined;
-  
+  protected userIsAdmin = false
   ngOnInit(): void {
-      this.user = this.dataService.getUser() // nem lesz ez itt jo
+      this.user = this.dataService.getUser()
       this.headers = new HttpHeaders({
         'Accept': 'application/json',
         'Authorization': `Bearer ${this.dataService.getToken()}`
       });
+      this.http.get<boolean>(`${this.API_URL}/checkAdmin`, {headers: this.headers}).subscribe(
+        data => {
+            this.userIsAdmin = data
+        },
+        error => console.log(error)        
+      )
       // if (this.user)
       //   this.http.get<boolean>(`${this.API_URL}/checkTokenExpired`, {headers: {'Authorization': `Bearer ${this.dataService.getToken()}`}}).subscribe(
       //     data=>{},

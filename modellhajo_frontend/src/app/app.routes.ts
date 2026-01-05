@@ -4,6 +4,7 @@ import { Home } from './components/home/home';
 import { Register } from './components/register/register';
 import { Account } from './components/account/account';
 import { Competitions } from './components/competitions/competitions';
+import { UserManagement } from './components/userManagement/userManagement';
 
 export const routes: Routes = [
     {path: '', component: Login}, // landing esetleg
@@ -12,4 +13,5 @@ export const routes: Routes = [
     {path: 'register', component: Register},
     {path: 'account', component: Account},
     {path: 'competitions', component: Competitions},
+    {path: 'usermanagement', component: UserManagement},
 ];

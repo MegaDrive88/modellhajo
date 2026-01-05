@@ -27,32 +27,13 @@ export class Account extends App implements OnInit {
   protected userDataErrorString = ''
   protected pwdErrorString = ''
   protected formEnabled = false;
-  protected userIsAdmin = false;
   protected roleRequests: User[] = []
   override ngOnInit(): void { // ha lejart a token?
       super.ngOnInit()
       this.userCopy = structuredClone(this.user)
       this.updateFormEnabled()
-      
-      this.checkAdmin()
   }
-  checkAdmin(){
-    this.http.get<boolean>(`${this.API_URL}/checkAdmin`, {headers: this.headers}).subscribe(
-      data => {
-        this.userIsAdmin = data
-        if(this.userIsAdmin){
-          this.getRoleRequests()
-        }
-        
-      },
-      error => console.log(error)        
-    )
-  }
-  getRoleRequests(){
-    this.http.get<User[]>(`${this.API_URL}/getRoleRequests`, {headers: this.headers}).subscribe(
-      data => this.roleRequests = data
-    )
-  }
+  
   editEvent($event: { field: string; value: any }){
     if(!$event.field.includes("password"))
       (this.userCopy as any)[$event.field] = $event.value
@@ -119,13 +100,5 @@ export class Account extends App implements OnInit {
                        Object.keys(this.userCopy!).filter(item => typeof (this.userCopy as any)[item] === "string").every(x => (this.userCopy as any)[x] != ""))
                         //sufni megoldas, mmsz id el fogja rontani xdd
   }
-  decideRoleRequest(id:number, verdict: boolean){
-    this.http.patch<{success:boolean}>(`${this.API_URL}/decideRoleRequest/${verdict}`, {id: id}, {headers: this.headers}).subscribe(
-      data => {
-        if(data.success)
-          this.getRoleRequests()
-      },
-      error => console.log(error)
-    )
-  }
+  
 }
