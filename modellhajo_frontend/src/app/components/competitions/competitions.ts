@@ -17,7 +17,8 @@ import Association from '../../../interfaces/association.interface';
 @Pipe({ name: 'categoryFilter' })
 export class CategoryFilterPipe implements PipeTransform {
   transform(list: any[], id: number) {
-    return list.filter(x => x.id === id)[0].categories; // nemjo vmiert
+    if (list.length == 0) return []
+    return list.filter(x => x.id === id)[0].categories
   }
 }
 
@@ -54,6 +55,8 @@ export class Competitions extends App implements OnInit {
     }
     override ngOnInit(): void {
         super.ngOnInit()
+        this.loadingService.loadingOn()
+        
         this.http.get<{success:boolean, associations:Association[], categories: Category[]}>(`${this.API_URL}/getAssociationsAndCategories`).subscribe(
             data=>{
                 this.associations = data.associations
@@ -66,19 +69,19 @@ export class Competitions extends App implements OnInit {
                 for(let comp of this.userCompetitions){
                     this.http.get<any>(`${this.API_URL}/getCompetitionCategories/${comp.id}`, {headers: this.headers}).subscribe(
                         data=> {
-                            if(data.success) this.categoriesByCompetition.push({
-                                id: comp.id,
-                                categories: data.categories.map((x:any)=>x.category)
-                            })
-                            console.log(this.categoriesByCompetition);
-
+                            if(data.success) 
+                                this.categoriesByCompetition = [...this.categoriesByCompetition, {
+                                    id: comp.id,
+                                    categories: data.categories.map((x:any)=>x.category)
+                                }]
+                                this.loadingService.loadingOff()
                         },
                         error=>console.log(error)
                     )
                 }
             }
-        )
-        
+        )    
+
     }
     editEvent($event: { field: string; value: any }){
         (this.newComp as any)[$event.field] = $event.value

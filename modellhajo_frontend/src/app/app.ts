@@ -6,14 +6,17 @@ import { CommonModule } from '@angular/common';
 import User from '../interfaces/user.interface';
 import { DataService } from './data.service';
 import { TranslateService } from '@ngx-translate/core';
+import { LoadingIndicatorComponent } from './components/loading-indicator';
+import { LoadingService } from './loading.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, FormsModule, CommonModule],
+  imports: [RouterOutlet, FormsModule, CommonModule, LoadingIndicatorComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class App implements OnInit{
+  protected loadingService = inject(LoadingService)
   protected readonly API_URL = 'http://127.0.0.1:8000/api'
   protected http = inject(HttpClient);
   protected router = inject(Router);
@@ -61,4 +64,5 @@ export class App implements OnInit{
     this.user = undefined
     this.router.navigateByUrl("/login")
   }
+  
 }
