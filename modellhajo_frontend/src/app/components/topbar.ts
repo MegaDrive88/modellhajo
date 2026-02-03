@@ -40,8 +40,9 @@ export class TopBar extends App {
     @ViewChild('dropdownToggle', { static: true }) dropdownToggle!: ElementRef; 
     @Input() username: string = ''
     protected menuItems: Array<{route: string, text: string}> = []
-    override async ngOnInit() { // lassu - https://blog.angular-university.io/angular-loading-indicator/ esetleg?
+    override async ngOnInit() {
         super.ngOnInit()
+        this.loadingService.loadingOn()
 
         this.http.get<any>(`${this.API_URL}/getMenuItems/${this.user?.szerepkor_id}`, { headers: this.headers }).subscribe(
           data=>{            
@@ -54,6 +55,8 @@ export class TopBar extends App {
                 }
               }
             }
+            this.loadingService.loadingOff()
+
           }
         )
         await import('bootstrap');

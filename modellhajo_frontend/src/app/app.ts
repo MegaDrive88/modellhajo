@@ -26,6 +26,7 @@ export class App implements OnInit{
   protected headers: HttpHeaders|undefined;
   protected userIsAdmin = false
   ngOnInit(): void {
+    this.loadingService.loadingOn()
       this.user = this.dataService.getUser()
       this.headers = new HttpHeaders({
         'Accept': 'application/json',
@@ -34,6 +35,8 @@ export class App implements OnInit{
       this.http.get<boolean>(`${this.API_URL}/checkAdmin`, {headers: this.headers}).subscribe(
         data => {
             this.userIsAdmin = data
+
+            this.loadingService.loadingOff()
         },
         error => console.log(error)        
       )
