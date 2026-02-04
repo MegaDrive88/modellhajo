@@ -1,0 +1,15 @@
+@if (!user) {
+    <div id="landing-bg"></div>
+    <div class="reveal-animate">
+        <form action="" class="col-10 col-lg-5 col-xl-3 d-flex login-card">
+            <h3>Bejelentkezés</h3>
+            <input class="form-control" type="text" placeholder="E-mail cím vagy felhasználónév">
+            <input class="form-control" type="password" placeholder="Jelszó">
+            <button class="blue-button">
+                <img src="box-arrow-in-right.svg" style="width: 30px; transform: translateX(-4px);" alt="">
+            </button>
+        </form>
+    </div>
+} @else {
+    {{router.navigateByUrl("/dashboard")}}
+}

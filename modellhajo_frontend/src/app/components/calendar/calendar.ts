@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { App } from '../../app';
 
 @Component({
-  selector: 'login-root',
+  selector: 'calendar-root',
   imports: [],
-  templateUrl: './login.html',
+  templateUrl: './calendar.html',
   styleUrls: [
     '../../app.scss',
-    './login.scss'
+    './calendar.scss'
   ]})
-export class LoginComponent extends App {
-  
+export class CalendarComponent extends App {
+
 }

@@ -4,8 +4,12 @@ import { Component } from '@angular/core';
   selector: 'landing-root',
   imports: [],
   templateUrl: './landing.html',
-  styleUrl: '../../app.scss'
+  styleUrls: [
+    '../../app.scss',
+    './landing.scss'
+  ]
 })
 export class LandingPageComponent {
-  
+  // https://namba8.com/wp/
+  // https://www.facebook.com/groups/607199946958953/
 }
