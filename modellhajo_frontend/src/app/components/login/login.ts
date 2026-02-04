@@ -18,6 +18,10 @@ export class Login extends App {
   protected pwd = ''
   // protected loginAttempts = 0
   protected loginSuccess = true
+  override ngOnInit(): void {
+            this.loadingService.loadingOff()
+      
+  }
   protected async sendLoginData(){
     const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$/
     const isEmail = emailRegex.test(this.usernameOrEmail)    
