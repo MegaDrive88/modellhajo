@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'login-root',
+  selector: 'landing-root',
   imports: [],
-  templateUrl: './login.html',
+  templateUrl: './landing.html',
   styleUrl: '../../app.scss'
 })
-export class LoginComponent {
+export class LandingPageComponent {
   
 }

@@ -1,17 +1,8 @@
 import { Routes } from '@angular/router';
-import { Login } from './components/login/login';
-import { Home } from './components/home/home';
-import { Register } from './components/register/register';
-import { Account } from './components/account/account';
-import { Competitions } from './components/competitions/competitions';
-import { UserManagement } from './components/userManagement/userManagement';
+import { LoginComponent } from './components/login/login';
+import { LandingPageComponent } from './components/landing/landing';
 
 export const routes: Routes = [
-    {path: '', component: Login}, // landing esetleg
-    {path: 'login', component: Login},
-    {path: 'homepage', component: Home},
-    {path: 'register', component: Register},
-    {path: 'account', component: Account},
-    {path: 'competitions', component: Competitions},
-    {path: 'usermanagement', component: UserManagement},
+    {path: "", component: LandingPageComponent},
+    {path: "login", component: LoginComponent}
 ];
