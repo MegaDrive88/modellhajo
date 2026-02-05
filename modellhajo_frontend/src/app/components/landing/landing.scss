@@ -1,19 +1,6 @@
 .content{
     color: white;
 }
-#top-bar{
-    background-color: var(--mat-sys-on-primary-fixed);
-    color: white;
-    width: 100%;
-    height: max-content;
-    padding: 15px 100px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: fixed;
-    z-index: 2;
-    top: 0;
-}
 $opt-bg: #4483d4b4;
 .hero-option{
   text-decoration: none;

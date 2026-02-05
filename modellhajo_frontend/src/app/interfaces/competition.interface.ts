@@ -1,3 +1,5 @@
+import Category from "./category.interface";
+
 export default interface Competition{
     id: number;
     kezdet: Date | string;
@@ -17,4 +19,5 @@ export default interface Competition{
     nevezesi_dij_senior: number | null;
     kep_url: string | null;
     kep_fajlnev: string | null;
+    categories: Category[]
 }

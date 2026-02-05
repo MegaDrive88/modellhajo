@@ -13,11 +13,11 @@ import User from './interfaces/user.interface';
   styleUrl: './app.scss'
 })
 export class App {
-    protected http = inject(HttpClient)
-    protected router = inject(Router);
-    protected loader = inject(LoadingService)
+    protected readonly http = inject(HttpClient)
+    protected readonly router = inject(Router);
+    protected readonly loader = inject(LoadingService)
     protected readonly API_URL = 'http://127.0.0.1:8000/api'
-    protected dataservice = inject(DataService)
+    protected readonly dataservice = inject(DataService)
     protected user: User|undefined
     ngOnInit(): void {
         this.user = this.dataservice.getUser()

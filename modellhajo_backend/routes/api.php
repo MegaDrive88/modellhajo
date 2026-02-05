@@ -258,6 +258,12 @@ Route::get('/getAssociationsAndCategories', function (){
     ]);
 });
 
+Route::get('/getAllCompetitions', function (Request $request){
+    return response()->json([
+        'success' => true,
+        'data' => CompetitionModel::all()
+    ]);
+});
 
 Route::middleware(["auth:sanctum", "ability:organizer"])->get('/getUserCompetitions', function (Request $request){
     return response()->json([
@@ -279,11 +285,10 @@ Route::middleware(["auth:sanctum", "ability:organizer"])->post('/createCompetiti
     ]);
 });
 
-Route::middleware(["auth:sanctum", "ability:organizer"])->get('/getCompetitionCategories/{compid}', function ($compid, Request $request){
-    $data = CompetitionCategoryModel::with("category")->where('versenyid', '=', $compid)->get();
+Route::get('/getCompetitionCategories', function (Request $request){
     return response()->json([
         'success' => true,
-        'categories' => $data
+        'categories' => CompetitionCategoryModel::with("category")->get()
     ]);
 });
 

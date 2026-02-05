@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { TopBarComponent } from "../top-bar";
 
 @Component({
   selector: 'landing-root',
-  imports: [],
+  imports: [TopBarComponent],
   templateUrl: './landing.html',
   styleUrls: [
     '../../app.scss',

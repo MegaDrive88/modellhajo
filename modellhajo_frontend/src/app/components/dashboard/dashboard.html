@@ -1,6 +1,6 @@
 @if (user){
     <menu-bar-root/>
-    welcome, {{user.megjeleno_nev}}
+    <h1>Bejelentkezve, mint {{user.megjeleno_nev}}</h1>
 } @else {
     {{router.navigateByUrl("/login")}}
 }

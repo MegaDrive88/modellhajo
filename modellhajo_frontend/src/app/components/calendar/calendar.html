@@ -1,1 +1,48 @@
-versenynaptar
+<div>
+    <top-bar-root/>
+
+    <section class="content" style="color: white; flex-direction: column; padding:80px 50px;">
+        <h2 class="text-center mb-3">Versenynaptár</h2>
+        <div class="row w-100 no-gutters">
+            <div class="comp-filters-wrapper col-3">
+                <div class="comp-filters">
+                    szűrők
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                </div>
+            </div>
+            <div class="competitions-wrapper col-9">
+                @for (comp of competitions; track comp.id) {
+                    <div class="competition-card">
+                        @if (comp.kep_url) {
+                            <img src="http://127.0.0.1:8000{{comp.kep_url}}" alt="">
+                        }@else{
+                            <img src="https://wichtech.com/wp-content/uploads/2016/09/noimg.jpg" alt="">
+                        }
+                        <div class="comp-card-data">
+                            <h3>{{comp.nev}}</h3>
+                            <h5>{{comp.helyszin}}</h5>
+                            <h5>{{comp.kezdet}} - {{comp.veg}}</h5>
+                            <h5>Kategóriák:</h5>
+                            <ul>
+                                @for (cat of comp.categories; track cat.id) {
+                                    <li>
+                                        {{cat.nev}}
+                                    </li>
+                                }
+                            </ul>
+                            <button class="blue-button" style="margin-left: auto; margin-top: auto;">Nevezés - határidő: {{comp.nevezesi_hatarido}}</button>
+                        </div>
+                    </div>
+                }
+                @empty {
+                    Nincs közelgő verseny
+                }
+            </div>
+        </div>
+            
+        <!-- </div> -->
+    </section>
+</div>

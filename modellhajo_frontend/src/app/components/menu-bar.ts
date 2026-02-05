@@ -7,11 +7,11 @@ import { App } from '../app';
   selector: 'menu-bar-root',
   imports: [],
   template:`
-<nav class="navbar navbar-expand-lg fancy-navbar fixed-top">
+<nav class="navbar navbar-expand-lg fancy-navbar">
   <div class="container-fluid px-4">
     <a class="navbar-brand" href="/">Főoldal</a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+    <button data-bs-theme="dark" class="navbar-toggler" type="button" data-bs-toggle="collapse"
       data-bs-target="#navbarNavDropdown">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -19,23 +19,19 @@ import { App } from '../app';
     <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
       <ul class="navbar-nav align-items-center gap-4">
         <li class="nav-item">
-          <a class="nav-link active" href="#">Áttekintés</a>
+          <a class="nav-link active" href="/dashboard">Áttekintés</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Adatmódosítás</a>
         </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-            Egyéb
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end shadow">
-            <!-- <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else</a></li> -->
-            <!-- ngfor -->
-          </ul>
-        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link" href="#">Verseny jelentkezés</a>
+        </li> -->
+        @for (item of []; track $index) {
+            <li class="nav-item">
+                <a class="nav-link" href="#">Adatmódosítás</a>
+            </li>
+        }
 
         <li class="nav-item">
           <button class="btn btn-primary px-4 rounded-pill" (click)="dataservice.logout()">Kijelentkezés</button>
