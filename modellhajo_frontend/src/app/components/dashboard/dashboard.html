@@ -1,5 +1,6 @@
 @if (user){
-    dashboard
+    <menu-bar-root/>
+    welcome, {{user.megjeleno_nev}}
 } @else {
     {{router.navigateByUrl("/login")}}
 }

@@ -1,3 +1,4 @@
+import { DataService } from './services/data.service';
 import { Component, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { LoadingIndicatorComponent } from './components/loading-indicator';
@@ -16,5 +17,9 @@ export class App {
     protected router = inject(Router);
     protected loader = inject(LoadingService)
     protected readonly API_URL = 'http://127.0.0.1:8000/api'
-    protected user!:User
+    protected dataservice = inject(DataService)
+    protected user: User|undefined
+    ngOnInit(): void {
+        this.user = this.dataservice.getUser()
+    }
 }
