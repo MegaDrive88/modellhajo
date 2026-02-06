@@ -4,7 +4,6 @@ import { Router, RouterOutlet } from '@angular/router';
 import { LoadingIndicatorComponent } from './components/loading-indicator';
 import { HttpClient } from '@angular/common/http';
 import { LoadingService } from './services/loading.service';
-import User from './interfaces/user.interface';
 
 @Component({
   selector: 'app-root',
@@ -13,13 +12,9 @@ import User from './interfaces/user.interface';
   styleUrl: './app.scss'
 })
 export class App {
-    protected readonly http = inject(HttpClient)
-    protected readonly router = inject(Router);
-    protected readonly loader = inject(LoadingService)
-    protected readonly API_URL = 'http://127.0.0.1:8000/api'
-    protected readonly dataservice = inject(DataService)
-    protected user: User|undefined
-    ngOnInit(): void {
-        this.user = this.dataservice.getUser()
-    }
+    public readonly http = inject(HttpClient)
+    public readonly router = inject(Router);
+    public readonly loader = inject(LoadingService)
+    public readonly API_URL = 'http://127.0.0.1:8000/api'
+    public readonly dataservice = inject(DataService)
 }

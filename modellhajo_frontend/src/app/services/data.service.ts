@@ -8,7 +8,6 @@ import { HttpHeaders } from '@angular/common/http';
 export class DataService {
   private user: User|undefined;
   private token: string|undefined;
-  private httpHeaders: HttpHeaders|undefined
 
   setUser(value: User) {
     this.user = value;
@@ -28,21 +27,21 @@ export class DataService {
   setToken(value: string){
     this.token = value
     localStorage.setItem('modellhajo.UserAccessToken', value);
-    this.httpHeaders = new HttpHeaders({
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${this.getToken()}`
-    });
-    localStorage.setItem("modellhajo.HttpHeaders", JSON.stringify(this.httpHeaders))
-  }
-  
-  getHeaders(){
-    if (!this.httpHeaders && localStorage.getItem('modellhajo.HttpHeaders')) this.httpHeaders = new HttpHeaders(JSON.parse(localStorage.getItem("modellhajo.HttpHeaders")!))
-    return this.httpHeaders
   }
 
   getToken(): string|undefined {
     if (!this.token && localStorage.getItem('modellhajo.UserAccessToken')) this.token = localStorage.getItem("modellhajo.UserAccessToken")!.trim().replaceAll("\"", "")
     return this.token;
+  }
+
+  getHeaders(){
+    if (this.token || localStorage.getItem('modellhajo.UserAccessToken')) {
+      return new HttpHeaders({
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('modellhajo.UserAccessToken')}`
+      });
+    }
+    return undefined
   }
 
   logout(){

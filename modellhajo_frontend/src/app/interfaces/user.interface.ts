@@ -9,5 +9,6 @@ export default interface User{
     szerepkor_id: number;
     szerepkort_elfogadta: number;
     szerepkor_elfogadva: Date;
+    isadmin:boolean;
     role: Role;
 }

@@ -1,20 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuBarComponent } from '../menu-bar/menu-bar';
-import User from '../../interfaces/user.interface';
 import { App } from '../../app';
 
 @Component({
-  selector: 'dashboard-root',
+  selector: 'competitions-root',
   imports: [MenuBarComponent],
-  templateUrl: './dashboard.html',
+  templateUrl: './competitions.html',
   styleUrls: [
     '../../app.scss',
-    './dashboard.scss'
+    './competitions.scss'
   ]})
-export class DashboardComponent implements OnInit {
+export class CompetitionsComponent implements OnInit {
   constructor(protected statics:App){}
-  protected user!:User
   ngOnInit(): void {
-      this.user = this.statics.dataservice.getUser()!
   }
 }
