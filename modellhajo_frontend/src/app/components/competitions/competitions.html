@@ -1,1 +1,131 @@
-<menu-bar-root/>
+@if (user){
+    <menu-bar-root/>
+    <!-- router outlet menubar ala jobb lenne -->
+    <div class="row g-0">
+        <div class="col-12 col-md-6 py-2 px-5">
+            <h3>Verseny felvétele</h3>
+            <form #f="ngForm" (ngSubmit)="sendCompetitionData()">
+                <div>
+                    <span class="mandatory-star">Verseny neve</span>
+                    <input name="nev" type="text" required placeholder="pl.: Példa Kupa" class="form-control" [(ngModel)]="newComp.nev">
+                </div>
+                <div>
+                    <span class="mandatory-star">Verseny helyszíne</span>
+                    <input name="helyszin" type="text" required placeholder="pl.: Alsótiszabánatos, Magyarország" class="form-control" [(ngModel)]="newComp.helyszin">
+                </div>
+                 <div class="row">
+                    <div class="col-6">
+                        <span class="mandatory-star">Verseny kezdete</span>
+                        <input name="kezdet" type="datetime-local" required class="form-control" [(ngModel)]="newComp.kezdet">
+                    </div>
+                    <div class="col-6">
+                        <span class="mandatory-star">Verseny vége</span>
+                        <input name="veg" type="datetime-local" required class="form-control" [(ngModel)]="newComp.veg">
+                    </div>
+                </div>
+                <p class="formError" *ngIf="this.newComp.kezdet > this.newComp.veg">Kezdeti dátum nem lehet a végdátum után</p>
+                <div>
+                    <span>Évad, üres esetén a megrendezés éve</span>
+                    <input name="evszam" type="text" placeholder="Évszám" class="form-control" [(ngModel)]="newComp.evszam">
+                </div>
+                <p class="formError" *ngIf="newComp.evszam?.length != 0 && newComp.evszam?.length != 4">Vagy egy évszámot adjon meg, vagy hagyja üresen</p>
+                <div>
+                    <span class="mandatory-star">Megjelenés ideje</span>
+                    <input name="megjelenik" type="datetime-local" required class="form-control" [(ngModel)]="newComp.megjelenik">
+                </div>
+                <div>
+                    <span class="mandatory-star">Nevezési határidő</span>
+                    <input name="nevezesi_hatarido" type="datetime-local" required class="form-control" [(ngModel)]="newComp.nevezesi_hatarido">
+                </div>
+                <div>
+                    <span>Leírás</span>
+                    <textarea [(ngModel)]="newComp.leiras" name="leiras" class="form-control" placeholder="Verseny leírása (opcionális)"></textarea>
+                </div>
+                <div>
+                    <span class="mandatory-star">Szervező egyesület</span>
+                    <select name="egyesulet" class="form-select" [(ngModel)]="newComp.szervezo_egyesulet" #assocSelector="ngModel">
+                        <option value="-1">-- Kérem válasszon --</option>
+                        @for (item of associations; track $index) {
+                            <option value="{{item.id}}">{{item.nev}}</option>
+                        }
+                    </select>
+                    <p class="formError" *ngIf="assocSelector.dirty && newComp.szervezo_egyesulet == -1">Válasszon egy egyesületet</p>
+                </div>
+                <div>
+                    <span class="mandatory-star">Kategóriák</span>
+                    <ng-select 
+                        #catSelector="ngModel"
+                        [multiple]="true"
+                        bindLabel="nev"
+                        bindValue="id"
+                        [items]="categories"
+                        placeholder="Kérem válasszon legalább egyet"
+                        name="competitionCategories"
+                        [(ngModel)]="newCompetitionCategories"
+                        >
+                    </ng-select>
+                    <p class="formError" *ngIf="catSelector.touched && newCompetitionCategories.length == 0">Válasszon legalább 1 kategóriát</p>
+                </div>
+                <div>
+                    <span class="mandatory-star">Nevezési díjak</span>
+                    <table>
+                        <tr>
+                            <td>Junior:</td>
+                            <td>
+                                <input style="text-align: right;" name="nevezesi_dij_junior" type="text" required placeholder="0" class="form-control" [(ngModel)]="newComp.nevezesi_dij_junior">
+                            </td>
+                            <td>Ft</td>
+                        </tr>
+                        <tr>
+                            <td>Teljes árú:</td>
+                            <td>
+                                <input style="text-align: right;" name="nevezesi_dij_normal" type="text" required placeholder="0" class="form-control" [(ngModel)]="newComp.nevezesi_dij_normal">
+                            </td>
+                            <td>Ft</td>
+                        </tr>
+                        <tr>
+                            <td>Senior:</td>
+                            <td>
+                                <input style="text-align: right;" name="nevezesi_dij_senior" type="text" required placeholder="0" class="form-control" [(ngModel)]="newComp.nevezesi_dij_senior">
+                            </td>
+                            <td>Ft</td>
+                        </tr>
+                    </table>
+                </div>
+                <div>
+                    <span>Borítókép</span>
+                    <input type="file" class="form-control" id="competitionThumbnail" accept="image/*">
+                </div>
+                <button type="submit" class="blue-button" [disabled]="!FormEnabled()">Rögzít</button>
+
+            </form>
+        </div>
+        <div class="col-12 col-md-6 p-2">
+            <h3>Áltam létrehozott versenyek</h3>
+            @for (comp of userCompetitions; track comp.id) {
+                <div class="user-competition">
+                    @if (comp.kep_url) {
+                        <img src="http://127.0.0.1:8000{{comp.kep_url}}" alt="">
+                    }@else{
+                        <img src="https://media.istockphoto.com/id/1286476479/vector/public-icon-traffic-icons-for-ship.jpg?s=612x612&w=0&k=20&c=NW0sE3lQkkjWwvppDIIiZg0SpVKIdsJYF7cco7CpltM=" alt="">
+                    }
+                    <div class="user-comp-content">
+                        <b>{{comp.nev}}</b>
+                        <span>{{comp.helyszin}}</span>
+                        <span>{{comp.kezdet | date:"y.MM.dd, hh:mm"}} - {{comp.veg | date:"y.MM.dd, hh:mm"}}</span>
+                        <ul>
+                            @for (cat of comp.categories; track cat.id) {
+                                <li>{{cat.nev}}</li>
+                            }
+                        </ul>
+                    </div>
+                </div>   
+            }
+            @empty {
+                <p>Ön még nem hozott létre versenyt</p>
+            }
+        </div>
+    </div>
+} @else {
+    {{statics.router.navigateByUrl("/login")}}
+}

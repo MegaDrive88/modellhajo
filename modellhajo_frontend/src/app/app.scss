@@ -67,3 +67,24 @@ section{
     z-index: 2;
     top: 0;
 }
+.formError{
+    color: darkred;
+    font-size: small;
+    margin: 5px 0 0 5px;
+}
+.errorBox{
+    background-color: #EE5C6C;
+    text-align: left;
+    font-size: small;
+    padding: 5px;
+    margin-top: 10px;
+    border: 1px solid var(--mat-sys-error);
+    border-radius: 5px;
+    color: darkred;
+}
+.successBox{
+    @extend .errorBox;
+    background-color: lightgreen;
+    color: darkgreen;
+    border: 1px solid green;
+}

@@ -49,4 +49,6 @@ export class DataService {
     localStorage.setItem('modellhajo.UserAccessToken', "");
     location.reload()
   }
+  //menuitemekre is get set clear
+  
 }

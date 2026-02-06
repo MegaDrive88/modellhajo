@@ -1,0 +1,42 @@
+form{
+    background-color: #4483d4b4;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    display: flex;
+    gap: 15px;
+    flex-direction: column;
+}
+.mandatory-star::after{
+    pointer-events: none;
+    content: "*";
+    color: darkred;
+}
+table{
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 15px;
+}
+.user-competition{
+    height: 120px;
+    width: 100%;
+    background-color: #4483d4b4;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid #4483d4b4;
+    & img{
+        height: 100%;
+        aspect-ratio: 1.3;
+        object-fit: cover;   
+    }
+    & .user-comp-content{
+        padding: 10px;
+        display: flex;
+        overflow-y: auto;
+        flex-direction: column;
+        width: 100%;
+    }
+}

@@ -16,5 +16,6 @@ export class App {
     public readonly router = inject(Router);
     public readonly loader = inject(LoadingService)
     public readonly API_URL = 'http://127.0.0.1:8000/api'
+    // public readonly API_URL = 'http://127.0.0.1:8000/api'
     public readonly dataservice = inject(DataService)
 }

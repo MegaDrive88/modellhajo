@@ -3,13 +3,21 @@
     <div class="reveal-animate">
         <form #f="ngForm" class="col-10 col-lg-5 col-xl-3 d-flex login-card" (ngSubmit)="sendLoginData()">
             <h3>Bejelentkezés</h3>
-            <input class="form-control" name="usernameOrEmail" type="text" placeholder="E-mail cím vagy felhasználónév" [(ngModel)]="usernameOrEmail">
+            <div class="w-100">
+                <input #err="ngModel" required class="form-control" name="usernameOrEmail" type="text" placeholder="E-mail cím vagy felhasználónév" [(ngModel)]="usernameOrEmail">
+                @if (err.invalid && (err.dirty || err.touched)){
+                    <p class="formError">Felhasználóvév megadása kötelező</p>
+                }
+            </div>
             <input class="form-control" name="password" type="password" placeholder="Jelszó" [(ngModel)]="password">
             <div class="d-flex" style="gap: 15px;">
                 <button class="blue-inverse-button" type="button" (click)="router.navigateByUrl('/')">Vissza</button> 
                 <button class="blue-button" type="submit">Belépés</button> 
             </div>
-            <!-- login errort kezelni -->
+            <a href="/user_register" class="my-0" style="color: white;">Nincs még fiókja?</a>
+            @if (!loginSuccess){
+                <p class="errorBox w-100 my-0">Hibás felhasználónév vagy jelszó!</p>
+            }
         </form>
     </div>
 } @else {

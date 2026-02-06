@@ -253,8 +253,8 @@ Route::middleware(["auth:sanctum", "ability:organizer"])->post('/createCompetiti
 Route::get('/getAssociationsAndCategories', function (){
     return response()->json([
         'success' => true,
-        'associations' => AssociationModel::all(),
-        'categories' => CategoryModel::all()
+        'associations' => cache()->remember('associations', 3600, fn() => AssociationModel::all()),
+        'categories' => cache()->remember('categories', 3600, fn() => CategoryModel::all()),
     ]);
 });
 
@@ -307,3 +307,5 @@ Route::middleware(["auth:sanctum"])->get('/getMenuItems/{roleId}', function ($ro
         'items' => $data
     ]);
 });
+
+// TUL SOK CLIENT HIBAVAL VALAMIT KEZDENI
