@@ -3,10 +3,11 @@ import { App } from '../../app';
 import Competition from '../../interfaces/competition.interface';
 import { TopBarComponent } from "../top-bar";
 import CompetitionCategory from '../../interfaces/competition.category.interface';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'calendar-root',
-  imports: [TopBarComponent],
+  imports: [TopBarComponent, DatePipe],
   templateUrl: './calendar.html',
   styleUrls: [
     '../../app.scss',
@@ -16,6 +17,7 @@ export class CalendarComponent {
   constructor(private statics:App){}
   protected competitions!: Competition[]
   protected competitionCategories!: CompetitionCategory[]
+  protected today = new Date().toISOString()
   ngOnInit(): void {
     this.statics.loader.loadingOn()
     this.statics.http.get<any>(`${this.statics.API_URL}/getCompetitionCategories`).subscribe(

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import User from '../interfaces/user.interface';
 import { HttpHeaders } from '@angular/common/http';
+import MenuItem from '../interfaces/menuitem.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +9,7 @@ import { HttpHeaders } from '@angular/common/http';
 export class DataService {
   private user: User|undefined;
   private token: string|undefined;
+  private menuitems: MenuItem[]|undefined
 
   setUser(value: User) {
     this.user = value;
@@ -46,9 +48,21 @@ export class DataService {
 
   logout(){
     this.clearUser()
+    this.clearMenuItems()
     localStorage.setItem('modellhajo.UserAccessToken', "");
     location.reload()
   }
   //menuitemekre is get set clear
-  
+  getMenuItems(){
+    if (!this.menuitems && localStorage.getItem('modellhajo.MenuItems')) this.menuitems = JSON.parse(localStorage.getItem("modellhajo.MenuItems")!) as MenuItem[]
+    return this.menuitems;
+  }
+  setMenuItems(value:MenuItem[]){
+    this.menuitems = value
+    localStorage.setItem("modellhajo.MenuItems", JSON.stringify(value))
+  }
+  clearMenuItems(){
+    this.menuitems = undefined
+    localStorage.removeItem('modellhajo.MenuItems');
+  }
 }

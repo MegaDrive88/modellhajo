@@ -33,7 +33,7 @@
                                     </li>
                                 }
                             </ul>
-                            <button class="blue-button" style="margin-left: auto; margin-top: auto;">Nevezés - határidő: {{comp.nevezesi_hatarido}}</button>
+                            <button class="blue-button" style="margin-left: auto; margin-top: auto;" [disabled]="comp.nevezesi_hatarido < today">Nevezés - határidő: {{comp.nevezesi_hatarido | date:"y.MM.dd"}}</button>
                         </div>
                     </div>
                 }

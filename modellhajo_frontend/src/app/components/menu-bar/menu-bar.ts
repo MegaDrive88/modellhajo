@@ -67,15 +67,22 @@ export class MenuBarComponent implements OnInit {
             }
           }
       )
-      //localstorage-be!!!!
-      this.statics.http.get<{success:boolean, items:MenuItem[]}>(`${this.statics.API_URL}/getMenuItems/${this.statics.dataservice.getUser()?.szerepkor_id}`, { headers: this.statics.dataservice.getHeaders() }).subscribe(
+      if (!this.statics.dataservice.getMenuItems()){
+        this.statics.http.get<{success:boolean, items:MenuItem[]}>(`${this.statics.API_URL}/getMenuItems/${this.statics.dataservice.getUser()?.szerepkor_id}`, { headers: this.statics.dataservice.getHeaders() }).subscribe(
           data=>{            
             if(data.success){
               this.menuItems = data.items
+              this.statics.dataservice.setMenuItems(data.items)
             }
             this.statics.loader.loadingOff()
           }
-      )
+        )
+      }
+      else{
+        this.menuItems = this.statics.dataservice.getMenuItems()!
+        this.statics.loader.loadingOff()
+      }
+      
       await import('bootstrap');
   }
 }
