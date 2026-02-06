@@ -36,6 +36,7 @@
                 <div>
                     <span class="mandatory-star">Nevezési határidő</span>
                     <input name="nevezesi_hatarido" type="datetime-local" required class="form-control" [(ngModel)]="newComp.nevezesi_hatarido">
+                    <p class="formError" *ngIf="this.newComp.nevezesi_hatarido > this.newComp.kezdet">Nevezési határidő a verseny kezdete előtt kell legyen</p>
                 </div>
                 <div>
                     <span>Leírás</span>
@@ -118,8 +119,9 @@
                                 <li>{{cat.nev}}</li>
                             }
                         </ul>
+                        <button class="blue-inverse-button" style="margin-left: auto;" (click)="deleteCompetition(comp.id)">Törlés</button>
                     </div>
-                </div>   
+                </div>
             }
             @empty {
                 <p>Ön még nem hozott létre versenyt</p>

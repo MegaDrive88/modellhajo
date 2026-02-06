@@ -56,26 +56,26 @@ export class MenuBarComponent implements OnInit {
   constructor(protected statics:App){}
   protected menuItems:MenuItem[] = []
   async ngOnInit() {   
-      // this.statics.loader.loadingOn()
-      // this.statics.http.get<boolean>(`${this.statics.API_URL}/checkTokenExpired`, {headers: this.statics.dataservice.getHeaders()}).subscribe(
-      //     ()=>{},
-      //     error=>{
-      //       if (error.status == 401){
-      //         alert("Lejárt a munkamenet, kérjük jelentkezzen be újra!")
-      //         this.statics.loader.loadingOff()
-      //         this.statics.dataservice.logout()
-      //       }
-      //     }
-      // )
-      // //localstorage-be!!!!
-      // this.statics.http.get<{success:boolean, items:MenuItem[]}>(`${this.statics.API_URL}/getMenuItems/${this.statics.dataservice.getUser()?.szerepkor_id}`, { headers: this.statics.dataservice.getHeaders() }).subscribe(
-      //     data=>{            
-      //       if(data.success){
-      //         this.menuItems = data.items
-      //       }
-      //       this.statics.loader.loadingOff()
-      //     }
-      // )
+      this.statics.loader.loadingOn()
+      this.statics.http.get<boolean>(`${this.statics.API_URL}/checkTokenExpired`, {headers: this.statics.dataservice.getHeaders()}).subscribe(
+          ()=>{},
+          error=>{
+            if (error.status == 401){
+              alert("Lejárt a munkamenet, kérjük jelentkezzen be újra!")
+              this.statics.loader.loadingOff()
+              this.statics.dataservice.logout()
+            }
+          }
+      )
+      //localstorage-be!!!!
+      this.statics.http.get<{success:boolean, items:MenuItem[]}>(`${this.statics.API_URL}/getMenuItems/${this.statics.dataservice.getUser()?.szerepkor_id}`, { headers: this.statics.dataservice.getHeaders() }).subscribe(
+          data=>{            
+            if(data.success){
+              this.menuItems = data.items
+            }
+            this.statics.loader.loadingOff()
+          }
+      )
       await import('bootstrap');
   }
 }

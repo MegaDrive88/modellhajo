@@ -59,7 +59,6 @@ export class CompetitionsComponent implements OnInit {
         data=>{
             this.associations = data.associations
             this.categories = data.categories
-            this.statics.loader.loadingOff()
         }
     )
     this.statics.http.get<any>(`${this.statics.API_URL}/getCompetitionCategories`).subscribe(
@@ -76,6 +75,7 @@ export class CompetitionsComponent implements OnInit {
             for (const comp of this.userCompetitions) {
                 comp.categories = this.competitionCategories.filter(x=>x.versenyid == comp.id).map(x=>x.category)
             }
+            this.statics.loader.loadingOff()
         }
     )
   }
@@ -123,5 +123,15 @@ export class CompetitionsComponent implements OnInit {
             this.newComp.kezdet <= this.newComp.veg && 
             this.newComp.nevezesi_hatarido <= this.newComp.kezdet
         )
+  }
+  deleteCompetition(id:number){
+    if (confirm("Biztosan törölni szeretné?")) {
+        this.statics.http.delete<any>(`${this.statics.API_URL}/deleteCompetition/${id}`, {headers: this.statics.dataservice.getHeaders()}).subscribe(
+            data=>{
+                if(data.success) location.reload()
+            },
+            error => console.log(error)
+        )
     }
+  }
 }
