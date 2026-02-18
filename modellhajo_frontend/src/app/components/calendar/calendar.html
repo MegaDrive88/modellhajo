@@ -17,7 +17,7 @@
                 @for (comp of competitions; track comp.id) {
                     <div class="competition-card">
                         @if (comp.kep_url) {
-                            <img src="http://127.0.0.1:8000{{comp.kep_url}}" alt="">
+                            <img src="{{ds.STORAGE_URL}}{{comp.kep_url}}" alt="">
                         }@else{
                             <img src="https://media.istockphoto.com/id/1286476479/vector/public-icon-traffic-icons-for-ship.jpg?s=612x612&w=0&k=20&c=NW0sE3lQkkjWwvppDIIiZg0SpVKIdsJYF7cco7CpltM=" alt="">
                         }

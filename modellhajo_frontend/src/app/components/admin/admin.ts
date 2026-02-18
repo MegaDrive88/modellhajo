@@ -3,7 +3,7 @@ import { MenuBarComponent } from '../menu-bar/menu-bar';
 import { DataService } from '../../services/data.service';
 
 @Component({
-  selector: 'calendar-root',
+  selector: 'admin-root',
   imports: [MenuBarComponent],
   templateUrl: './admin.html',
   styleUrls: [

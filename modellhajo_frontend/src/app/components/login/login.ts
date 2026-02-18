@@ -1,8 +1,9 @@
 import { DataService } from './../../services/data.service';
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Md5 } from 'ts-md5';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'login-root',
@@ -12,37 +13,45 @@ import { RouterLink } from '@angular/router';
     '../../app.scss',
     './login.scss'
   ]})
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   protected ds = inject(DataService)
+  private router = inject(Router)
+  private destroyRef = inject(DestroyRef)
   protected usernameOrEmail = ''
   protected password = ''
-  // protected loginAttempts = 0
   protected loginSuccess = true
+
+  ngOnInit() {
+    if (this.ds.getUser()) {
+      this.router.navigateByUrl('/dashboard');
+    }
+  }
+
   sendLoginData(){
     const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$/
-    const isEmail = emailRegex.test(this.usernameOrEmail)    
-    const hashedPwd = Md5.hashStr(`PasswordSalted${this.password}`)
-    // this.loginAttempts++
+    const isEmail = emailRegex.test(this.usernameOrEmail)
+
     this.loginSuccess = true
     const loginModel = {
       user: this.usernameOrEmail,
       isEmail: isEmail,
-      pwdHash: hashedPwd
+      pwdHash: Md5.hashStr(`PasswordSalted${this.password}`)
     }
     this.ds.loader.loadingOn()
-    this.ds.login(loginModel).subscribe(
-      (data)=>{
+    this.ds.login(loginModel).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (data) => {
         this.loginSuccess = data.success
-        if(data.success){
+        if (data.success) {
           this.ds.setUser(data.user!)
           this.ds.setToken(data.access_token!)
+          this.router.navigateByUrl('/dashboard')
         }
         this.ds.loader.loadingOff()
       },
-      error=>{
-        alert("Szerverhiba, próbálja újra később!")
+      error: () => {
+        alert('Szerverhiba, próbálja újra később!')
         this.ds.loader.loadingOff()
       }
-    )
+    })
   }
 }

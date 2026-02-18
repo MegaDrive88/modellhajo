@@ -1,5 +1,4 @@
-@if (ds.getUser()){
-    <menu-bar-root/>
+<menu-bar-root/>
     <!-- router outlet menubar ala jobb lenne -->
     <div class="row g-0">
         <div class="col-12 col-md-6 py-2 px-5">
@@ -23,12 +22,16 @@
                         <input name="veg" type="datetime-local" required class="form-control" [(ngModel)]="newComp.veg">
                     </div>
                 </div>
-                <p class="formError" *ngIf="this.newComp.kezdet > this.newComp.veg">Kezdeti dátum nem lehet a végdátum után</p>
+                @if (this.newComp.kezdet > this.newComp.veg){
+                    <p class="formError">Kezdeti dátum nem lehet a végdátum után</p>
+                }
                 <div>
                     <span>Évad, üres esetén a megrendezés éve</span>
                     <input name="evszam" type="text" placeholder="Évszám" class="form-control" [(ngModel)]="newComp.evszam">
                 </div>
-                <p class="formError" *ngIf="newComp.evszam?.length != 0 && newComp.evszam?.length != 4">Vagy egy évszámot adjon meg, vagy hagyja üresen</p>
+                @if (newComp.evszam?.length != 0 && newComp.evszam?.length != 4){
+                    <p class="formError">Vagy egy évszámot adjon meg, vagy hagyja üresen</p>
+                }
                 <div>
                     <span class="mandatory-star">Megjelenés ideje</span>
                     <input name="megjelenik" type="datetime-local" required class="form-control" [(ngModel)]="newComp.megjelenik">
@@ -36,7 +39,9 @@
                 <div>
                     <span class="mandatory-star">Nevezési határidő</span>
                     <input name="nevezesi_hatarido" type="datetime-local" required class="form-control" [(ngModel)]="newComp.nevezesi_hatarido">
-                    <p class="formError" *ngIf="this.newComp.nevezesi_hatarido > this.newComp.kezdet">Nevezési határidő a verseny kezdete előtt kell legyen</p>
+                    @if (this.newComp.nevezesi_hatarido > this.newComp.kezdet){
+                        <p class="formError">Nevezési határidő a verseny kezdete előtt kell legyen</p>
+                    }
                 </div>
                 <div>
                     <span>Leírás</span>
@@ -50,7 +55,9 @@
                             <option value="{{item.id}}">{{item.nev}}</option>
                         }
                     </select>
-                    <p class="formError" *ngIf="assocSelector.dirty && newComp.szervezo_egyesulet == -1">Válasszon egy egyesületet</p>
+                    @if (assocSelector.dirty && newComp.szervezo_egyesulet == -1){
+                        <p class="formError">Válasszon egy egyesületet</p>
+                    }
                 </div>
                 <div>
                     <span class="mandatory-star">Kategóriák</span>
@@ -65,7 +72,9 @@
                         [(ngModel)]="newCompetitionCategories"
                         >
                     </ng-select>
-                    <p class="formError" *ngIf="catSelector.touched && newCompetitionCategories.length == 0">Válasszon legalább 1 kategóriát</p>
+                    @if (catSelector.touched && newCompetitionCategories.length == 0){
+                        <p class="formError">Válasszon legalább 1 kategóriát</p>
+                    }
                 </div>
                 <div>
                     <span class="mandatory-star">Nevezési díjak</span>
@@ -95,7 +104,7 @@
                 </div>
                 <div>
                     <span>Borítókép</span>
-                    <input type="file" class="form-control" id="competitionThumbnail" accept="image/*">
+                    <input type="file" class="form-control" #competitionThumbnailInput accept="image/*">
                 </div>
                 <button type="submit" class="blue-button" [disabled]="!FormEnabled()">Rögzít</button>
 
@@ -106,7 +115,7 @@
             @for (comp of userCompetitions; track comp.id) {
                 <div class="user-competition">
                     @if (comp.kep_url) {
-                        <img src="http://127.0.0.1:8000{{comp.kep_url}}" alt="">
+                        <img src="{{ds.STORAGE_URL}}{{comp.kep_url}}" alt="">
                     }@else{
                         <img src="https://media.istockphoto.com/id/1286476479/vector/public-icon-traffic-icons-for-ship.jpg?s=612x612&w=0&k=20&c=NW0sE3lQkkjWwvppDIIiZg0SpVKIdsJYF7cco7CpltM=" alt="">
                     }
@@ -128,6 +137,3 @@
             }
         </div>
     </div>
-} @else {
-    {{ds.router.navigateByUrl("/login")}}
-}
