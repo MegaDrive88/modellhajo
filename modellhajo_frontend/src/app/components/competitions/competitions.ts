@@ -10,7 +10,6 @@ import CompetitionCategory from '../../interfaces/competition.category.interface
 import { DataService } from '../../services/data.service';
 import { forkJoin } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
 
 
 @Component({
@@ -24,7 +23,6 @@ import { Router } from '@angular/router';
 export class CompetitionsComponent implements OnInit {
   protected ds = inject(DataService)
   private destroyRef = inject(DestroyRef)
-  private router = inject(Router)
   protected associations!: Association[]
   protected categories!: Category[]
   protected newCompetitionCategories: number[] = []
@@ -103,7 +101,7 @@ export class CompetitionsComponent implements OnInit {
                   if (result.success) {
                     alert("Sikeres verseny létrehozás")
                     this.ds.loader.loadingOff()
-                    this.router.navigateByUrl('/competitions', { replaceUrl: true })
+                    this.ds.router.navigateByUrl('/competitions', { replaceUrl: true })
                       .then(() => this.ngOnInit())
                   }
                 },

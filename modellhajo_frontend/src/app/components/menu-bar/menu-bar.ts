@@ -18,15 +18,6 @@ export class MenuBarComponent implements OnInit {
 
   ngOnInit() {
     this.ds.loader.loadingOn()
-    this.ds.checkTokenExpired().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      error: (error) => {
-        if (error.status == 401) {
-          alert('Lejárt a munkamenet, kérjük jelentkezzen be újra!')
-          this.ds.loader.loadingOff()
-          this.ds.logout()
-        }
-      }
-    })
     const cached = this.ds.getMenuItems()
     if (!cached) {
       this.ds.retrieveMenuItems().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({

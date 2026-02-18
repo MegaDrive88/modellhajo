@@ -1,7 +1,7 @@
 import { DataService } from './../../services/data.service';
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Md5 } from 'ts-md5';
 
@@ -15,7 +15,6 @@ import { Md5 } from 'ts-md5';
   ]})
 export class LoginComponent implements OnInit {
   protected ds = inject(DataService)
-  private router = inject(Router)
   private destroyRef = inject(DestroyRef)
   protected usernameOrEmail = ''
   protected password = ''
@@ -23,7 +22,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     if (this.ds.getUser()) {
-      this.router.navigateByUrl('/dashboard');
+      this.ds.router.navigateByUrl('/dashboard');
     }
   }
 
@@ -44,7 +43,7 @@ export class LoginComponent implements OnInit {
         if (data.success) {
           this.ds.setUser(data.user!)
           this.ds.setToken(data.access_token!)
-          this.router.navigateByUrl('/dashboard')
+          this.ds.router.navigateByUrl('/dashboard')
         }
         this.ds.loader.loadingOff()
       },
