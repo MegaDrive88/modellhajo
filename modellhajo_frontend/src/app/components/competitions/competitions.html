@@ -1,4 +1,4 @@
-@if (user){
+@if (ds.getUser()){
     <menu-bar-root/>
     <!-- router outlet menubar ala jobb lenne -->
     <div class="row g-0">
@@ -129,5 +129,5 @@
         </div>
     </div>
 } @else {
-    {{statics.router.navigateByUrl("/login")}}
+    {{ds.router.navigateByUrl("/login")}}
 }

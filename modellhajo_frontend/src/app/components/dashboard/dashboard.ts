@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MenuBarComponent } from '../menu-bar/menu-bar';
-import User from '../../interfaces/user.interface';
-import { App } from '../../app';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'dashboard-root',
@@ -11,10 +10,6 @@ import { App } from '../../app';
     '../../app.scss',
     './dashboard.scss'
   ]})
-export class DashboardComponent implements OnInit {
-  constructor(protected statics:App){}
-  protected user!:User
-  ngOnInit(): void {
-      this.user = this.statics.dataservice.getUser()!
-  }
+export class DashboardComponent {
+  protected ds = inject(DataService)
 }

@@ -1,27 +1,19 @@
 import { DataService } from './../../services/data.service';
-import { Component, OnInit } from '@angular/core';
-import { App } from '../../app';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Md5 } from 'ts-md5';
-import User from '../../interfaces/user.interface';
-import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'login-root',
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrls: [
     '../../app.scss',
     './login.scss'
   ]})
-export class LoginComponent implements OnInit {
-  constructor(private statics:App){}
-  protected dataservice!:DataService
-  protected router!:Router
-  ngOnInit(): void {
-      this.dataservice = this.statics.dataservice
-      this.router = this.statics.router
-  }
+export class LoginComponent {
+  protected ds = inject(DataService)
   protected usernameOrEmail = ''
   protected password = ''
   // protected loginAttempts = 0
@@ -37,19 +29,19 @@ export class LoginComponent implements OnInit {
       isEmail: isEmail,
       pwdHash: hashedPwd
     }
-    this.statics.loader.loadingOn()
-    this.statics.http.post<{success:boolean, user?:User, access_token?:string}>(`${this.statics.API_URL}/login`, loginModel).subscribe(
+    this.ds.loader.loadingOn()
+    this.ds.login(loginModel).subscribe(
       (data)=>{
         this.loginSuccess = data.success
         if(data.success){
-          this.dataservice.setUser(data.user!)
-          this.dataservice.setToken(data.access_token!)
+          this.ds.setUser(data.user!)
+          this.ds.setToken(data.access_token!)
         }
-        this.statics.loader.loadingOff()
+        this.ds.loader.loadingOff()
       },
       error=>{
         alert("Szerverhiba, próbálja újra később!")
-        this.statics.loader.loadingOff()
+        this.ds.loader.loadingOff()
       }
     )
   }

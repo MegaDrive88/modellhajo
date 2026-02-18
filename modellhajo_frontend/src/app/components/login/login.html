@@ -1,4 +1,4 @@
-@if (!dataservice.getUser()) {
+@if (!ds.getUser()) {
     <div id="landing-bg"></div>
     <div class="reveal-animate">
         <form #f="ngForm" class="col-10 col-lg-5 col-xl-3 d-flex login-card" (ngSubmit)="sendLoginData()">
@@ -11,15 +11,15 @@
             </div>
             <input class="form-control" name="password" type="password" placeholder="Jelszó" [(ngModel)]="password">
             <div class="d-flex" style="gap: 15px;">
-                <button class="blue-inverse-button" type="button" (click)="router.navigateByUrl('/')">Vissza</button> 
+                <button class="blue-inverse-button" type="button" (click)="ds.router.navigateByUrl('/')">Vissza</button> 
                 <button class="blue-button" type="submit">Belépés</button> 
             </div>
-            <a href="/user_register" class="my-0" style="color: white;">Nincs még fiókja?</a>
+            <a [routerLink]="['/user_register']" class="my-0" style="color: white;">Nincs még fiókja?</a>
             @if (!loginSuccess){
                 <p class="errorBox w-100 my-0">Hibás felhasználónév vagy jelszó!</p>
             }
         </form>
     </div>
 } @else {
-    {{router.navigateByUrl("/dashboard")}}
+    {{ds.router.navigateByUrl("/dashboard")}}
 }

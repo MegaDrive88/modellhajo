@@ -1,15 +1,15 @@
-import { DataService } from './../services/data.service';
-import { Component, AfterViewInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 @Component({
   selector: 'top-bar-root',
-  imports: [],
+  imports: [RouterLink],
   template:`
     <div id="top-bar">
-        <a href="/">LOGO</a>
-        <a class="blue-button" style="margin-left: auto;" href="/login">Bejelentkezés</a>
-        <a class="blue-inverse-button" style="margin-left: 20px;" href="/user_register">Regisztráció</a>
+        <a routerLink="/">LOGO</a>
+        <a class="blue-button" style="margin-left: auto;" routerLink="/login">Bejelentkezés</a>
+        <a class="blue-inverse-button" style="margin-left: 20px;" routerLink="/user_register">Regisztráció</a>
     </div>
     <div id="landing-bg"></div>
 `,

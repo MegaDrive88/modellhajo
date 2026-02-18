@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MenuBarComponent } from '../menu-bar/menu-bar';
-import { App } from '../../app';
-import User from '../../interfaces/user.interface';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'calendar-root',
@@ -12,9 +11,5 @@ import User from '../../interfaces/user.interface';
     './admin.scss'
   ]})
 export class AdminComponent {
-  constructor(protected statics:App){}
-  protected user!:User
-  ngOnInit(): void {
-      this.user = this.statics.dataservice.getUser()!
-  }
+  protected ds = inject(DataService)
 }

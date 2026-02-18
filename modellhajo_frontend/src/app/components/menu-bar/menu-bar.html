@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg fancy-navbar">
   <div class="container-fluid px-4">
-    <a class="navbar-brand" href="/">Főoldal</a>
+    <a class="navbar-brand" [routerLink]="['/']">Főoldal</a>
 
     <button data-bs-theme="dark" class="navbar-toggler" type="button" data-bs-toggle="collapse"
       data-bs-target="#navbarNavDropdown">
@@ -10,23 +10,23 @@
     <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
       <ul class="navbar-nav align-items-center gap-4">
         <li class="nav-item">
-          <a class="nav-link active" href="/dashboard">Áttekintés</a>
+          <a class="nav-link active" [routerLink]="['/dashboard']">Áttekintés</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/dashboard">Adatmódosítás (WIP)</a>
+          <a class="nav-link" [routerLink]="['/dashboard']">Adatmódosítás (WIP)</a>
         </li>
-        @if (statics.dataservice.getUser()?.isadmin){
+        @if (ds.getUser()?.isadmin){
           <li class="nav-item">
-            <a class="nav-link" href="/admin">Adminisztráció</a>
+            <a class="nav-link" [routerLink]="['/admin']">Adminisztráció</a>
           </li>
         }
         @for (item of menuItems; track $index) {
             <li class="nav-item">
-                <a class="nav-link" href="{{item.route}}">{{item.menupont_nev}}</a>
+                <a class="nav-link" [routerLink]="[`/${item.route}`]">{{item.menupont_nev}}</a>
             </li>
         }
         <li class="nav-item">
-          <button class="btn btn-primary px-4 rounded-pill" (click)="statics.dataservice.logout()">Kijelentkezés</button>
+          <button class="btn btn-primary px-4 rounded-pill" (click)="ds.logout()">Kijelentkezés</button>
         </li>
       </ul>
     </div>

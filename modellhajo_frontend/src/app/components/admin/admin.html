@@ -1,6 +1,6 @@
-@if (user && user.isadmin) {
+@if (ds.getUser() && ds.getUser()?.isadmin) {
     <menu-bar-root/>
     <h3>Felhasználókarbantartás</h3>
 } @else {
-    {{statics.router.navigateByUrl("/login")}}
+    {{ds.router.navigateByUrl("/login")}}
 }

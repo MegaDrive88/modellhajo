@@ -1,0 +1,42 @@
+.fancy-navbar {
+  background: linear-gradient(135deg, var(--mat-sys-primary), var(--mat-sys-on-secondary-fixed));
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+.fancy-navbar .navbar-brand,
+.fancy-navbar .nav-link {
+  color: #fff !important;
+  position: relative;
+  transition: all 0.3s ease;
+}
+.navbar-brand{
+    font-weight:500;
+}
+.fancy-navbar .nav-link::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  transition: all 0.3s ease;
+  background: var(--mat-sys-primary)
+}
+.fancy-navbar .dropdown-toggle::after {
+    position:static;
+    background:none;
+}
+.fancy-navbar .nav-link:hover::after {
+  width: 100%;
+  left: 0;
+}
+.fancy-navbar .dropdown-toggle:hover::after {
+    width: auto;
+}
+.fancy-navbar .nav-link:hover {
+  color: #0d6efd !important;
+}
+.fancy-navbar .dropdown-menu {
+  border-radius: 12px;
+  overflow: hidden;
+}

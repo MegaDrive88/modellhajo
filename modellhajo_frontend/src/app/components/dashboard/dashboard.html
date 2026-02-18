@@ -1,6 +1,6 @@
-@if (user){
+@if (ds.getUser()){
     <menu-bar-root/>
-    <h1>Bejelentkezve, mint {{user.megjeleno_nev}}</h1>
+    <h1>Bejelentkezve, mint {{ds.getUser()?.megjeleno_nev}}</h1>
 } @else {
-    {{statics.router.navigateByUrl("/login")}}
+    {{ds.router.navigateByUrl("/login")}}
 }
