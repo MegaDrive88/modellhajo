@@ -301,11 +301,13 @@ Route::middleware(["auth:sanctum", "ability:organizer"])->delete('/deleteCompeti
 });
 
 Route::middleware(["auth:sanctum"])->get('/getMenuItems/{roleId}', function ($roleId, Request $request){
-    $data = MenuItemModel::where('szerepkor_id', '=', $roleId)->get(); // elfogadast is nezni
+    $data = MenuItemModel::where('szerepkor_id', '=', $roleId)->get(); // elfogadast is nezni!!!
     return response()->json([
         'success' => true,
         'items' => $data
     ]);
 });
+
+// logout
 
 // TUL SOK CLIENT HIBAVAL VALAMIT KEZDENI

@@ -212,4 +212,17 @@ export class DataService {
   getAllCompetitions() {
     return this.http.get<CompetitionsResponse>(`${this.API_URL}/getAllCompetitions`);
   }
+
+  createAccount(newUser:any){
+    return this.http.post<any>(`${this.API_URL}/createAccount`, newUser)
+  }
+
+  getRoleRequests(){
+    return this.http.get<User[]>(`${this.API_URL}/getRoleRequests`, {headers: this.getHeaders()})
+  }
+
+  decideRoleRequest(verdict: boolean, id: number){
+    return this.http.patch<{success:boolean}>(`${this.API_URL}/decideRoleRequest/${verdict}`, {id: id}, {headers: this.getHeaders()})
+  }
+
 }

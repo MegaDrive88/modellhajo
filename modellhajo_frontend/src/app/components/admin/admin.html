@@ -1,2 +1,26 @@
 <menu-bar-root/>
 <h3>Felhasználókarbantartás</h3>
+
+<h4>Szerepkör kérések:</h4>
+<table class="col-12 table table-striped">
+    <thead>
+        <tr>
+            <td>Felhasználó</td>
+            <td>E-mail</td>
+            <td>Kívánt szerepkör</td>
+            <td class="text-center">Elfogad</td>
+            <td class="text-center">Elutasít</td>
+        </tr>
+    </thead>
+    <tbody>
+        @for (req of roleRequests; track $index) {
+            <tr>
+                <td>{{req.megjeleno_nev}}</td>
+                <td>{{req.email}}</td>
+                <td>{{req.role.szerepkor_nev}}</td>
+                <td class="text-center"><button class="btn btn-success" (click)="decideCommand(req.id, true)">✓</button></td>
+                <td class="text-center"><button class="btn btn-danger" (click)="decideCommand(req.id, false)">X</button></td>
+            </tr>
+        }
+    </tbody>
+</table>

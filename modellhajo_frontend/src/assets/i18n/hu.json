@@ -1,0 +1,9 @@
+{
+    "EMAIL_NOT_UNIQUE": "A megadott e-mail címmel már létezik felhasználó",
+    "USERNAME_NOT_UNIQUE": "A megadott felhasználónévvel már létezik felhasználó",
+    "PASSWORD_MISMATCH": "A megadott új jelszavak nem egyeznek",
+    "INCORRECT_PASSWORD": "Helytelen jelszó",
+    "PASSWORD_NOT_NEW": "Az új jelszó és a régi jelszó nem egyezhet",
+    "EMPTY_FIELD": "Minden adat megadása kötelező",
+    "SUCCESS": "Sikeres mentés"
+}

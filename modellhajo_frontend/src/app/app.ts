@@ -17,7 +17,7 @@ export class App implements OnInit {
 
   ngOnInit() {
     // Check token expiry once per navigation (not on every menu-bar mount)
-    // ...
+    // https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request -> nem kell ennyire tulbonyolitani ez alapjan
     this.ds.router.events.pipe(
       filter(e => e instanceof NavigationEnd),
       map(e => (e as NavigationEnd).urlAfterRedirects),
