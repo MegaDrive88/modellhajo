@@ -114,10 +114,9 @@ export class DataService {
   logout() {
     const headers = this.getHeaders();
     if (headers) {
-      // Invalidate token server-side; ignore errors (already expired / offline)
-      // this.http.post<BasicResponse>(`${this.API_URL}/logout`, {}, { headers }).subscribe({
-      //   error: () => {}
-      // });
+      this.http.post<BasicResponse>(`${this.API_URL}/logout`, {}, { headers }).subscribe({
+        error: () => {}
+      });
     }
     this.clearUser();
     this.clearMenuItems();

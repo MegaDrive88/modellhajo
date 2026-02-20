@@ -308,6 +308,11 @@ Route::middleware(["auth:sanctum"])->get('/getMenuItems/{roleId}', function ($ro
     ]);
 });
 
-// logout
+Route::post('/logout', function (Request $request) {
+    $request->user()->currentAccessToken()->delete();
+    return response()->json([
+        "success" => true
+    ]);
+})->middleware('auth:sanctum');
 
 // TUL SOK CLIENT HIBAVAL VALAMIT KEZDENI
