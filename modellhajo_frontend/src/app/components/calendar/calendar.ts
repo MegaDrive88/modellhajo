@@ -6,10 +6,11 @@ import { DatePipe } from '@angular/common';
 import { DataService } from '../../services/data.service';
 import { forkJoin } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'calendar-root',
-  imports: [TopBarComponent, DatePipe],
+  imports: [TopBarComponent, DatePipe, RouterLink],
   templateUrl: './calendar.html',
   styleUrls: [
     '../../app.scss',

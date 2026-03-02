@@ -15,6 +15,7 @@
             </div>
             <div class="competitions-wrapper col-9">
                 @for (comp of competitions; track comp.id) {
+                <a [routerLink]="[`/competition/${comp.id}`]" style="text-decoration: none;">
                     <div class="competition-card">
                         @if (comp.kep_url) {
                             <img src="{{ds.STORAGE_URL}}{{comp.kep_url}}" alt="">
@@ -36,6 +37,7 @@
                             <button class="blue-button" style="margin-left: auto; margin-top: auto;" [disabled]="comp.nevezesi_hatarido < today">Nevezés - határidő: {{comp.nevezesi_hatarido | date:"y.MM.dd"}}</button>
                         </div>
                     </div>
+                </a>
                 }
                 @empty {
                     Nincs közelgő verseny

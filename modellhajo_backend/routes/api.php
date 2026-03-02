@@ -53,10 +53,10 @@ Route::post('/login', function (Request $request) {
 Route::middleware("auth:sanctum")->patch('/updateUser/{id}', function ($id, Request $request){
     $user = UserModel::find($id);
     if (!$user) {
-        return response()->json(['success' => false, 'error' => 'USER_NOT_FOUND']);
+        return response()->json(['success' => false, 'error' => 'USER_NOT_FOUND'], 404);
     }
     if($request->input("megjeleno_nev") == "" || $request->input("felhasznalonev") == "" || $request->input("email") == ""){
-        return response()->json(['success' => false, 'error' => 'EMPTY_FIELD']);
+        return response()->json(['success' => false, 'error' => 'EMPTY_FIELD'], 400);
     }
     $user->megjeleno_nev = $request->input("megjeleno_nev");
     $users = UserModel::select("felhasznalonev")->where('id', '<>', $user->id)->pluck('felhasznalonev')->toArray(); //kulon func
@@ -89,17 +89,17 @@ Route::middleware("auth:sanctum")->patch('/updateUser/{id}', function ($id, Requ
         return response()->json([
             'success' => false,
             'error' => $e
-        ]);
+        ], 400);
     }
 });
 
 Route::middleware("auth:sanctum")->patch('/updatePassword/{id}', function ($id, Request $request) {
     $user = UserModel::find($id);
     if (!$user) {
-        return response()->json(['success' => false, 'error' => 'USER_NOT_FOUND']);
+        return response()->json(['success' => false, 'error' => 'USER_NOT_FOUND'], 404);
     }
     if($request->input("old_password") == "" || $request->input("new_password") == "" || $request->input("conf_password") == ""){
-        return response()->json(['success' => false, 'error' => 'EMPTY_FIELD']);
+        return response()->json(['success' => false, 'error' => 'EMPTY_FIELD'], 400);
     }
     if (substr($user->jelszo, 1, -1) == md5("PasswordSalted".$request->input("old_password"))){
         if($request->input("new_password") == $request->input("conf_password")){
@@ -109,7 +109,7 @@ Route::middleware("auth:sanctum")->patch('/updatePassword/{id}', function ($id, 
                 return response()->json([
                     'success' => false,
                     'error' => "PASSWORD_NOT_NEW"
-                ]);
+                ], 400);
             }
             try{
                 $user->save();
@@ -121,21 +121,21 @@ Route::middleware("auth:sanctum")->patch('/updatePassword/{id}', function ($id, 
                 return response()->json([
                     'success' => false,
                     'error' => $e
-                ]);
+                ], 400);
             }
         }
         else{
         return response()->json([
             'success' => false,
             'error' => "PASSWORD_MISMATCH"
-        ]);
+        ], 400);
         }
     }
     else{
         return response()->json([
             'success' => false,
             'error' => "INCORRECT_PASSWORD"
-        ]);
+        ], 400);
     }
 });
 
@@ -272,6 +272,18 @@ Route::middleware(["auth:sanctum", "ability:organizer"])->get('/getUserCompetiti
     ]);
 });
 
+Route::get('/getCompetition/{id}', function ($id, Request $request){
+    if(CompetitionModel::where('id', '=', $id)->get())
+        return response()->json([
+            'success' => true,
+            'data' => CompetitionModel::where('id', '=', $id)->first()
+        ]);
+    return response()->json([
+        'success' => false,
+        'error' => 'NO_SUCH_COMPETITION'
+    ], 404);
+});
+
 Route::middleware(["auth:sanctum", "ability:organizer"])->post('/createCompetitionCategories', function (Request $request){
     $compid = $request->input("compId");
     foreach ($request->input("categs") as $value) {
@@ -300,8 +312,9 @@ Route::middleware(["auth:sanctum", "ability:organizer"])->delete('/deleteCompeti
     ]);
 });
 
-Route::middleware(["auth:sanctum"])->get('/getMenuItems/{roleId}', function ($roleId, Request $request){
-    $data = MenuItemModel::where('szerepkor_id', '=', $roleId)->get(); // elfogadast is nezni!!!
+Route::middleware(["auth:sanctum"])->get('/getMenuItems', function (Request $request){
+    $roleId = $request->user()->szerepkor_elfogadva ? $request->user()->szerepkor_id : 4;
+    $data = MenuItemModel::where('szerepkor_id', '=', $roleId)->get(); 
     return response()->json([
         'success' => true,
         'items' => $data

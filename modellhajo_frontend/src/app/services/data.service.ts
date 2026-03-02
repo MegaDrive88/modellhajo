@@ -27,6 +27,11 @@ export interface CompetitionsResponse {
   data: Competition[];
 }
 
+export interface CompetitionResponse {
+  success: boolean;
+  data: Competition;
+}
+
 export interface CreateCompetitionResponse {
   success: boolean;
   compId: number;
@@ -147,7 +152,7 @@ export class DataService {
 
   retrieveMenuItems() {
     return this.http.get<MenuItemsResponse>(
-      `${this.API_URL}/getMenuItems/${this.getUser()?.szerepkor_id}`,
+      `${this.API_URL}/getMenuItems`,
       { headers: this.getHeaders() }
     );
   }
@@ -221,7 +226,10 @@ export class DataService {
   }
 
   decideRoleRequest(verdict: boolean, id: number){
-    return this.http.patch<{success:boolean}>(`${this.API_URL}/decideRoleRequest/${verdict}`, {id: id}, {headers: this.getHeaders()})
+    return this.http.patch<BasicResponse>(`${this.API_URL}/decideRoleRequest/${verdict}`, {id: id}, {headers: this.getHeaders()})
   }
 
+  getCompetitionById(id: number){
+    return this.http.get<CompetitionResponse>(`${this.API_URL}/getCompetition/${id}`)
+  }
 }
