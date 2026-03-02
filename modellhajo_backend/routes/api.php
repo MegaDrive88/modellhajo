@@ -40,7 +40,7 @@ Route::post('/login', function (Request $request) {
         ["guest"],
         ["supporter"]
     ];
-
+    //elfogadast nezni
     $token = $result->createToken('modellhajo-login-token', array_merge($ROLE_ABILITIES[$result->szerepkor_id-1], $result->isadmin ? ["admin"] : []))->plainTextToken;
 
     return response()->json([
@@ -313,7 +313,11 @@ Route::middleware(["auth:sanctum", "ability:organizer"])->delete('/deleteCompeti
 });
 
 Route::middleware(["auth:sanctum"])->get('/getMenuItems', function (Request $request){
-    $roleId = $request->user()->szerepkor_elfogadva ? $request->user()->szerepkor_id : 4;
+    $roleId = 4;
+    if($request->user()->szerepkor_id == 1){
+        if($request->user()->szerepkor_elfogadva) $roleId = 1;
+    }
+    else $roleId = $request->user()->szerepkor_id;
     $data = MenuItemModel::where('szerepkor_id', '=', $roleId)->get(); 
     return response()->json([
         'success' => true,

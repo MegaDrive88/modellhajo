@@ -4,10 +4,11 @@ import { DataService } from "../../services/data.service";
 import { ActivatedRoute } from "@angular/router";
 import Competition from "../../interfaces/competition.interface";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { TopBarComponent } from "../top-bar";
 
 @Component({
   selector: 'competitions-root',
-  imports: [CommonModule],
+  imports: [CommonModule, TopBarComponent],
   templateUrl: './show-competition.html',
   styleUrls: [
     '../../app.scss',
@@ -33,7 +34,7 @@ export class ShowCompetitonComponent implements OnInit {
 }
 /*TODO 
 - adatmodositas
-- verseny nevezes
+- verseny nevezes - addigra mmszid
 - tobb rendezo egy versenyhez
 - tamogatohoz versenyzot kapcsolni
 - ikonok fooldalon
