@@ -51,3 +51,8 @@ $opt-bg: #4483d4b4;
     background-color: var(--mat-sys-primary-container);
     border-radius: 30px;
 }
+.disabled {
+  pointer-events: none;
+  cursor: default;
+  opacity: .8;
+}

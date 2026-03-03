@@ -51,4 +51,21 @@ export class UserManagementComponent implements OnInit{
         error:(err)=>{this.pwdErrorString = err.error.error}
     })
   }
+  eyeCommand(e:Event){
+    const inputs = document.querySelectorAll(".pwdUpdateInput") as NodeListOf<HTMLInputElement>
+    if((e.target as HTMLButtonElement)!.classList.contains("eye-on")){
+      (e.target as HTMLButtonElement)!.classList.remove("eye-on")
+      for (let inp of inputs){
+        inp.type = "password"
+      }
+    }
+    else{
+      (e.target as HTMLButtonElement)!.classList.add("eye-on")
+      for (let inp of inputs){
+        inp.type = "text"
+      }
+    }
+    
+
+  }
 }

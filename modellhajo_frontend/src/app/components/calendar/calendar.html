@@ -34,7 +34,7 @@
                                     </li>
                                 }
                             </ul>
-                            <button class="blue-button" style="margin-left: auto; margin-top: auto;" [disabled]="comp.nevezesi_hatarido < today">Nevezés - határidő: {{comp.nevezesi_hatarido | date:"y.MM.dd"}}</button>
+                            <a onclick="event.stopPropagation()" [routerLink]="[`/competition_register/${comp?.id}`]" class="blue-button" style="margin-left: auto; margin-top: auto;" [ngClass]="comp.nevezesi_hatarido < today ? 'disabled' : ''">Nevezés - határidő: {{comp.nevezesi_hatarido | date:"y.MM.dd"}}</a>
                         </div>
                     </div>
                 </a>
@@ -44,7 +44,5 @@
                 }
             </div>
         </div>
-            
-        <!-- </div> -->
     </section>
 </div>

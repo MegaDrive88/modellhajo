@@ -23,20 +23,20 @@
     </div>
     <div class="col-12 col-md-6 px-2">
         <div class="d-flex" style="align-items: center;">
-            <h3>Jelszóváltoztatás</h3> <button id="eye-button">👁️</button>
+            <h3>Jelszóváltoztatás</h3> <button id="eye-button" (click)="eyeCommand($event)">👁️</button>
         </div>
         <form #f2="ngForm" (ngSubmit)="updatePassword()">
             <div>
                 <span class="mandatory-star">Régi jelszó</span>
-                <input name="old" type="password" required class="form-control" [(ngModel)]="pwdModel.old_password">
+                <input name="old" type="password" required class="form-control pwdUpdateInput" [(ngModel)]="pwdModel.old_password">
             </div>
             <div>
                 <span class="mandatory-star">Új jelszó</span>
-                <input name="new" type="password" required class="form-control" [(ngModel)]="pwdModel.new_password">
+                <input name="new" type="password" required class="form-control pwdUpdateInput" [(ngModel)]="pwdModel.new_password">
             </div>
             <div>
                 <span class="mandatory-star">Új jelszó mégegyszer</span>
-                <input name="conf" type="password" required class="form-control" [(ngModel)]="pwdModel.conf_password">
+                <input name="conf" type="password" required class="form-control pwdUpdateInput" [(ngModel)]="pwdModel.conf_password">
             </div>
             <button type="submit" class="blue-button" [disabled]="pwdModel.conf_password == '' || pwdModel.new_password == '' || pwdModel.old_password == ''">Mentés</button>
             @if (pwdErrorString != ''){

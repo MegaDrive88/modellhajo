@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import Competition from '../../interfaces/competition.interface';
 import { TopBarComponent } from "../top-bar";
 import CompetitionCategory from '../../interfaces/competition.category.interface';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
 import { DataService } from '../../services/data.service';
 import { forkJoin } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -10,7 +10,7 @@ import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'calendar-root',
-  imports: [TopBarComponent, DatePipe, RouterLink],
+  imports: [TopBarComponent, DatePipe, RouterLink, NgClass],
   templateUrl: './calendar.html',
   styleUrls: [
     '../../app.scss',

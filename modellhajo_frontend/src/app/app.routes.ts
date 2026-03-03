@@ -7,6 +7,7 @@ export const routes: Routes = [
     { path: 'login', loadComponent: () => import('./components/login/login').then(m => m.LoginComponent) },
     { path: 'user_register', loadComponent: () => import('./components/userRegister/userRegister').then(m => m.UserRegisterComponent) },
     { path: 'calendar', loadComponent: () => import('./components/calendar/calendar').then(m => m.CalendarComponent) },
+    { path: 'competition_register/:id', canActivate: [authGuard], loadComponent: () => import('./components/competitionRegister/competitionRegister').then(m => m.CompetitionRegisterComponent) },
     { path: 'dashboard', canActivate: [authGuard], loadComponent: () => import('./components/dashboard/dashboard').then(m => m.DashboardComponent) },
     { path: 'competitions', canActivate: [authGuard], loadComponent: () => import('./components/competitions/competitions').then(m => m.CompetitionsComponent) },
     { path: 'admin', canActivate: [adminGuard], loadComponent: () => import('./components/admin/admin').then(m => m.AdminComponent) },

@@ -1,14 +1,14 @@
-import { CommonModule } from "@angular/common";
+import { CommonModule, DatePipe } from "@angular/common";
 import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { DataService } from "../../services/data.service";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, RouterLink } from "@angular/router";
 import Competition from "../../interfaces/competition.interface";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { TopBarComponent } from "../top-bar";
 
 @Component({
   selector: 'competitions-root',
-  imports: [CommonModule, TopBarComponent],
+  imports: [CommonModule, TopBarComponent, DatePipe, RouterLink],
   templateUrl: './show-competition.html',
   styleUrls: [
     '../../app.scss',
@@ -33,14 +33,12 @@ export class ShowCompetitonComponent implements OnInit {
     }
 }
 /*TODO 
-- adatmodositas
 - verseny nevezes - addigra mmszid
 - tobb rendezo egy versenyhez
-- tamogatohoz versenyzot kapcsolni
-- ikonok fooldalon
 - egy verseny oldal
 - bejelentkezés + regisztracio gomb eltuntetes
 - rendezo lassa a nevezoket
 - verseny szerkesztes
+- tamogatohoz versenyzot kapcsolni
 - openstreetmap
 */
