@@ -1,0 +1,25 @@
+form{
+    background-color: #4483d4b4;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    display: flex;
+    gap: 15px;
+    flex-direction: column;
+}
+.mandatory-star::after{
+    pointer-events: none;
+    content: "*";
+    color: darkred;
+}
+#eye-button{
+    border: 0;
+    margin-left: 15px;
+    height: min-content;
+    margin-bottom: 10px;
+    padding: 2px;
+    border-radius: 5px;
+    &.eye-on{
+        background-color: #4483d4b4;
+    }
+}

@@ -1,0 +1,47 @@
+<menu-bar-root/>
+<div class="row g-0 py-2 px-4">
+    <div class="col-12 col-md-6 px-2">
+        <h3>Adatmódosítás</h3>
+        <form #f1="ngForm" (ngSubmit)="updateUserData()">
+            <div>
+                <span class="mandatory-star">Megjelenő név</span>
+                <input name="displayname" type="text" required class="form-control" [(ngModel)]="userCopy.megjeleno_nev">
+            </div>
+            <div>
+                <span class="mandatory-star">Felhasználónév</span>
+                <input name="username" type="text" required class="form-control" [(ngModel)]="userCopy.felhasznalonev">
+            </div>
+            <div>
+                <span class="mandatory-star">E-mail cím</span>
+                <input name="email" type="email" required class="form-control" [(ngModel)]="userCopy.email">
+            </div>
+            <button type="submit" class="blue-button" [disabled]="userCopy.megjeleno_nev == '' || userCopy.felhasznalonev == '' || userCopy.email == ''">Mentés</button>
+            @if (userDataErrorString != ''){
+                <p class="errorBox">{{userDataErrorString | translate}}</p>
+            }
+        </form>
+    </div>
+    <div class="col-12 col-md-6 px-2">
+        <div class="d-flex" style="align-items: center;">
+            <h3>Jelszóváltoztatás</h3> <button id="eye-button">👁️</button>
+        </div>
+        <form #f2="ngForm" (ngSubmit)="updatePassword()">
+            <div>
+                <span class="mandatory-star">Régi jelszó</span>
+                <input name="old" type="password" required class="form-control" [(ngModel)]="pwdModel.old_password">
+            </div>
+            <div>
+                <span class="mandatory-star">Új jelszó</span>
+                <input name="new" type="password" required class="form-control" [(ngModel)]="pwdModel.new_password">
+            </div>
+            <div>
+                <span class="mandatory-star">Új jelszó mégegyszer</span>
+                <input name="conf" type="password" required class="form-control" [(ngModel)]="pwdModel.conf_password">
+            </div>
+            <button type="submit" class="blue-button" [disabled]="pwdModel.conf_password == '' || pwdModel.new_password == '' || pwdModel.old_password == ''">Mentés</button>
+            @if (pwdErrorString != ''){
+                <p class="errorBox">{{pwdErrorString | translate}}</p>
+            }
+        </form>
+    </div>
+</div>

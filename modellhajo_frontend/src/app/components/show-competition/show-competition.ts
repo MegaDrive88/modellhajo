@@ -41,5 +41,6 @@ export class ShowCompetitonComponent implements OnInit {
 - egy verseny oldal
 - bejelentkezés + regisztracio gomb eltuntetes
 - rendezo lassa a nevezoket
+- verseny szerkesztes
 - openstreetmap
 */

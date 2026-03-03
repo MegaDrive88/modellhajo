@@ -10,6 +10,7 @@ export const routes: Routes = [
     { path: 'dashboard', canActivate: [authGuard], loadComponent: () => import('./components/dashboard/dashboard').then(m => m.DashboardComponent) },
     { path: 'competitions', canActivate: [authGuard], loadComponent: () => import('./components/competitions/competitions').then(m => m.CompetitionsComponent) },
     { path: 'admin', canActivate: [adminGuard], loadComponent: () => import('./components/admin/admin').then(m => m.AdminComponent) },
+    { path: 'user_management', canActivate: [authGuard], loadComponent: () => import('./components/userManagement/userManagement').then(m => m.UserManagementComponent) },
     { path: 'competition/:id', loadComponent: () => import('./components/show-competition/show-competition').then(m => m.ShowCompetitonComponent) },
     { path: '**', redirectTo: '' }
 ];

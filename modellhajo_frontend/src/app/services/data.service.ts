@@ -232,4 +232,12 @@ export class DataService {
   getCompetitionById(id: number){
     return this.http.get<CompetitionResponse>(`${this.API_URL}/getCompetition/${id}`)
   }
+
+  updateUser(userData: User){
+    return this.http.patch<any>(`${this.API_URL}/updateUser/${userData.id}`, userData, {headers: this.getHeaders()} )
+  }
+
+  updatePassword(id: number, passwordModel: any){
+    return this.http.patch<any>(`${this.API_URL}/updatePassword/${id}`, passwordModel, {headers: this.getHeaders()} )
+  }
 }
