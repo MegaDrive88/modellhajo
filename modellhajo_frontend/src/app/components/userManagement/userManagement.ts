@@ -14,12 +14,12 @@ import { TranslatePipe } from '@ngx-translate/core';
     './userManagement.scss'
 ]})
 export class UserManagementComponent implements OnInit{
-  private ds = inject(DataService)
+  protected ds = inject(DataService)
   protected userCopy!: User
   protected pwdModel = {
     old_password: "",
     new_password: "",
-    conf_password: ""
+    conf_password: "",
   }
   protected userDataErrorString = ''
   protected pwdErrorString = ''

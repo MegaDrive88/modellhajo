@@ -10,6 +10,7 @@ import Competition from '../interfaces/competition.interface';
 import CompetitionCategory from '../interfaces/competition.category.interface';
 import { environment } from '../../environments/environment';
 import { firstValueFrom } from 'rxjs';
+import CompetitionEntry from '../interfaces/competition.entry.interface';
 
 export interface AssociationsAndCategoriesResponse {
   success: boolean;
@@ -239,5 +240,9 @@ export class DataService {
 
   updatePassword(id: number, passwordModel: any){
     return this.http.patch<any>(`${this.API_URL}/updatePassword/${id}`, passwordModel, {headers: this.getHeaders()} )
+  }
+
+  enterCompetition(id: number, entry: number[]){
+    return this.http.post<any>(`${this.API_URL}/enterCompetition/${id}`, {entry:entry}, {headers: this.getHeaders()} )
   }
 }

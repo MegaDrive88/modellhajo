@@ -15,6 +15,12 @@
                 <span class="mandatory-star">E-mail cím</span>
                 <input name="email" type="email" required class="form-control" [(ngModel)]="userCopy.email">
             </div>
+            @if (ds.getUser()?.szerepkor_id == 2) {
+                <div>
+                    <span class="">MMSZ Tagsági szám</span>
+                    <input name="mmszid" type="text" class="form-control" [(ngModel)]="userCopy.mmsz_id">
+                </div>
+            }
             <button type="submit" class="blue-button" [disabled]="userCopy.megjeleno_nev == '' || userCopy.felhasznalonev == '' || userCopy.email == ''">Mentés</button>
             @if (userDataErrorString != ''){
                 <p class="errorBox">{{userDataErrorString | translate}}</p>

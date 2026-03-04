@@ -95,3 +95,8 @@ section{
     color: darkgreen;
     border: 1px solid green;
 }
+.mandatory-star::after{
+    pointer-events: none;
+    content: "*";
+    color: darkred;
+}

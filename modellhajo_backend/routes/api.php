@@ -9,6 +9,7 @@ use App\Models\CompetitionModel;
 use App\Models\MenuItemModel;
 use App\Models\CompetitionCategoryModel;
 use App\Models\CategoryModel;
+use App\Models\CompetitionRegistryModel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -78,6 +79,18 @@ Route::middleware("auth:sanctum")->patch('/updateUser/{id}', function ($id, Requ
             "success" => false,
             "error" => "EMAIL_NOT_UNIQUE"
         ]);
+    }
+    if($request->input("mmsz_id") !== null && $request->input("mmsz_id") != ""){
+        $mmszids = UserModel::select("mmsz_id")->where('id', '<>', $user->id)->pluck('mmsz_id')->toArray();
+        if (!in_array($request->input("mmsz_id"), $mmszids)) {
+            $user->mmsz_id = $request->input("mmsz_id");
+        }
+        else{
+            return response()->json([
+                "success" => false,
+                "error" => "MMSZID_NOT_UNIQUE"
+            ]);
+        }
     }
     try{
         $user->save();
@@ -273,7 +286,7 @@ Route::middleware(["auth:sanctum", "ability:organizer"])->get('/getUserCompetiti
 });
 
 Route::get('/getCompetition/{id}', function ($id, Request $request){
-    if(CompetitionModel::where('id', '=', $id)->get())
+    if(CompetitionModel::where('id', '=', $id)->get()->count() != 0)
         return response()->json([
             'success' => true,
             'data' => CompetitionModel::where('id', '=', $id)->first()
@@ -332,4 +345,24 @@ Route::post('/logout', function (Request $request) {
     ]);
 })->middleware('auth:sanctum');
 
-// TUL SOK CLIENT HIBAVAL VALAMIT KEZDENI
+// , 'ability:competitor,supporter'
+Route::middleware(['auth:sanctum', 'abilities:competitor,supporter'])->
+post('/enterCompetition/{id}', function ($id, Request $request) {
+    $skip = [];
+    foreach ($request->input("entry") as $cat) {
+        if (CompetitionRegistryModel::whereRaw("versenyzoid = ".$request->user()->id." AND kategoriaid = ".$cat." AND versenyid = ".$id)->get()->count() != 0){
+            array_push($skip, $cat);
+            continue;
+        }
+        $registry = new CompetitionRegistryModel();
+        $registry->versenyzoid = $request->user()->id;
+        $registry->kategoriaid = $cat;
+        $registry->versenyid = $id;
+        $registry->save();
+    }
+    return response()->json([
+        'success' => true,
+        'skipped' => $skip,
+        'delta' => count($request->input("entry")) - count($skip)
+    ], 201);
+});

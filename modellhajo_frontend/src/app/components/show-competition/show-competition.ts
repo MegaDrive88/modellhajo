@@ -19,6 +19,7 @@ export class ShowCompetitonComponent implements OnInit {
     protected ds = inject(DataService)
     private route = inject(ActivatedRoute)
     private destroyRef = inject(DestroyRef)
+    protected today = new Date().toISOString()
     ngOnInit(): void {
         this.ds.loader.loadingOn()
         this.ds.getCompetitionById(Number(this.route.snapshot.paramMap.get('id')!))
@@ -33,10 +34,7 @@ export class ShowCompetitonComponent implements OnInit {
     }
 }
 /*TODO 
-- verseny nevezes - addigra mmszid
 - tobb rendezo egy versenyhez
-- egy verseny oldal
-- bejelentkezés + regisztracio gomb eltuntetes
 - rendezo lassa a nevezoket
 - verseny szerkesztes
 - tamogatohoz versenyzot kapcsolni

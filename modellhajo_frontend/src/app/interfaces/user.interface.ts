@@ -9,6 +9,8 @@ export default interface User{
     szerepkor_id: number;
     szerepkort_elfogadta: number;
     szerepkor_elfogadva: Date;
+    tamogatott_versenyzo:number|null|undefined;
+    mmsz_id:string|null|undefined;
     isadmin:boolean;
     role: Role;
 }

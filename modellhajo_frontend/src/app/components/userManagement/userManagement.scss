@@ -7,11 +7,6 @@ form{
     gap: 15px;
     flex-direction: column;
 }
-.mandatory-star::after{
-    pointer-events: none;
-    content: "*";
-    color: darkred;
-}
 #eye-button{
     border: 0;
     margin-left: 15px;
