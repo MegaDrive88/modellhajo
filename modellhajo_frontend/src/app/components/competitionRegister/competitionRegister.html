@@ -1,0 +1,31 @@
+<menu-bar-root/>
+<!-- guard -->
+<div class="g-0 col-12 col-lg-5 py-2 px-5 mx-auto">
+    <h2 class="text-center">{{competition?.nev}}</h2>
+    <!-- mmsz id-t nezni -->
+    <form >
+         <div>
+            <span class="mandatory-star">Kategória(k)</span>
+            <ng-select 
+                #catSelector="ngModel"
+                [multiple]="true"
+                bindLabel="nev"
+                bindValue="id"
+                [items]="competitionCategories"
+                placeholder="Kérem válasszon legalább egyet"
+                name="competitionCategories"
+                [(ngModel)]="newCompetitionCategories"
+                >
+            </ng-select>
+        </div>
+        <div>
+            <span>Válassza ki, melyik egyesület színeiben versenyez</span>
+            <select name="assocSelector" class="form-select" [(ngModel)]="selectedAssoc">
+                @for (assoc of associations; track assoc.id) {
+                    <option value="{{assoc.id}}">{{assoc.nev}}</option>
+                }
+            </select>
+        </div>
+        <button class="blue-button" (click)="enterCompetition()" [disabled]="newCompetitionCategories.length == 0">Nevezés</button>
+    </form>
+</div>

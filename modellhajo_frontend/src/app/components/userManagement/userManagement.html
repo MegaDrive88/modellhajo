@@ -1,30 +1,53 @@
-@if (userIsAdmin && user) {
-
-    <topbar [username]="user.megjeleno_nev"></topbar>
-
-    <h4>Szerepkör kérések:</h4>
-    <table class="col-12 table table-striped">
-        <thead>
-            <tr>
-                <td>Felhasználó</td>
-                <td>E-mail</td>
-                <td>Kívánt szerepkör</td>
-                <td class="text-center">Elfogad</td>
-                <td class="text-center">Elutasít</td>
-            </tr>
-        </thead>
-        <tbody>
-            @for (req of roleRequests; track $index) {
-                <tr>
-                    <td>{{req.megjeleno_nev}}</td>
-                    <td>{{req.email}}</td>
-                    <td>{{req.role.szerepkor_nev}}</td>
-                    <td class="text-center"><button class="btn btn-success" (click)="decideRoleRequest(req.id, true)">✓</button></td>
-                    <td class="text-center"><button class="btn btn-danger" (click)="decideRoleRequest(req.id, false)">X</button></td>
-                </tr>
+<menu-bar-root/>
+<div class="row g-0 py-2 px-4">
+    <div class="col-12 col-md-6 px-2">
+        <h3>Adatmódosítás</h3>
+        <form #f1="ngForm" (ngSubmit)="updateUserData()">
+            <div>
+                <span class="mandatory-star">Megjelenő név</span>
+                <input name="displayname" type="text" required class="form-control" [(ngModel)]="userCopy.megjeleno_nev">
+            </div>
+            <div>
+                <span class="mandatory-star">Felhasználónév</span>
+                <input name="username" type="text" required class="form-control" [(ngModel)]="userCopy.felhasznalonev">
+            </div>
+            <div>
+                <span class="mandatory-star">E-mail cím</span>
+                <input name="email" type="email" required class="form-control" [(ngModel)]="userCopy.email">
+            </div>
+            @if (ds.getUser()?.szerepkor_id == 2) {
+                <div>
+                    <span class="">MMSZ Tagsági szám</span>
+                    <input name="mmszid" type="text" class="form-control" [(ngModel)]="userCopy.mmsz_id">
+                </div>
             }
-        </tbody>
-    </table>
-}
-
-<router-outlet />
+            <button type="submit" class="blue-button" [disabled]="userCopy.megjeleno_nev == '' || userCopy.felhasznalonev == '' || userCopy.email == ''">Mentés</button>
+            @if (userDataErrorString != ''){
+                <p class="errorBox">{{userDataErrorString | translate}}</p>
+            }
+        </form>
+    </div>
+    <div class="col-12 col-md-6 px-2">
+        <div class="d-flex" style="align-items: center;">
+            <h3>Jelszóváltoztatás</h3> <button id="eye-button" (click)="eyeCommand($event)">👁️</button>
+        </div>
+        <form #f2="ngForm" (ngSubmit)="updatePassword()">
+            <div>
+                <span class="mandatory-star">Régi jelszó</span>
+                <input name="old" type="password" required class="form-control pwdUpdateInput" [(ngModel)]="pwdModel.old_password">
+            </div>
+            <div>
+                <span class="mandatory-star">Új jelszó</span>
+                <input name="new" type="password" required class="form-control pwdUpdateInput" [(ngModel)]="pwdModel.new_password">
+            </div>
+            <div>
+                <span class="mandatory-star">Új jelszó mégegyszer</span>
+                <input name="conf" type="password" required class="form-control pwdUpdateInput" [(ngModel)]="pwdModel.conf_password">
+            </div>
+            <button type="submit" class="blue-button" [disabled]="pwdModel.conf_password == '' || pwdModel.new_password == '' || pwdModel.old_password == ''">Mentés</button>
+            @if (pwdErrorString != ''){
+                <p class="errorBox">{{pwdErrorString | translate}}</p>
+            }
+        </form>
+    </div>
+</div>

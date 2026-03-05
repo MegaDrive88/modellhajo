@@ -1,0 +1,25 @@
+$opt-bg: #4483d4;
+.competitions-wrapper{
+    background-color: $opt-bg;
+    display: flex;
+    flex-direction: column;
+    border-radius: 30px;
+    padding: 15px;
+    & img{
+        width: 100%;
+        border-radius: 15px;
+        opacity: .8;
+    }
+    & #overlay{
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        border-radius: 15px;
+        background-color: #000000b4;
+        padding: 15px;
+        color: white;
+        flex-direction: column;
+        align-items: center;
+    }
+}

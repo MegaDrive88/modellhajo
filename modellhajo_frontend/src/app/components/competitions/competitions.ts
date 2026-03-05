@@ -1,123 +1,125 @@
-import { Component, OnInit, Pipe, PipeTransform, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, DestroyRef, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { MenuBarComponent } from '../menu-bar/menu-bar';
 import { FormsModule } from '@angular/forms';
+import Competition from '../../interfaces/competition.interface';
 import { CommonModule } from '@angular/common';
-import { App } from '../../app';
-import User from '../../../interfaces/user.interface';
-import { FormGroup } from "../formgroup";
-import { TopBar } from '../topbar';
-import { TranslatePipe } from '@ngx-translate/core';
-import { HttpHeaders } from '@angular/common/http';
-import Competition from '../../../interfaces/competition.interface';
+import Association from '../../interfaces/association.interface';
+import Category from '../../interfaces/category.interface';
 import { NgSelectModule } from '@ng-select/ng-select';
-import Category from '../../../interfaces/category.interface';
-import Association from '../../../interfaces/association.interface';
+import CompetitionCategory from '../../interfaces/competition.category.interface';
+import { DataService } from '../../services/data.service';
+import { forkJoin } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-
-@Pipe({ name: 'categoryFilter' })
-export class CategoryFilterPipe implements PipeTransform {
-  transform(list: any[], id: number) {
-    if (list.length == 0) return []
-    return list.filter(x => x.id === id)[0].categories
-  }
-}
 
 @Component({
   selector: 'competitions-root',
-  imports: [RouterOutlet, FormsModule, CommonModule, FormGroup, TopBar, NgSelectModule, CategoryFilterPipe],
+  imports: [MenuBarComponent, FormsModule, CommonModule, NgSelectModule],
   templateUrl: './competitions.html',
-  styleUrl: '../../app.scss'
-})
-export class Competitions extends App implements OnInit {
-    protected associations: Association[] = []
-    protected categories: Category[] = []
-    protected newCompetitionCategories: number[] = []
-    protected formEnabled: boolean = false
-    protected userCompetitions: Competition[] = []
-    protected categoriesByCompetition: {id:number,categories:Category[]}[] = []
-    protected newComp: Omit<Competition, "id" | "letrehozo_id"> = {
-        kezdet: new Date().toISOString().split('T')[0],
-        veg: new Date().toISOString().split('T')[0],
-        nev: '',
-        evszam: '',
-        helyszin: '',
-        megjelenik: new Date().toISOString().split('T')[0],
-        nevezesi_hatarido: new Date().toISOString().split('T')[0],
-        gps_x: null,
-        gps_y: null,
-        szervezo_egyesulet: -1,
-        leiras: null,
-        nevezesi_dij_junior: null,
-        nevezesi_dij_normal: null,
-        nevezesi_dij_senior: null,
-        kep_url: null,
-        kep_fajlnev: null
-    }
-    override ngOnInit(): void {
-        super.ngOnInit()
-        this.loadingService.loadingOn()
-        
-        this.http.get<{success:boolean, associations:Association[], categories: Category[]}>(`${this.API_URL}/getAssociationsAndCategories`).subscribe(
-            data=>{
-                this.associations = data.associations
-                this.categories = data.categories
-            }
-        )
-        this.http.get<{success:boolean, data:Competition[]}>(`${this.API_URL}/getUserCompetitions`, {headers: this.headers}).subscribe(
-            data=>{                
-                this.userCompetitions = data.data
-                for(let comp of this.userCompetitions){
-                    this.http.get<any>(`${this.API_URL}/getCompetitionCategories/${comp.id}`, {headers: this.headers}).subscribe(
-                        data=> {
-                            if(data.success) 
-                                this.categoriesByCompetition = [...this.categoriesByCompetition, {
-                                    id: comp.id,
-                                    categories: data.categories.map((x:any)=>x.category)
-                                }]
-                                this.loadingService.loadingOff()
-                        },
-                        error=>console.log(error)
-                    )
-                }
-            }
-        )    
+  styleUrls: [
+    '../../app.scss',
+    './competitions.scss'
+  ]})
+export class CompetitionsComponent implements OnInit {
+  protected ds = inject(DataService)
+  private destroyRef = inject(DestroyRef)
+  protected associations!: Association[]
+  protected categories!: Category[]
+  protected newCompetitionCategories: number[] = []
+  protected userCompetitions!: Competition[]
+  protected competitionCategories!: CompetitionCategory[]
 
-    }
-    editEvent($event: { field: string; value: any }){
-        (this.newComp as any)[$event.field] = $event.value
-        this.updateFormEnabled()        
-    }
-    async sendCompetitionData(){
-        const imageUploader = document.querySelector("#competitionThumbnail") as HTMLInputElement
-        let original_name: string|null = null
-        if (imageUploader.files && imageUploader.files[0]){
-            const file = imageUploader.files[0]
-            original_name = file.name
-            const formdata = new FormData()
-            formdata.append("thumbnail", file)
-            const data:any = await this.http.post<any>(`${this.API_URL}/uploadCompetitionThumbnail`, formdata, {headers: this.headers}).toPromise()
-            this.newComp.kep_fajlnev = original_name
-            this.newComp.kep_url = data.url            
+  @ViewChild('competitionThumbnailInput') thumbnailInput!: ElementRef<HTMLInputElement>
+  
+  private today(){
+    const raw = new Date().toISOString().split(":")
+    raw.pop()
+    return raw.join(":")
+  }
+  protected newComp: Omit<Competition, "id" | "letrehozo_id"> = {
+      kezdet: this.today(),
+      veg: this.today(),
+      nev: '',
+      evszam: '',
+      helyszin: '',
+      megjelenik: this.today(),
+      nevezesi_hatarido: this.today(),
+      gps_x: null,
+      gps_y: null,
+      szervezo_egyesulet: -1,
+      leiras: null,
+      nevezesi_dij_junior: null,
+      nevezesi_dij_normal: null,
+      nevezesi_dij_senior: null,
+      kep_url: null,
+      kep_fajlnev: null,
+      categories:[]
+  }
+  ngOnInit(): void {
+    this.ds.loader.loadingOn()
+    // Use forkJoin to guarantee both calls complete before processing
+    forkJoin({
+      assocAndCats: this.ds.getAssociationsAndCategories(),
+      compCats: this.ds.getCompetitionCategories(),
+      userComps: this.ds.getUserCompetitions()
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: ({ assocAndCats, compCats, userComps }) => {
+        this.associations = assocAndCats.associations
+        this.categories = assocAndCats.categories
+        this.competitionCategories = compCats.categories
+        this.userCompetitions = userComps.data
+        for (const comp of this.userCompetitions) {
+          comp.categories = this.competitionCategories.filter(x => x.versenyid == comp.id).map(x => x.category)
         }
-        
-        this.http.post<any>(`${this.API_URL}/createCompetition`, this.newComp, {headers: this.headers}).subscribe(
-            data=> {
-                if (data.success) {
-                    this.http.post<any>(`${this.API_URL}/createCompetitionCategories`, { compId: data.compId, categs: this.newCompetitionCategories}, {headers: this.headers}).subscribe(
-                        data => {
-                            if (data.success) {
-                                alert("Sikeres verseny létrehozás")
-                                location.reload()
-                            }
-                        }
-                    )
+        this.ds.loader.loadingOff()
+      },
+      error: (err) => {
+        console.error('Failed to load competition data', err)
+        alert('Hiba történt az adatok betöltésekor.')
+        this.ds.loader.loadingOff()
+      }
+    })
+  }
+  async sendCompetitionData(){
+      this.ds.loader.loadingOn()
+      const fileInput = this.thumbnailInput.nativeElement
+      if (fileInput.files && fileInput.files[0]){
+          const file = fileInput.files[0]
+          const formdata = new FormData()
+          formdata.append("thumbnail", file)
+          const data = await this.ds.uploadCompetitionThumbnail(formdata)
+          this.newComp.kep_fajlnev = file.name
+          this.newComp.kep_url = data.url
+      }
+      this.ds.createCompetition(this.newComp).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        next: data => {
+          if (data.success) {
+            this.ds.createCompetitionCategories({ compId: data.compId, categs: this.newCompetitionCategories })
+              .pipe(takeUntilDestroyed(this.destroyRef))
+              .subscribe({
+                next: result => {
+                  if (result.success) {
+                    alert("Sikeres verseny létrehozás")
+                    this.ds.loader.loadingOff()
+                    this.ds.router.navigateByUrl('/competitions', { replaceUrl: true })
+                      .then(() => this.ngOnInit())
+                  }
+                },
+                error: err => {
+                  console.error(err)
+                  this.ds.loader.loadingOff()
                 }
-            },
-            error => console.log(error)
-        )
-    }
-    updateFormEnabled(){
-        this.formEnabled = (
+              })
+          }
+        },
+        error: err => {
+          console.error(err)
+          this.ds.loader.loadingOff()
+        }
+      })
+  }
+  FormEnabled(){
+        return (
             this.newComp.nev != "" &&
             this.newComp.helyszin != "" &&
             this.newComp.szervezo_egyesulet != -1 &&
@@ -129,31 +131,17 @@ export class Competitions extends App implements OnInit {
             this.newComp.kezdet <= this.newComp.veg && 
             this.newComp.nevezesi_hatarido <= this.newComp.kezdet
         )
+  }
+  deleteCompetition(id: number){
+    if (confirm("Biztosan törölni szeretné?")) {
+        this.ds.deleteCompetition(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+          next: data => {
+            if (data.success) {
+              this.userCompetitions = this.userCompetitions.filter(c => c.id !== id)
+            }
+          },
+          error: err => console.error(err)
+        })
     }
-    assocSelectorChange(){
-        this.newComp.szervezo_egyesulet = Number((document.querySelector("#assocSelector") as HTMLSelectElement).value)
-        this.updateFormEnabled()        
-    }
-    toggleDropdown(id:number, event:MouseEvent){
-        let sender = event.target! as HTMLButtonElement
-        if(sender.textContent == 'V') {
-            sender.textContent = '<';
-            (document.querySelector(`.competition-dropdown-${id}`)! as HTMLDivElement).hidden = false
-        }
-        else {
-            sender.textContent = 'V';
-            (document.querySelector(`.competition-dropdown-${id}`)! as HTMLDivElement).hidden = true
-        }
-    }
-    deleteCompetition(id: number){
-        if (confirm("Biztosan törölni szeretné?")) {
-            this.http.delete<any>(`${this.API_URL}/deleteCompetition/${id}`, {headers: this.headers}).subscribe(
-                data=>{
-                    if(data.success) location.reload()
-                },
-                error => console.log(error)
-            )
-        }
-    }
+  }
 }
-

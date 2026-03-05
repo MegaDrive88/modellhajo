@@ -1,36 +1,71 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
+import { MenuBarComponent } from '../menu-bar/menu-bar';
+import { DataService } from '../../services/data.service';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { App } from '../../app';
-import User from '../../../interfaces/user.interface';
-import { FormGroup } from "../formgroup";
-import { TopBar } from '../topbar';
+import User from '../../interfaces/user.interface';
 import { TranslatePipe } from '@ngx-translate/core';
-import { HttpHeaders } from '@angular/common/http';
-
 
 @Component({
-  selector: 'usermgmt-root',
-  imports: [RouterOutlet, FormsModule, CommonModule, TopBar],
+  selector: 'userManagement-root',
+  imports: [MenuBarComponent, FormsModule, TranslatePipe],
   templateUrl: './userManagement.html',
-  styleUrl: '../../app.scss'
-})
-export class UserManagement extends App implements OnInit {
-    protected roleRequests: User[] = []
-    getRoleRequests(){
-      this.http.get<User[]>(`${this.API_URL}/getRoleRequests`, {headers: this.headers}).subscribe(
-        data => this.roleRequests = data
-      )
-    }
-    decideRoleRequest(id:number, verdict: boolean){
-        this.http.patch<{success:boolean}>(`${this.API_URL}/decideRoleRequest/${verdict}`, {id: id}, {headers: this.headers}).subscribe(
-        data => {
-            if(data.success)
-            this.getRoleRequests()
+  styleUrls: [
+    '../../app.scss',
+    './userManagement.scss'
+]})
+export class UserManagementComponent implements OnInit{
+  protected ds = inject(DataService)
+  protected userCopy!: User
+  protected pwdModel = {
+    old_password: "",
+    new_password: "",
+    conf_password: "",
+  }
+  protected userDataErrorString = ''
+  protected pwdErrorString = ''
+  ngOnInit(): void {
+    this.userCopy = structuredClone(this.ds.getUser())!
+  }
+  updateUserData(){
+    this.userDataErrorString = ""
+    this.ds.updateUser(this.userCopy).subscribe({
+        next:(data)=>{
+            if(data.success){
+                this.ds.setUser(data.user)
+                alert("Adatai sikeresen módosultak!")
+            }
         },
-        error => console.log(error)
-        )
+        error:(err)=>{this.userDataErrorString = err.error.error}
+    })
+  }
+  updatePassword(){
+    this.pwdErrorString = ""
+    this.ds.updatePassword(this.userCopy.id, this.pwdModel).subscribe({
+        next:(data)=>{
+            if(data.success){
+                this.ds.setUser(data.user)
+                alert("Sikeres jelszó változtatás, kérjük jelentkezzen be újra!")
+                this.ds.logout()
+            }
+        },
+        error:(err)=>{this.pwdErrorString = err.error.error}
+    })
+  }
+  eyeCommand(e:Event){
+    const inputs = document.querySelectorAll(".pwdUpdateInput") as NodeListOf<HTMLInputElement>
+    if((e.target as HTMLButtonElement)!.classList.contains("eye-on")){
+      (e.target as HTMLButtonElement)!.classList.remove("eye-on")
+      for (let inp of inputs){
+        inp.type = "password"
+      }
     }
+    else{
+      (e.target as HTMLButtonElement)!.classList.add("eye-on")
+      for (let inp of inputs){
+        inp.type = "text"
+      }
+    }
+    
 
+  }
 }

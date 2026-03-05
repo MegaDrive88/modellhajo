@@ -1,0 +1,75 @@
+1. Navigation via template interpolation instead of route guards
+Multiple components "protect" routes by rendering {{ds.router.navigateByUrl("/login")}} inside an @else block:
+
+login.html:25
+dashboard.html:5
+admin.html:5
+competitions.html:131
+This is a side-effect inside a template expression — Angular template bindings should be pure. It also visually flashes the redirect return value. Use an Angular CanActivate route guard instead.
+
+2. location.reload() instead of Angular-native state refresh
+competitions.ts — after creating/deleting a competition
+data.service.ts:65 — in logout()
+Full page reloads defeat SPA benefits. Re-fetch data and update local arrays instead, or use Router.navigate with state.
+
+3. Race condition from parallel independent subscriptions
+In competitions.ts ngOnInit and calendar.ts, getCompetitionCategories and getUserCompetitions/getAllCompetitions fire in parallel, but the second subscription depends on this.competitionCategories being populated by the first. If the second resolves before the first, this.competitionCategories is undefined. Use forkJoin or switchMap to guarantee ordering.
+
+4. Hardcoded API URL & image base URL
+'http://127.0.0.1:8000/api' in data.service.ts:18
+'http://127.0.0.1:8000' prefix on image src in competitions.html and calendar.html
+Use an environment.ts file or Angular's APP_INITIALIZER/config injection so the URL is centralized and environment-aware.
+
+5. Deprecated .toPromise() usage
+In data.service.ts:98 — .toPromise() is deprecated. Use firstValueFrom() from RxJS.
+
+6. Excessive use of any types
+Throughout data.service.ts — methods like getCompetitionCategories(), getAllCompetitions(), createCompetition(), createCompetitionCategories(), deleteCompetition() all return Observable<any>. Define proper response interfaces for type safety.
+
+7. No error handling on many HTTP calls
+competitions.ts — getAssociationsAndCategories() has no error callback
+calendar.ts — error is only console.log'd
+Several places only console.log(error) instead of showing user feedback or retrying
+8. App component provided as a service in appConfig
+app.config.ts:15 lists App (the root component) in providers. Components shouldn't be used as injectable services — this was likely meant to share HttpClient, Router, LoadingService, and API_URL, which is now correctly done via DataService. Remove App from providers.
+
+9. Duplicate selector: admin component uses calendar-root
+admin.ts has selector: 'calendar-root' — this is a copy-paste error. It should be 'admin-root'.
+
+10. href still present in userRegister.html
+userRegister.html:7 still has <a href="/">Vissza</a> (and the commented-out code on line 33 has href="/login"). These should be [routerLink] for SPA navigation. The other templates were already converted.
+
+11. document.querySelector for DOM access
+In competitions.ts sendCompetitionData — document.querySelector("#competitionThumbnail") bypasses Angular. Use @ViewChild with a template reference instead.
+
+12. No unsubscribe / subscription management
+All .subscribe() calls across every component are never unsubscribed. This can cause memory leaks, especially when components are destroyed while HTTP calls are in flight. Use takeUntilDestroyed(), DestroyRef, or the async pipe.
+
+13. Client-side password hashing with MD5
+login.ts hashes the password with MD5 on the client side. MD5 is cryptographically broken. Password hashing should happen server-side with bcrypt/argon2. Sending plaintext over HTTPS is standard and far more secure than client-side MD5.
+
+14. Mixing *ngIf with @if control flow
+competitions.html uses *ngIf in several places alongside the new @if block syntax. Pick one — preferably the new @if syntax since you're on a modern Angular version.
+
+15. Token stored in plain localStorage
+data.service.ts stores the auth token in localStorage, which is vulnerable to XSS. Consider using httpOnly cookies set by the backend, or at minimum sanitize all inputs.
+
+16. logout() doesn't invalidate the token server-side
+data.service.ts:63 clears local state and sets the token to "" in localStorage but never calls a backend endpoint to revoke the Sanctum token. The token remains valid server-side.
+
+17. No lazy loading of routes
+app.routes.ts eagerly imports all components. Use loadComponent: () => import(...) for routes the user may never visit (admin, competitions, etc.) to reduce initial bundle size.
+
+18. Inconsistent access patterns for shared state
+Some components used to inject App as statics (as seen in the original competitions.ts attached file) while newer code uses inject(DataService). Make sure all components consistently use DataService.
+
+Summary of priority fixes:
+
+Priority	Issue
+Critical	Race condition in parallel subscriptions (#3)
+Critical	Duplicate calendar-root selector (#9)
+High	Template side-effect navigation — use route guards (#1)
+High	MD5 password hashing (#13)
+High	No server-side token invalidation on logout (#16)
+Medium	location.reload() usage (#2), any types (#6), no error handling (#7)
+Low	Lazy loading (#17), *ngIf vs @if consistency (#14), remaining href (#10)

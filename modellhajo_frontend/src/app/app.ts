@@ -1,71 +1,38 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, inject, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
-import { RouterOutlet, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import User from '../interfaces/user.interface';
-import { DataService } from './data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { RouterOutlet, NavigationEnd } from '@angular/router';
 import { LoadingIndicatorComponent } from './components/loading-indicator';
-import { LoadingService } from './loading.service';
+import { DataService } from './services/data.service';
+import { filter, switchMap, distinctUntilChanged, map, debounceTime } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, FormsModule, CommonModule, LoadingIndicatorComponent],
+  imports: [RouterOutlet, LoadingIndicatorComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App implements OnInit{
-  protected loadingService = inject(LoadingService)
-  protected readonly API_URL = 'http://127.0.0.1:8000/api'
-  protected http = inject(HttpClient);
-  protected router = inject(Router);
-  protected dataService = inject(DataService);
-  protected rememberMe = false;
-  protected user:User|undefined;
-  protected headers: HttpHeaders|undefined;
-  protected userIsAdmin = false
-  ngOnInit(): void {
-    this.loadingService.loadingOn()
-      this.user = this.dataService.getUser()
-      this.headers = new HttpHeaders({
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${this.dataService.getToken()}`
-      });
-      this.http.get<boolean>(`${this.API_URL}/checkAdmin`, {headers: this.headers}).subscribe(
-        data => {
-            this.userIsAdmin = data
+export class App implements OnInit {
+  private ds = inject(DataService)
+  private destroyRef = inject(DestroyRef)
 
-            this.loadingService.loadingOff()
-        },
-        error => console.log(error)        
-      )
-      
-      
-  }
-  ngAfterViewInit(){ // elegansabb megoldas van?
-    if (this.user)
-      this.http.get<boolean>(`${this.API_URL}/checkTokenExpired`, {headers: this.headers }).subscribe(
-      data=>{},
-      error=>{
-        if (error.status == 401){
-          alert("Lejárt a munkamenet, kérjük jelentkezzen be újra!")
-          this.logout()
+  ngOnInit() {
+    // Check token expiry once per navigation (not on every menu-bar mount)
+    // https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request -> nem kell ennyire tulbonyolitani ez alapjan
+    this.ds.router.events.pipe(
+      filter(e => e instanceof NavigationEnd),
+      map(e => (e as NavigationEnd).urlAfterRedirects),
+      distinctUntilChanged(),
+      debounceTime(50),
+      filter(() => !!this.ds.getUser()),
+      switchMap(() => this.ds.checkTokenExpired()),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      error: (error) => {
+        if (error.status === 401) {
+          alert('Lejárt a munkamenet, kérjük jelentkezzen be újra!')
+          this.ds.logout()
         }
       }
-    )
-    
+    })
   }
-  private translate = inject(TranslateService);
-  constructor() {
-    this.translate.addLangs(['en', 'hu']);
-    this.translate.setFallbackLang('hu');
-    this.translate.use('hu');
-  }
-  logout(){ // backend hivas , token torles stb
-    this.dataService.clearUser()
-    this.user = undefined
-    this.router.navigateByUrl("/login")
-  }
-  
 }

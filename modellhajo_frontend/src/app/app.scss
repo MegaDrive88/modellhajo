@@ -1,18 +1,83 @@
-input{
-    margin-bottom: 10px;
+@keyframes reveal {
+  to {
+    opacity: 1;
+  }
 }
-button:not(.btn-success, .btn-danger){
-    background-color: var(--mat-sys-primary);
-    color: white;
+.reveal-animate{
+  animation: reveal 0.6s ease-out forwards;
+  opacity: 0;
+}
+.blue-inverse-button, .blue-button{
+  border: 0;
+  outline: 0;
+  border-radius: 50px;
+  padding: 8px 40px;
+  font-weight: 500;
+  text-decoration: none;
+  &:hover{
+    cursor: pointer;
+    text-decoration: underline;
+    -webkit-box-shadow:0px 0px 20px 5px var(--mat-sys-primary);
+    -moz-box-shadow: 0px 0px 20px 5px var(--mat-sys-primary);
+    box-shadow: 0px 0px 20px 5px var(--mat-sys-primary);
+    transition: box-shadow .3s ease-in-out;
+  }
+  &:disabled{
+    cursor: not-allowed;
+    opacity: .6;
     &:hover{
-        background-color: color-mix(in srgb, var(--mat-sys-primary), white 25%);;
+      box-shadow: none;
     }
+  }
+}
+.blue-button{
+  background-color: var(--mat-sys-primary);
+  color: white;
+}
+.blue-inverse-button{
+  background-color: white;
+  color: var(--mat-sys-primary);
+  border: 3px solid var(--mat-sys-primary);
+}
+section{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 80px 100px;
+}
+.white-bg{
+  background-color: white;
+  color: black;
+}
+#landing-bg{
+  top: 0;
+  background:
+  linear-gradient(rgba(0, 40, 120, 0.5), rgba(0, 40, 120, 0.5)),
+                  url("/background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: -1;
+}
+#top-bar{
+    background-color: var(--mat-sys-on-primary-fixed);
+    color: white;
+    width: 100%;
+    height: max-content;
+    padding: 15px 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    z-index: 2;
+    top: 0;
 }
 .formError{
-    color: #EE5C6C;
-    text-align: left;
+    color: darkred;
     font-size: small;
-    margin: 5px 0 10px 5px;
+    margin: 5px 0 0 5px;
 }
 .errorBox{
     background-color: #EE5C6C;
@@ -30,58 +95,8 @@ button:not(.btn-success, .btn-danger){
     color: darkgreen;
     border: 1px solid green;
 }
-#cancelBTN{
-    margin-left: 10px;
-    background-color: var(--mat-sys-inverse-primary);
-    color: black;
-    &:hover{
-        color: white;
-    }
-}
-.competitions-list{
-    // & :last-child{
-    //     border: 0 !important;
-    // }
-    & div.competition-row{
-        width: 100%;
-        background-color: white;
-        height: 40px;
-        border-bottom: 1px solid darkgray;
-        padding: 10px;
-        & button{
-            float: right;
-            border: 0;
-            border-radius: 5px;
-            width: 22px;
-        }
-    }
-    border-radius: 10px;
-    border: 1px solid grey;
-    overflow: hidden;
-}
-[class^="competition-dropdown-"]{
-    background-color: #f0f0f0;
-    padding: 15px;
-    & img{
-        float: left;
-        width: 60px;
-    }
-    & ul{
-        display: inline-block;
-    }
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-input[type=number] {
-    appearance: textfield;
-    -moz-appearance:textfield;
-    text-align: right;
-}
-.dropdown-menu a{
-    cursor: pointer;
+.mandatory-star::after{
+    pointer-events: none;
+    content: "*";
+    color: darkred;
 }

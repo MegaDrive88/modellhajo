@@ -1,50 +1,56 @@
-import { Component, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { DataService } from './../../services/data.service';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Md5 } from 'ts-md5';
-import { App } from '../../app';
-import User from '../../../interfaces/user.interface';
-
 
 @Component({
   selector: 'login-root',
-  imports: [RouterOutlet, FormsModule, CommonModule],
+  imports: [FormsModule, RouterLink],
   templateUrl: './login.html',
-  styleUrl: '../../app.scss'
-})
-export class Login extends App {
+  styleUrls: [
+    '../../app.scss',
+    './login.scss'
+  ]})
+export class LoginComponent implements OnInit {
+  protected ds = inject(DataService)
+  private destroyRef = inject(DestroyRef)
   protected usernameOrEmail = ''
-  protected pwd = ''
-  // protected loginAttempts = 0
+  protected password = ''
   protected loginSuccess = true
-  override ngOnInit(): void {
-            this.loadingService.loadingOff()
-      
+
+  ngOnInit() {
+    if (this.ds.getUser()) {
+      this.ds.router.navigateByUrl('/dashboard');
+    }
   }
-  protected async sendLoginData(){
+
+  sendLoginData(){
     const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$/
-    const isEmail = emailRegex.test(this.usernameOrEmail)    
-    const hashedPwd = Md5.hashStr(`PasswordSalted${this.pwd}`)
-    // this.loginAttempts++
+    const isEmail = emailRegex.test(this.usernameOrEmail)
+
     this.loginSuccess = true
     const loginModel = {
       user: this.usernameOrEmail,
       isEmail: isEmail,
-      pwdHash: hashedPwd
+      pwdHash: Md5.hashStr(`PasswordSalted${this.password}`)
     }
-    this.http.post<{success:boolean, user?:User, access_token?:string}>(`${this.API_URL}/login`, loginModel).subscribe(
-      (data)=>{
+    this.ds.loader.loadingOn()
+    this.ds.login(loginModel).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (data) => {
         this.loginSuccess = data.success
-        if(data.success){
-          this.dataService.setUser(data.user!)
-          this.dataService.setToken(data.access_token!)
-          this.router.navigateByUrl("/homepage")
+        if (data.success) {
+          this.ds.setUser(data.user!)
+          this.ds.setToken(data.access_token!)
+          this.ds.router.navigateByUrl('/dashboard')
         }
+        this.ds.loader.loadingOff()
       },
-      error=>{
-        alert("Szerverhiba, próbálja újra később!")
+      error: () => {
+        alert('Szerverhiba, próbálja újra később!')
+        this.ds.loader.loadingOff()
       }
-    )
+    })
   }
 }

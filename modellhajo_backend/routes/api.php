@@ -9,6 +9,7 @@ use App\Models\CompetitionModel;
 use App\Models\MenuItemModel;
 use App\Models\CompetitionCategoryModel;
 use App\Models\CategoryModel;
+use App\Models\CompetitionRegistryModel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -40,7 +41,7 @@ Route::post('/login', function (Request $request) {
         ["guest"],
         ["supporter"]
     ];
-
+    //elfogadast nezni
     $token = $result->createToken('modellhajo-login-token', array_merge($ROLE_ABILITIES[$result->szerepkor_id-1], $result->isadmin ? ["admin"] : []))->plainTextToken;
 
     return response()->json([
@@ -53,10 +54,10 @@ Route::post('/login', function (Request $request) {
 Route::middleware("auth:sanctum")->patch('/updateUser/{id}', function ($id, Request $request){
     $user = UserModel::find($id);
     if (!$user) {
-        return response()->json(['success' => false, 'error' => 'USER_NOT_FOUND']);
+        return response()->json(['success' => false, 'error' => 'USER_NOT_FOUND'], 404);
     }
     if($request->input("megjeleno_nev") == "" || $request->input("felhasznalonev") == "" || $request->input("email") == ""){
-        return response()->json(['success' => false, 'error' => 'EMPTY_FIELD']);
+        return response()->json(['success' => false, 'error' => 'EMPTY_FIELD'], 400);
     }
     $user->megjeleno_nev = $request->input("megjeleno_nev");
     $users = UserModel::select("felhasznalonev")->where('id', '<>', $user->id)->pluck('felhasznalonev')->toArray(); //kulon func
@@ -79,6 +80,18 @@ Route::middleware("auth:sanctum")->patch('/updateUser/{id}', function ($id, Requ
             "error" => "EMAIL_NOT_UNIQUE"
         ]);
     }
+    if($request->input("mmsz_id") !== null && $request->input("mmsz_id") != ""){
+        $mmszids = UserModel::select("mmsz_id")->where('id', '<>', $user->id)->pluck('mmsz_id')->toArray();
+        if (!in_array($request->input("mmsz_id"), $mmszids)) {
+            $user->mmsz_id = $request->input("mmsz_id");
+        }
+        else{
+            return response()->json([
+                "success" => false,
+                "error" => "MMSZID_NOT_UNIQUE"
+            ]);
+        }
+    }
     try{
         $user->save();
         return response()->json([
@@ -89,17 +102,17 @@ Route::middleware("auth:sanctum")->patch('/updateUser/{id}', function ($id, Requ
         return response()->json([
             'success' => false,
             'error' => $e
-        ]);
+        ], 400);
     }
 });
 
 Route::middleware("auth:sanctum")->patch('/updatePassword/{id}', function ($id, Request $request) {
     $user = UserModel::find($id);
     if (!$user) {
-        return response()->json(['success' => false, 'error' => 'USER_NOT_FOUND']);
+        return response()->json(['success' => false, 'error' => 'USER_NOT_FOUND'], 404);
     }
     if($request->input("old_password") == "" || $request->input("new_password") == "" || $request->input("conf_password") == ""){
-        return response()->json(['success' => false, 'error' => 'EMPTY_FIELD']);
+        return response()->json(['success' => false, 'error' => 'EMPTY_FIELD'], 400);
     }
     if (substr($user->jelszo, 1, -1) == md5("PasswordSalted".$request->input("old_password"))){
         if($request->input("new_password") == $request->input("conf_password")){
@@ -109,7 +122,7 @@ Route::middleware("auth:sanctum")->patch('/updatePassword/{id}', function ($id, 
                 return response()->json([
                     'success' => false,
                     'error' => "PASSWORD_NOT_NEW"
-                ]);
+                ], 400);
             }
             try{
                 $user->save();
@@ -121,21 +134,21 @@ Route::middleware("auth:sanctum")->patch('/updatePassword/{id}', function ($id, 
                 return response()->json([
                     'success' => false,
                     'error' => $e
-                ]);
+                ], 400);
             }
         }
         else{
         return response()->json([
             'success' => false,
             'error' => "PASSWORD_MISMATCH"
-        ]);
+        ], 400);
         }
     }
     else{
         return response()->json([
             'success' => false,
             'error' => "INCORRECT_PASSWORD"
-        ]);
+        ], 400);
     }
 });
 
@@ -253,17 +266,35 @@ Route::middleware(["auth:sanctum", "ability:organizer"])->post('/createCompetiti
 Route::get('/getAssociationsAndCategories', function (){
     return response()->json([
         'success' => true,
-        'associations' => AssociationModel::all(),
-        'categories' => CategoryModel::all()
+        'associations' => cache()->remember('associations', 3600, fn() => AssociationModel::all()),
+        'categories' => cache()->remember('categories', 3600, fn() => CategoryModel::all()),
     ]);
 });
 
+Route::get('/getAllCompetitions', function (Request $request){
+    return response()->json([
+        'success' => true,
+        'data' => CompetitionModel::all()
+    ]);
+});
 
 Route::middleware(["auth:sanctum", "ability:organizer"])->get('/getUserCompetitions', function (Request $request){
     return response()->json([
         'success' => true,
         'data' => CompetitionModel::where('letrehozo_id', '=', $request->user()->id)->get()
     ]);
+});
+
+Route::get('/getCompetition/{id}', function ($id, Request $request){
+    if(CompetitionModel::where('id', '=', $id)->get()->count() != 0)
+        return response()->json([
+            'success' => true,
+            'data' => CompetitionModel::where('id', '=', $id)->first()
+        ]);
+    return response()->json([
+        'success' => false,
+        'error' => 'NO_SUCH_COMPETITION'
+    ], 404);
 });
 
 Route::middleware(["auth:sanctum", "ability:organizer"])->post('/createCompetitionCategories', function (Request $request){
@@ -279,11 +310,10 @@ Route::middleware(["auth:sanctum", "ability:organizer"])->post('/createCompetiti
     ]);
 });
 
-Route::middleware(["auth:sanctum", "ability:organizer"])->get('/getCompetitionCategories/{compid}', function ($compid, Request $request){
-    $data = CompetitionCategoryModel::with("category")->where('versenyid', '=', $compid)->get();
+Route::get('/getCompetitionCategories', function (Request $request){
     return response()->json([
         'success' => true,
-        'categories' => $data
+        'categories' => CompetitionCategoryModel::with("category")->get()
     ]);
 });
 
@@ -295,10 +325,82 @@ Route::middleware(["auth:sanctum", "ability:organizer"])->delete('/deleteCompeti
     ]);
 });
 
-Route::middleware(["auth:sanctum"])->get('/getMenuItems/{roleId}', function ($roleId, Request $request){
-    $data = MenuItemModel::where('szerepkor_id', '=', $roleId)->get(); // elfogadast is nezni
+Route::middleware(["auth:sanctum"])->get('/getMenuItems', function (Request $request){
+    $roleId = 4;
+    if($request->user()->szerepkor_id == 1){
+        if($request->user()->szerepkor_elfogadva) $roleId = 1;
+    }
+    else $roleId = $request->user()->szerepkor_id;
+    $data = MenuItemModel::where('szerepkor_id', '=', $roleId)->get(); 
     return response()->json([
         'success' => true,
         'items' => $data
+    ]);
+});
+
+Route::post('/logout', function (Request $request) {
+    $request->user()->currentAccessToken()->delete();
+    return response()->json([
+        "success" => true
+    ]);
+})->middleware('auth:sanctum'); // unauthorized, ha lejar a token -- kitorolni manually
+
+// , 'ability:competitor,supporter'
+Route::middleware(['auth:sanctum', 'abilities:competitor,supporter'])->
+post('/enterCompetition/{id}', function ($id, Request $request) {
+    $assoc = $request->input("assocId") == -1 ? null : $request->input("assocId");
+    $skip = [];
+    foreach ($request->input("entry") as $cat) {
+        if (CompetitionRegistryModel::whereRaw("versenyzoid = ".$request->user()->id." AND kategoriaid = ".$cat." AND versenyid = ".$id)->get()->count() != 0){
+            array_push($skip, $cat);
+            continue;
+        }
+        $registry = new CompetitionRegistryModel();
+        $registry->versenyzoid = $request->user()->id;
+        $registry->kategoriaid = $cat;
+        $registry->versenyid = $id;
+        $registry->egyesulet = $assoc;
+        $registry->save();
+    }
+    return response()->json([
+        'success' => true,
+        'skipped' => $skip,
+        'delta' => count($request->input("entry")) - count($skip)
+    ], 201);
+});
+Route::middleware(['auth:sanctum', 'abilities:competitor,supporter'])->get('/getEntriesByUserId/{id}', function($id){
+    $my_entries = CompetitionRegistryModel::where("versenyzoid", $id)->orderBy('versenyid', 'desc')->get()->groupBy('versenyid');
+    return response()->json([
+        'success' => true,
+        'entries' => $my_entries
+    ]);
+});
+
+Route::middleware(['auth:sanctum', 'abilities:organizer'])->get('/getEntriesByOrganizerId', function(Request $request){
+    $entries = CompetitionRegistryModel::where("letrehozo_id", $request->user()->id)->orderBy('versenyid', 'desc')->get()->groupBy('versenyid');
+    //vagy hozza van adva az illeto rendezokent -- uj felvetelnel/szerkesztesnel lehessen megadni, szerkeszteni csak a letrehozo tudjon
+    return response()->json([
+        'success' => true,
+        'entries' => $entries
+    ]);
+});
+
+Route::middleware(['auth:sanctum', 'abilities:competitor,supporter'])->delete('/cancelEntry/{id}', function($id, Request $request){
+//csak sajatot -- tobbi vegpontnal is lehet problema? -- verseny torlesenel majd az osszes rendezo kozott kell lennie
+//ugy is lesz backend rework
+//nevezesi hataridot nezni
+    $entry = CompetitionRegistryModel::where("id", $id)->first();
+    if (!$entry){
+        return response()->json([
+            'success' => false,
+            'error' => "No such entry"
+        ]);
+    }
+    if ($entry->versenyzoid != $request->user()->id){
+        return response()->json(['success' => false, 'error' => "Competitor ID-s do not match"], 403);
+    }
+    $entry->delete();
+    return response()->json([
+        'success' => true,
     ]);
 });

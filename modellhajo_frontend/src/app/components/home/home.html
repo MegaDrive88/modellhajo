@@ -1,8 +1,0 @@
-@if (user) { 
-    <!-- ehelyett tokent nezni? -->
-    <topbar [username]="user.megjeleno_nev"></topbar>
-}
-@else {
-    {{router.navigateByUrl("/login")}}
-}
-<router-outlet />

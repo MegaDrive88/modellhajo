@@ -1,5 +1,6 @@
 {
     "EMAIL_NOT_UNIQUE": "A megadott e-mail címmel már létezik felhasználó",
+    "MMSZID_NOT_UNIQUE": "A megadott MMSZ tagsági számmal már létezik felhasználó",
     "USERNAME_NOT_UNIQUE": "A megadott felhasználónévvel már létezik felhasználó",
     "PASSWORD_MISMATCH": "A megadott új jelszavak nem egyeznek",
     "INCORRECT_PASSWORD": "Helytelen jelszó",

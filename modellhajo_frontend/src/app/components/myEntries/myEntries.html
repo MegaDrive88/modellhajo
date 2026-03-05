@@ -1,0 +1,21 @@
+<menu-bar-root/>
+<div class="g-0 px-5 py-2" >
+    <h2>Korábbi nevezéseim</h2>
+    <div class="competitions-wrapper">
+    @for (key of keys; track $index) {
+        <div class="competition-card">
+            <img src="{{ds.STORAGE_URL}}{{getCompById(key)?.kep_url}}" alt="">
+            <div class="comp-card-data">
+                <h3>{{getCompById(key)?.nev}}</h3>
+                <p>Kategóriák:</p>
+                @for (entry of myEntries[key]; track $index) {
+                    <div class="category-wrapper">
+                        {{getCategoryName(entry.kategoriaid)}}
+                        <button [disabled]="getCompById(key)?.nevezesi_hatarido! < today" (click)="cancelEntry(entry.id)" class="btn btn-danger" style="font-size: 80%;">Nevezés törlése</button>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    </div>
+</div>

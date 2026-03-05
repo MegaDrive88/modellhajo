@@ -1,0 +1,53 @@
+<div>
+    <top-bar-root/>
+
+    <section class="content" style="color: white; flex-direction: column; padding:80px 50px;">
+        <h2 class="text-center mb-3">Versenynaptár</h2>
+        <div class="row w-100 no-gutters">
+            <div class="comp-filters-wrapper col-3">
+                <div class="comp-filters">
+                    szűrők
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                </div>
+            </div>
+            <div class="competitions-wrapper col-9">
+                @for (comp of competitions; track comp.id) {
+                <a [routerLink]="[`/competition/${comp.id}`]" style="text-decoration: none;">
+                    <div class="competition-card">
+                        @if (comp.kep_url) {
+                            <img src="{{ds.STORAGE_URL}}{{comp.kep_url}}" alt="">
+                        }@else{
+                            <img src="https://media.istockphoto.com/id/1286476479/vector/public-icon-traffic-icons-for-ship.jpg?s=612x612&w=0&k=20&c=NW0sE3lQkkjWwvppDIIiZg0SpVKIdsJYF7cco7CpltM=" alt="">
+                        }
+                        <div class="comp-card-data">
+                            <h3>{{comp.nev}}</h3>
+                            <h5>{{comp.helyszin}}</h5>
+                            <h5>{{comp.kezdet}} - {{comp.veg}}</h5>
+                            <h5>Kategóriák:</h5>
+                            <ul>
+                                @for (cat of comp.categories; track cat.id) {
+                                    <li>
+                                        {{cat.nev}}
+                                    </li>
+                                }
+                            </ul>
+                            @if(comp.nevezesi_hatarido >= today ){
+                                <a onclick="event.stopPropagation()" [routerLink]="[`/competition_register/${comp.id}`]" class="blue-button" style="margin-left: auto; margin-top: auto;">Nevezés - határidő: {{comp.nevezesi_hatarido | date:"y.MM.dd"}}</a>
+                            } @else {
+                                <!-- csak ha lezajlott -->
+                                <a onclick="event.stopPropagation()" class="blue-button" style="margin-left: auto; margin-top: auto;">Eredmény</a>
+                            }
+                        </div>
+                    </div>
+                </a>
+                }
+                @empty {
+                    Nincs közelgő verseny
+                }
+            </div>
+        </div>
+    </section>
+</div>

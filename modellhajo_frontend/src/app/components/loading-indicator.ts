@@ -9,7 +9,7 @@ import { Router, RouteConfigLoadStart, RouteConfigLoadEnd } from '@angular/route
 import { Observable, tap } from 'rxjs';
 import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { LoadingService } from '../loading.service';
+import { LoadingService } from '../services/loading.service';
 
 @Component({
   selector: 'loading-indicator',

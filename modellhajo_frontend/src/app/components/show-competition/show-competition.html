@@ -1,0 +1,31 @@
+<div>
+    <top-bar-root/>
+    <section class="content">
+         <div class="competitions-wrapper col-12">
+            <div class="competition-card">
+                <div style="position: relative;">
+                    @if(competition?.kep_url){
+                        <img src="{{ds.STORAGE_URL}}{{competition?.kep_url}}" alt="">
+                    }@else{
+                        <img src="https://media.istockphoto.com/id/1286476479/vector/public-icon-traffic-icons-for-ship.jpg?s=612x612&w=0&k=20&c=NW0sE3lQkkjWwvppDIIiZg0SpVKIdsJYF7cco7CpltM=" alt="">
+                    }
+                    <div id="overlay" class="d-flex">
+                        <h1 class="text-center">{{competition?.nev}}</h1>
+                        <h2 class="text-center">{{competition?.kezdet | date:"y.MM.dd HH:mm"}} - {{competition?.veg | date:"y.MM.dd HH:mm"}}</h2>
+                        <h2 class="text-center">A verseny helyszíne: {{competition?.helyszin}}</h2>
+                        <div>térkép ide</div>
+                        <!-- szervezo egyesuletet valahova -->
+                        <p>{{competition?.leiras}}</p>
+                        <h3>Nevezési díjak:</h3>
+                        <h5>Teljes árú: {{competition?.nevezesi_dij_normal}} Ft</h5>
+                        <h5>Junior: {{competition?.nevezesi_dij_junior}} Ft</h5>
+                        <h5>Senior: {{competition?.nevezesi_dij_senior}} Ft</h5><br>
+                        @if(competition?.nevezesi_hatarido! >= today){
+                            <a class="blue-button" [routerLink]="[`/competition_register/${competition?.id}`]">Nevezés</a>
+                        } 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
