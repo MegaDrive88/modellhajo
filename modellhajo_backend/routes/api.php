@@ -343,11 +343,12 @@ Route::post('/logout', function (Request $request) {
     return response()->json([
         "success" => true
     ]);
-})->middleware('auth:sanctum');
+})->middleware('auth:sanctum'); // unauthorized, ha lejar a token -- kitorolni manually
 
 // , 'ability:competitor,supporter'
 Route::middleware(['auth:sanctum', 'abilities:competitor,supporter'])->
 post('/enterCompetition/{id}', function ($id, Request $request) {
+    $assoc = $request->input("assocId") == -1 ? null : $request->input("assocId");
     $skip = [];
     foreach ($request->input("entry") as $cat) {
         if (CompetitionRegistryModel::whereRaw("versenyzoid = ".$request->user()->id." AND kategoriaid = ".$cat." AND versenyid = ".$id)->get()->count() != 0){
@@ -358,6 +359,7 @@ post('/enterCompetition/{id}', function ($id, Request $request) {
         $registry->versenyzoid = $request->user()->id;
         $registry->kategoriaid = $cat;
         $registry->versenyid = $id;
+        $registry->egyesulet = $assoc;
         $registry->save();
     }
     return response()->json([
@@ -365,4 +367,40 @@ post('/enterCompetition/{id}', function ($id, Request $request) {
         'skipped' => $skip,
         'delta' => count($request->input("entry")) - count($skip)
     ], 201);
+});
+Route::middleware(['auth:sanctum', 'abilities:competitor,supporter'])->get('/getEntriesByUserId/{id}', function($id){
+    $my_entries = CompetitionRegistryModel::where("versenyzoid", $id)->orderBy('versenyid', 'desc')->get()->groupBy('versenyid');
+    return response()->json([
+        'success' => true,
+        'entries' => $my_entries
+    ]);
+});
+
+Route::middleware(['auth:sanctum', 'abilities:organizer'])->get('/getEntriesByOrganizerId', function(Request $request){
+    $entries = CompetitionRegistryModel::where("letrehozo_id", $request->user()->id)->orderBy('versenyid', 'desc')->get()->groupBy('versenyid');
+    //vagy hozza van adva az illeto rendezokent -- uj felvetelnel/szerkesztesnel lehessen megadni, szerkeszteni csak a letrehozo tudjon
+    return response()->json([
+        'success' => true,
+        'entries' => $entries
+    ]);
+});
+
+Route::middleware(['auth:sanctum', 'abilities:competitor,supporter'])->delete('/cancelEntry/{id}', function($id, Request $request){
+//csak sajatot -- tobbi vegpontnal is lehet problema? -- verseny torlesenel majd az osszes rendezo kozott kell lennie
+//ugy is lesz backend rework
+//nevezesi hataridot nezni
+    $entry = CompetitionRegistryModel::where("id", $id)->first();
+    if (!$entry){
+        return response()->json([
+            'success' => false,
+            'error' => "No such entry"
+        ]);
+    }
+    if ($entry->versenyzoid != $request->user()->id){
+        return response()->json(['success' => false, 'error' => "Competitor ID-s do not match"], 403);
+    }
+    $entry->delete();
+    return response()->json([
+        'success' => true,
+    ]);
 });

@@ -7,7 +7,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { TopBarComponent } from "../top-bar";
 
 @Component({
-  selector: 'competitions-root',
+  selector: 'show-competitions-root',
   imports: [CommonModule, TopBarComponent, DatePipe, RouterLink],
   templateUrl: './show-competition.html',
   styleUrls: [

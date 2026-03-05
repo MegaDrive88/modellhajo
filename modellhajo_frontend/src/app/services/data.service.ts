@@ -58,6 +58,13 @@ export interface MenuItemsResponse {
   items: MenuItem[];
 }
 
+export interface EntriesResponse {
+  success: boolean;
+  entries: {
+    [versenyid: string] : CompetitionEntry[]
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -242,7 +249,19 @@ export class DataService {
     return this.http.patch<any>(`${this.API_URL}/updatePassword/${id}`, passwordModel, {headers: this.getHeaders()} )
   }
 
-  enterCompetition(id: number, entry: number[]){
-    return this.http.post<any>(`${this.API_URL}/enterCompetition/${id}`, {entry:entry}, {headers: this.getHeaders()} )
+  enterCompetition(id: number, entry: number[], assocId: number){
+    return this.http.post<any>(`${this.API_URL}/enterCompetition/${id}`, {entry:entry, assocId: assocId}, {headers: this.getHeaders()} )
+  }
+
+  getEntriesByUserId(id: number){
+    return this.http.get<EntriesResponse>(`${this.API_URL}/getEntriesByUserId/${id}`, {headers: this.getHeaders()})
+  }
+
+  getEntriesByOrganizerId(){
+    return this.http.get<EntriesResponse>(`${this.API_URL}/getEntriesByOrganizerId`, {headers: this.getHeaders()})
+  }
+
+  cancelEntry(id:number){
+    return this.http.delete<any>(`${this.API_URL}/cancelEntry/${id}`, {headers: this.getHeaders()})
   }
 }

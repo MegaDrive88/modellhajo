@@ -6,7 +6,7 @@ import User from '../../interfaces/user.interface';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'admin-root',
+  selector: 'userManagement-root',
   imports: [MenuBarComponent, FormsModule, TranslatePipe],
   templateUrl: './userManagement.html',
   styleUrls: [

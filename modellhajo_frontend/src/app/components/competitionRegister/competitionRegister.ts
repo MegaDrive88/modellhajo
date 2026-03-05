@@ -8,9 +8,10 @@ import { forkJoin } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import Category from '../../interfaces/category.interface';
+import Association from '../../interfaces/association.interface';
 
 @Component({
-  selector: 'landing-root',
+  selector: 'competitionRegister-root',
   imports: [MenuBarComponent, FormsModule, NgSelectModule],
   templateUrl: './competitionRegister.html',
   styleUrls: [
@@ -25,19 +26,23 @@ export class CompetitionRegisterComponent implements OnInit{
   private route = inject(ActivatedRoute)
   protected newCompetitionCategories: number[] = []
   protected competitionCategories: Category[] = []
+  protected associations: Association[] = []
+  protected selectedAssoc = -1
   ngOnInit(){
       this.ds.loader.loadingOn();
       const competitionId = Number(this.route.snapshot.paramMap.get('id')!);
       forkJoin({
         competition: this.ds.getCompetitionById(competitionId),
-        categories: this.ds.getCompetitionCategories()
+        categories: this.ds.getCompetitionCategories(),
+        associations: this.ds.getAssociationsAndCategories()
       })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: ({ competition, categories }) => {
+        next: ({ competition, categories, associations }) => {
           if (competition.success) this.competition = competition.data;
           categories.categories = categories.categories.filter(x => x.versenyid == this.competition?.id);
           this.competitionCategories = categories.categories.map(x => x.category);
+          this.associations = [{id:-1, nev: "Semelyik", logo_url:undefined}, ...associations.associations]
           this.ds.loader.loadingOff(); // tul hamar lekapcsol, menubar miatt valszeg
         },
         error: (err) => {
@@ -55,8 +60,8 @@ export class CompetitionRegisterComponent implements OnInit{
       return
     }
     this.ds.loader.loadingOn()
-    // TODO egyesuletet valasztani 
-    this.ds.enterCompetition(this.competition?.id!, this.newCompetitionCategories).subscribe({
+    // TODO assoc ID-t atadni
+    this.ds.enterCompetition(this.competition?.id!, this.newCompetitionCategories, this.selectedAssoc).subscribe({
       next:(data)=>{
         if(data.skipped.length > 0) alert(`Ön már nevezett ${data.skipped.join(", ")} kategóriá(k)ban${data.delta != 0 ? ", a többiben sikeresen nevezett" : ""}`)
         else alert(`Sikeresen nevezett a(z) ${this.competition?.nev} versenyre`)

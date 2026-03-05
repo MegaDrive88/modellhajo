@@ -14,5 +14,7 @@ export const routes: Routes = [
     { path: 'admin', canActivate: [adminGuard], loadComponent: () => import('./components/admin/admin').then(m => m.AdminComponent) },
     { path: 'user_management', canActivate: [authGuard], loadComponent: () => import('./components/userManagement/userManagement').then(m => m.UserManagementComponent) },
     { path: 'competition/:id', loadComponent: () => import('./components/show-competition/show-competition').then(m => m.ShowCompetitonComponent) },
+    { path: 'my_entries', canActivate: [roleGuard], data: {roles: [2, 5]}, loadComponent: () => import('./components/myEntries/myEntries').then(m => m.MyEntriesComponent) },
+    { path: 'entries', canActivate: [roleGuard], data: {roles: [1]}, loadComponent: () => import('./components/entries/entries').then(m => m.EntriesComponent) },
     { path: '**', redirectTo: '' }
 ];
