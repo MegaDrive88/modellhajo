@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://your-production-api.com/api',
-  storageUrl: 'https://your-production-api.com',
+  apiUrl: 'http://raabdigital.no-ip.info:8009/api',
+  storageUrl: 'http://raabdigital.no-ip.info:8009',
 };
