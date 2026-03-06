@@ -10,7 +10,7 @@ import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'calendar-root',
-  imports: [TopBarComponent, DatePipe, RouterLink, NgClass],
+  imports: [TopBarComponent, DatePipe, RouterLink],
   templateUrl: './calendar.html',
   styleUrls: [
     '../../app.scss',

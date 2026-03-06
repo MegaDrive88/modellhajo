@@ -9,7 +9,7 @@ use App\Models\CompetitionModel;
 use App\Models\MenuItemModel;
 use App\Models\CompetitionCategoryModel;
 use App\Models\CategoryModel;
-use App\Models\CompetitionRegistryModel;
+use App\Models\CompetitionEntryModel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -41,7 +41,6 @@ Route::post('/login', function (Request $request) {
         ["guest"],
         ["supporter"]
     ];
-    //elfogadast nezni
     $token = $result->createToken('modellhajo-login-token', array_merge($ROLE_ABILITIES[$result->szerepkor_id-1], $result->isadmin ? ["admin"] : []))->plainTextToken;
 
     return response()->json([
@@ -216,7 +215,7 @@ Route::middleware(["auth:sanctum", "ability:admin"])->patch('/decideRoleRequest/
         $user->szerepkor_elfogadva = now();
         $user->save();
     } else {
-        $user->szerepkor_id = 4; // vagy valahogy jelenlegi szerepkor utolagos valtas eseten
+        $user->szerepkor_id = 4;
         $user->save();
     }
     return response()->json([
@@ -351,11 +350,11 @@ post('/enterCompetition/{id}', function ($id, Request $request) {
     $assoc = $request->input("assocId") == -1 ? null : $request->input("assocId");
     $skip = [];
     foreach ($request->input("entry") as $cat) {
-        if (CompetitionRegistryModel::whereRaw("versenyzoid = ".$request->user()->id." AND kategoriaid = ".$cat." AND versenyid = ".$id)->get()->count() != 0){
+        if (CompetitionEntryModel::whereRaw("versenyzoid = ".$request->user()->id." AND kategoriaid = ".$cat." AND versenyid = ".$id)->get()->count() != 0){
             array_push($skip, $cat);
             continue;
         }
-        $registry = new CompetitionRegistryModel();
+        $registry = new CompetitionEntryModel();
         $registry->versenyzoid = $request->user()->id;
         $registry->kategoriaid = $cat;
         $registry->versenyid = $id;
@@ -369,7 +368,7 @@ post('/enterCompetition/{id}', function ($id, Request $request) {
     ], 201);
 });
 Route::middleware(['auth:sanctum', 'abilities:competitor,supporter'])->get('/getEntriesByUserId/{id}', function($id){
-    $my_entries = CompetitionRegistryModel::where("versenyzoid", $id)->orderBy('versenyid', 'desc')->get()->groupBy('versenyid');
+    $my_entries = CompetitionEntryModel::where("versenyzoid", $id)->orderBy('versenyid', 'desc')->get()->groupBy('versenyid');
     return response()->json([
         'success' => true,
         'entries' => $my_entries
@@ -377,7 +376,9 @@ Route::middleware(['auth:sanctum', 'abilities:competitor,supporter'])->get('/get
 });
 
 Route::middleware(['auth:sanctum', 'abilities:organizer'])->get('/getEntriesByOrganizerId', function(Request $request){
-    $entries = CompetitionRegistryModel::where("letrehozo_id", $request->user()->id)->orderBy('versenyid', 'desc')->get()->groupBy('versenyid');
+    $entries = CompetitionEntryModel::whereHas('competition', function ($query) use ($request) {
+        $query->where('letrehozo_id', $request->user()->id);
+    })->orderBy('versenyid', 'desc')->get()->groupBy('versenyid');
     //vagy hozza van adva az illeto rendezokent -- uj felvetelnel/szerkesztesnel lehessen megadni, szerkeszteni csak a letrehozo tudjon
     return response()->json([
         'success' => true,
@@ -389,7 +390,7 @@ Route::middleware(['auth:sanctum', 'abilities:competitor,supporter'])->delete('/
 //csak sajatot -- tobbi vegpontnal is lehet problema? -- verseny torlesenel majd az osszes rendezo kozott kell lennie
 //ugy is lesz backend rework
 //nevezesi hataridot nezni
-    $entry = CompetitionRegistryModel::where("id", $id)->first();
+    $entry = CompetitionEntryModel::where("id", $id)->first();
     if (!$entry){
         return response()->json([
             'success' => false,
@@ -402,5 +403,12 @@ Route::middleware(['auth:sanctum', 'abilities:competitor,supporter'])->delete('/
     $entry->delete();
     return response()->json([
         'success' => true,
+    ]);
+});
+
+Route::middleware(["auth:sanctum", "ability:organizer"])->get('/getCompetitors', function (Request $request){
+    return response()->json([
+        'success' => true,
+        'competitors' => UserModel::where("szerepkor_id", 2)->get()
     ]);
 });

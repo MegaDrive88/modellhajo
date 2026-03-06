@@ -35,7 +35,6 @@ export class ShowCompetitonComponent implements OnInit {
 }
 /*TODO 
 - tobb rendezo egy versenyhez
-- rendezo lassa a nevezoket
 - verseny szerkesztes
 - tamogatohoz versenyzot kapcsolni
 - openstreetmap

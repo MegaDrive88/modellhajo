@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\CompetitionModel;
 
-class CompetitionRegistryModel extends Model
+
+class CompetitionEntryModel extends Model
 {
     protected $table = 't_nevezes';
     protected $primaryKey = 'id';
@@ -14,4 +16,8 @@ class CompetitionRegistryModel extends Model
         'kategoriaid',
         'versenyid',
     ];
+    public function competition()
+    {
+        return $this->belongsTo(CompetitionModel::class, 'versenyid', 'id');
+    }
 }

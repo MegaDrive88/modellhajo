@@ -1,4 +1,40 @@
 <menu-bar-root/>
-<div>
-    ok neveztek:
+<div class="g-0 px-5 py-2" >
+    <h2>Verseny nevezések</h2>
+    <div class="competitions-wrapper">
+    @for (comp of competitions; track comp.id) {
+        <div class="competition-card">
+            @if (comp.kep_url) {
+                <img src="{{ds.STORAGE_URL}}{{comp.kep_url}}" alt="">
+            }@else{
+                <img src="https://media.istockphoto.com/id/1286476479/vector/public-icon-traffic-icons-for-ship.jpg?s=612x612&w=0&k=20&c=NW0sE3lQkkjWwvppDIIiZg0SpVKIdsJYF7cco7CpltM=" alt="">
+            }
+            <div class="comp-card-data">
+                <h3>{{comp.nev}}</h3>
+                <table style="margin-bottom: 10px;">
+                    <thead>
+                        <tr>
+                            <td>Versenyző</td>
+                            <td>Kategória</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (entry of entries[comp.id.toString()]; track entry.id) {
+                            <tr>
+                                <td>{{getCompetitorName(entry.versenyzoid)}}</td>
+                                <td>{{getCategoryName(entry.kategoriaid)}}</td>
+                            </tr>
+                        }
+                        @empty {
+                            <tr><td>A versenyre még nem érkezett nevezés</td></tr>
+                        }
+                    </tbody>
+                </table>
+                <button class="blue-button" style="margin-top: auto;" (click)="exportCSVCommand(comp.id)">Exportálás excel fájlba</button>
+            </div>
+        </div>
+    }@empty {
+        <h5>Ön még nem hozott létre versenyt</h5>
+    }
+    </div>
 </div>

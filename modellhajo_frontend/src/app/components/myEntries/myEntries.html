@@ -4,7 +4,11 @@
     <div class="competitions-wrapper">
     @for (key of keys; track $index) {
         <div class="competition-card">
-            <img src="{{ds.STORAGE_URL}}{{getCompById(key)?.kep_url}}" alt="">
+            @if (getCompById(key)?.kep_url) {
+                <img src="{{ds.STORAGE_URL}}{{getCompById(key)?.kep_url}}" alt="">
+            }@else{
+                <img src="https://media.istockphoto.com/id/1286476479/vector/public-icon-traffic-icons-for-ship.jpg?s=612x612&w=0&k=20&c=NW0sE3lQkkjWwvppDIIiZg0SpVKIdsJYF7cco7CpltM=" alt="">
+            }
             <div class="comp-card-data">
                 <h3>{{getCompById(key)?.nev}}</h3>
                 <p>Kategóriák:</p>

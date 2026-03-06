@@ -65,6 +65,11 @@ export interface EntriesResponse {
   };
 }
 
+export interface CompetitorsResponse {
+  success: boolean;
+  competitors: User[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -263,5 +268,9 @@ export class DataService {
 
   cancelEntry(id:number){
     return this.http.delete<any>(`${this.API_URL}/cancelEntry/${id}`, {headers: this.getHeaders()})
+  }
+
+  getCompetitors(){
+    return this.http.get<CompetitorsResponse>(`${this.API_URL}/getCompetitors`, {headers: this.getHeaders()})
   }
 }
