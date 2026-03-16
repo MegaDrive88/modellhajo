@@ -44,6 +44,7 @@
           "configurations": {
             "production": {
               "baseHref": "/modellhajo/",
+              "deployUrl": "/modellhajo/",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
