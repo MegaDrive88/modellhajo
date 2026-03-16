@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteBase /modellhajo/
+# If the request is not a real file or directory, serve index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ /modellhajo/index.html [L]
