@@ -25,7 +25,7 @@
                         <div class="comp-card-data">
                             <h3>{{comp.nev}}</h3>
                             <h5>{{comp.helyszin}}</h5>
-                            <h5>{{comp.kezdet}} - {{comp.veg}}</h5>
+                            <h5>{{comp.kezdet | date:"y.MM.dd, hh:mm"}} - {{comp.veg | date:"y.MM.dd, hh:mm"}}</h5>
                             <h5>Kategóriák:</h5>
                             <ul>
                                 @for (cat of comp.categories; track cat.id) {

@@ -248,7 +248,6 @@ Route::middleware(["auth:sanctum", "ability:organizer"])->post('/createCompetiti
         'helyszin' => 'required',
         'nevezesi_dij_junior' => 'required|min:0',
         'nevezesi_dij_normal' => 'required|min:0',
-        'nevezesi_dij_senior' => 'required|min:0',
         'szervezo_egyesulet' => 'min:1',
     ]);
     $competition = CompetitionModel::create([

@@ -24,7 +24,6 @@ class CompetitionModel extends Model
         'leiras',
         'nevezesi_dij_junior',
         'nevezesi_dij_normal',
-        'nevezesi_dij_senior',
         'kep_url',
         'kep_fajlnev'
     ];

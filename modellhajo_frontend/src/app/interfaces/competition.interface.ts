@@ -16,7 +16,6 @@ export default interface Competition{
     leiras: string | null;
     nevezesi_dij_junior: number | null;
     nevezesi_dij_normal: number | null;
-    nevezesi_dij_senior: number | null;
     kep_url: string | null;
     kep_fajlnev: string | null;
     categories: Category[]

@@ -50,7 +50,6 @@ export class CompetitionsComponent implements OnInit {
       leiras: null,
       nevezesi_dij_junior: null,
       nevezesi_dij_normal: null,
-      nevezesi_dij_senior: null,
       kep_url: null,
       kep_fajlnev: null,
       categories:[]
@@ -125,7 +124,6 @@ export class CompetitionsComponent implements OnInit {
             this.newComp.szervezo_egyesulet != -1 &&
             this.newComp.nevezesi_dij_junior != null && this.newComp.nevezesi_dij_junior > 0 &&
             this.newComp.nevezesi_dij_normal != null && this.newComp.nevezesi_dij_normal > 0 &&
-            this.newComp.nevezesi_dij_senior != null && this.newComp.nevezesi_dij_senior > 0 &&
             (this.newComp.evszam?.length == 4 || this.newComp.evszam?.length == 0) &&
             this.newCompetitionCategories.length > 0 &&
             this.newComp.kezdet <= this.newComp.veg && 

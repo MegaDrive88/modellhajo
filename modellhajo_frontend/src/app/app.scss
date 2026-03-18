@@ -87,7 +87,7 @@ section{
     margin-top: 10px;
     border: 1px solid var(--mat-sys-error);
     border-radius: 5px;
-    color: darkred;
+    color: white;
 }
 .successBox{
     @extend .errorBox;
@@ -99,4 +99,7 @@ section{
     pointer-events: none;
     content: "*";
     color: darkred;
+}
+form span{
+  color: white;
 }

@@ -2,13 +2,28 @@
 <div class="reveal-animate">
     <form #f="ngForm" class="col-10 col-lg-5 col-xl-3 d-flex regist-card" (ngSubmit)="sendRegisterData()">
         <h4 class="w-100 text-center">Felhasználó regisztráció</h4>
-        <input #err="ngModel" class="form-control" name="megjeleno_nev" type="text" placeholder="Megjelenő név" required [(ngModel)]="newUser.megjeleno_nev">
-        <input #err="ngModel" class="form-control" name="felhasznalonev" type="text" placeholder="Felhasználónév" required [(ngModel)]="newUser.felhasznalonev">
-        <input #err="ngModel" class="form-control" name="felhasznalonev" type="email" placeholder="E-mail cím" [(ngModel)]="newUser.email">
-        <input #err="ngModel" class="form-control" name="password" type="password" placeholder="Jelszó" [(ngModel)]="newUser.password">
-        <input #err="ngModel" class="form-control" name="conf_password" type="password" placeholder="Jelszó újra" [(ngModel)]="newUser.conf_password">
         <div class="w-100">
-            <span>Szerepkör:</span>
+            <label for="megjeleno_nev">Megjelenő név</label>
+            <input #err="ngModel" class="form-control" name="megjeleno_nev" type="text" placeholder="Megjelenő név" required [(ngModel)]="newUser.megjeleno_nev">
+        </div>
+        <div class="w-100">
+            <label for="felhasznalonev">Felhasználónév</label>
+            <input #err="ngModel" class="form-control" name="felhasznalonev" type="text" placeholder="Felhasználónév" required [(ngModel)]="newUser.felhasznalonev">
+        </div>
+        <div class="w-100">
+            <label for="email">E-mail cím</label>
+            <input #err="ngModel" class="form-control" name="email" type="email" placeholder="E-mail cím" [(ngModel)]="newUser.email">
+        </div>
+        <div class="w-100">
+            <label for="password">Jelszó</label>
+            <input #err="ngModel" class="form-control" name="password" type="password" placeholder="Jelszó" [(ngModel)]="newUser.password">   
+        </div>
+        <div class="w-100">
+            <label for="conf_password">Jelszó újra</label>
+            <input #err="ngModel" class="form-control" name="conf_password" type="password" placeholder="Jelszó újra" [(ngModel)]="newUser.conf_password">    
+        </div>
+        <div class="w-100">
+            <span>Mi szeretne lenni?</span>
             <select style="margin-bottom: 10px;" name="szerepkor_id" class="form-select" [(ngModel)]="newUser.szerepkor_id">
                 <!-- <option value="4">Vendég</option> -- felesleges -->
                 <option value="1">Rendező</option>

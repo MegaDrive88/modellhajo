@@ -18,8 +18,7 @@
                         <p>{{competition?.leiras}}</p>
                         <h3>Nevezési díjak:</h3>
                         <h5>Teljes árú: {{competition?.nevezesi_dij_normal}} Ft</h5>
-                        <h5>Junior: {{competition?.nevezesi_dij_junior}} Ft</h5>
-                        <h5>Senior: {{competition?.nevezesi_dij_senior}} Ft</h5><br>
+                        <h5>Junior: {{competition?.nevezesi_dij_junior}} Ft</h5><br>
                         @if(competition?.nevezesi_hatarido! >= today){
                             <a class="blue-button" [routerLink]="[`/competition_register/${competition?.id}`]">Nevezés</a>
                         } 

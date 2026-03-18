@@ -14,4 +14,7 @@ import { RouterLink } from '@angular/router';
 export class LandingPageComponent {
   // https://namba8.com/wp/
   // https://www.facebook.com/groups/607199946958953/
+  WIPalert(){
+    alert("Hamarosan")
+  }
 }

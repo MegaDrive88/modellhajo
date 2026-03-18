@@ -79,7 +79,7 @@
                 </div>
                 <div>
                     <span class="mandatory-star">Nevezési díjak</span>
-                    <table>
+                    <table style="color: white;">
                         <tr>
                             <td>Junior:</td>
                             <td>
@@ -94,13 +94,6 @@
                             </td>
                             <td>Ft</td>
                         </tr>
-                        <tr>
-                            <td>Senior:</td>
-                            <td>
-                                <input style="text-align: right;" name="nevezesi_dij_senior" type="text" required placeholder="0" class="form-control" [(ngModel)]="newComp.nevezesi_dij_senior">
-                            </td>
-                            <td>Ft</td>
-                        </tr>
                     </table>
                 </div>
                 <div>
@@ -112,7 +105,8 @@
             </form>
         </div>
         <div class="col-12 col-md-6 p-2">
-            <h3>Áltam szerkeszthető versenyek</h3> -- todo
+            <h3>Általam szerkeszthető versenyek</h3> 
+            <!-- todo -->
             @for (comp of userCompetitions; track comp.id) {
                 <div class="user-competition">
                     @if (comp.kep_url) {

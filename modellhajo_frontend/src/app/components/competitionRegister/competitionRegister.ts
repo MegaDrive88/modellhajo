@@ -42,7 +42,7 @@ export class CompetitionRegisterComponent implements OnInit{
           if (competition.success) this.competition = competition.data;
           categories.categories = categories.categories.filter(x => x.versenyid == this.competition?.id);
           this.competitionCategories = categories.categories.map(x => x.category);
-          this.associations = [{id:-1, nev: "Semelyik", logo_url:undefined}, ...associations.associations]
+          this.associations = [{id:-1, nev: "Nincs megadva", logo_url:undefined}, ...associations.associations]
           this.ds.loader.loadingOff(); // tul hamar lekapcsol, menubar miatt valszeg
         },
         error: (err) => {
@@ -60,10 +60,9 @@ export class CompetitionRegisterComponent implements OnInit{
       return
     }
     this.ds.loader.loadingOn()
-    // TODO assoc ID-t atadni
     this.ds.enterCompetition(this.competition?.id!, this.newCompetitionCategories, this.selectedAssoc).subscribe({
-      next:(data)=>{
-        if(data.skipped.length > 0) alert(`Ön már nevezett ${data.skipped.join(", ")} kategóriá(k)ban${data.delta != 0 ? ", a többiben sikeresen nevezett" : ""}`)
+      next:(data)=>{        
+        if(data.skipped.length > 0) alert(`Ön már nevezett ${data.skipped.map((x :any)=>this.competitionCategories.find(y=>y.id == x)?.nev).join(", ")} kategóriá(k)ban${data.delta != 0 ? ", a többiben sikeresen nevezett" : ""}`)
         else alert(`Sikeresen nevezett a(z) ${this.competition?.nev} versenyre`)
         this.ds.loader.loadingOff()
       }

@@ -36,6 +36,21 @@ export class ShowCompetitonComponent implements OnInit {
 /*TODO 
 - tobb rendezo egy versenyhez
 - verseny szerkesztes
+- szurok
 - tamogatohoz versenyzot kapcsolni
 - openstreetmap
+- backend rework
+- email kuldes
+
+- nevezes oldalra mmszid mezo
+!- dashboard helyere nevezeseim --> azokat sortolni
+- telepites naplo
+- versenyzot nem kell elfogadni -- admin oldal
+- eles backenden kepfeltoltes nem jo, nincs storage mappa
+- rendezo "nevezesek"  fulon kategorai alapjan sort/groupby
+- rendezo dashboard: kovetkezo esemen
+- versenyzo dashboard: kovetkezo verseny, ranglista
+- idot szepre formazni
+- lezajlott versenynel eredmenyek az "egy verseny" oldalon
+- loader ugy szar ahogy van
 */
