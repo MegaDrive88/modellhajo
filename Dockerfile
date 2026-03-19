@@ -1,6 +1,6 @@
 FROM php:8.4-apache
 
-WORKDIR /var/www/html
+WORKDIR /app
 
 COPY ./modellhajo_backend .
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -14,16 +14,17 @@ RUN apt-get update && apt-get install -y \
 
 RUN composer install --no-dev --optimize-autoloader
 
+# Cache configs and routes at build time
+RUN php artisan config:cache
+RUN php artisan route:cache
 
-# Permissions
-RUN chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache
+# Set storage symlink and start Laravel at container startup
+CMD php artisan storage:link || true && \
+    php artisan serve --host 0.0.0.0 --port 8000
 
-# Enable rewrite
-RUN a2enmod rewrite
-
-# Entrypoint
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-CMD ["/entrypoint.sh"]
+# mkdir -p storage/app/public
+# docker exec -it modellhajo_app bash
+# rm -rf public/storage
+# php artisan storage:link
+# ls -l public 
+# You should see something like: storage -> ../storage/app/public

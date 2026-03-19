@@ -44,8 +44,8 @@ export class ShowCompetitonComponent implements OnInit {
 - rendezo dashboard: kovetkezo esemen
 - versenyzo dashboard: kovetkezo verseny, ranglista
 - telepites naplo
+- server error, file not found
 
-- eles backenden kepfeltoltes nem jo, nincs storage mappa
 - lezajlott versenynel eredmenyek az "egy verseny" oldalon
 - sweet alert
 - loader ugy szar ahogy van!!!!!!!!!
