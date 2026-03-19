@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MenuBarComponent } from '../menu-bar/menu-bar';
 import { DataService } from '../../services/data.service';
 
@@ -10,6 +10,13 @@ import { DataService } from '../../services/data.service';
     '../../app.scss',
     './dashboard.scss'
   ]})
-export class DashboardComponent {
+export class DashboardComponent implements OnInit{
   protected ds = inject(DataService)
+  ngOnInit(): void { //ideiglenes
+      if(this.ds.getUser()?.szerepkor_id == 1) 
+        this.ds.router.navigateByUrl("/competitions")
+      else
+        this.ds.router.navigateByUrl("/my_entries")
+      return
+  }
 }

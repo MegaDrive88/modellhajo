@@ -34,3 +34,10 @@ $opt-bg: #4483d4b4;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
 }
+#landing-text-block{
+  flex-direction: column; gap: 20px;
+  padding: 60px 40px;
+  background-color: darken($opt-bg, 7%);
+  border-radius: 15px;
+  // width: fit-content;
+}

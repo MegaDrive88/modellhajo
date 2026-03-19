@@ -6,10 +6,11 @@ import CompetitionEntry from '../../interfaces/competition.entry.interface';
 import Competition from '../../interfaces/competition.interface';
 import Category from '../../interfaces/category.interface';
 import User from '../../interfaces/user.interface';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'entries-root',
-  imports: [MenuBarComponent],
+  imports: [MenuBarComponent, CommonModule],
   templateUrl: './entries.html',
   styleUrls: [
     '../../app.scss',
@@ -31,10 +32,10 @@ export class EntriesComponent implements OnInit {
       categories: this.ds.getAssociationsAndCategories(),
       competitors: this.ds.getCompetitors()
     }).subscribe(({ competitions, entries, categories, competitors }) => {      
-      this.entries = entries.entries
+      this.entries = entries.entries      
       this.competitions = competitions.data
       this.categories = categories.categories
-      this.competitors = competitors.competitors      
+      this.competitors = competitors.competitors     
       this.ds.loader.loadingOff()
     });
   }
@@ -44,16 +45,39 @@ export class EntriesComponent implements OnInit {
   getCompetitorName(id:number){
     return this.competitors.find(x=>x.id == id)?.megjeleno_nev
   }
+  getEntryArray(compid: string):CompetitionEntry[] {
+    let _entries = this.entries[compid]
+    if (!_entries) return []
+    return this.entrySort(_entries)
+  }
+  entrySort(arr: CompetitionEntry[]){
+    arr.sort((a, b) => {
+        const categoryA = this.categories.find(x=>x.id == a.kategoriaid)!.nev;
+        const categoryB = this.categories.find(x=>x.id == b.kategoriaid)!.nev;
+        
+        if (categoryA > categoryB) return 1;
+        if (categoryA < categoryB) return -1;
+
+        const nameA = this.competitors.find(x=> x.id == a.versenyzoid)!.megjeleno_nev;
+        const nameB = this.competitors.find(x=> x.id == b.versenyzoid)!.megjeleno_nev;
+
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+
+        return 0;
+      }); 
+      return arr
+  }
   exportCSVCommand(versenyid: number){
     const topRow = "Versenyzo neve;Versenyzo MMSZ azonositoja;Versenyzo e-mail cime;Kategoria\n"
     let rows: string[] = []
-    for(const entry of this.entries[versenyid.toString()]){
+    for(const entry of this.entrySort(this.entries[versenyid.toString()])){
       rows.push(`${this.getCompetitorName(entry.versenyzoid)};${this.competitors.find(x=>x.id == entry.versenyzoid)?.mmsz_id};${this.competitors.find(x=>x.id == entry.versenyzoid)?.email};${this.getCategoryName(entry.kategoriaid)}`)
     }
     this.downloadFile(`${topRow}${rows.join('\n')}`, `${versenyid}_${this.competitions.find(x=>x.id == versenyid)?.nev.replaceAll(" ", "_")}.csv`, "text/plain")
   }
   private downloadFile(content: string, name: string, type: string){
-    const blob = new Blob([content], { type: `${type};charset=utf-8` });
+    const blob = new Blob([`\uFEFF${content}`], { type: `${type};charset=utf-8` });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;

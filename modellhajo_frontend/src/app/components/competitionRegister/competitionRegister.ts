@@ -28,7 +28,9 @@ export class CompetitionRegisterComponent implements OnInit{
   protected competitionCategories: Category[] = []
   protected associations: Association[] = []
   protected selectedAssoc = -1
+  protected mmszid:any
   ngOnInit(){
+      this.mmszid = this.ds.getUser()?.mmsz_id
       this.ds.loader.loadingOn();
       const competitionId = Number(this.route.snapshot.paramMap.get('id')!);
       forkJoin({
@@ -54,17 +56,20 @@ export class CompetitionRegisterComponent implements OnInit{
       });
   }
   enterCompetition(){    
-    if(!this.ds.getUser()?.mmsz_id){
-      alert("A nevezéshez szükséges MMSZ azonosító Önnek nincs kitöltve. Ezt az 'Adatmódosítás' menüpontban adhatja meg")
-      this.ds.router.navigateByUrl("/user_management")
+    if(!this.mmszid){
+      alert("A nevezéshez szükséges MMSZ azonosító Önnek nincs kitöltve")
       return
     }
+    let user = this.ds.getUser()
+    user!.mmsz_id = this.mmszid
+    this.ds.setUser(user!)
     this.ds.loader.loadingOn()
-    this.ds.enterCompetition(this.competition?.id!, this.newCompetitionCategories, this.selectedAssoc).subscribe({
+    this.ds.enterCompetition(this.competition?.id!, this.newCompetitionCategories, this.selectedAssoc, this.mmszid).subscribe({
       next:(data)=>{        
         if(data.skipped.length > 0) alert(`Ön már nevezett ${data.skipped.map((x :any)=>this.competitionCategories.find(y=>y.id == x)?.nev).join(", ")} kategóriá(k)ban${data.delta != 0 ? ", a többiben sikeresen nevezett" : ""}`)
         else alert(`Sikeresen nevezett a(z) ${this.competition?.nev} versenyre`)
         this.ds.loader.loadingOff()
+        this.ds.router.navigateByUrl("/my_entries")
       }
     })
   }

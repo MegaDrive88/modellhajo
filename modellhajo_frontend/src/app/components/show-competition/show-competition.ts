@@ -41,16 +41,12 @@ export class ShowCompetitonComponent implements OnInit {
 - openstreetmap
 - backend rework
 - email kuldes
-
-- nevezes oldalra mmszid mezo
-!- dashboard helyere nevezeseim --> azokat sortolni
-- telepites naplo
-- versenyzot nem kell elfogadni -- admin oldal
-- eles backenden kepfeltoltes nem jo, nincs storage mappa
-- rendezo "nevezesek"  fulon kategorai alapjan sort/groupby
 - rendezo dashboard: kovetkezo esemen
 - versenyzo dashboard: kovetkezo verseny, ranglista
-- idot szepre formazni
+- telepites naplo
+
+- eles backenden kepfeltoltes nem jo, nincs storage mappa
 - lezajlott versenynel eredmenyek az "egy verseny" oldalon
-- loader ugy szar ahogy van
+- sweet alert
+- loader ugy szar ahogy van!!!!!!!!!
 */

@@ -14,18 +14,21 @@
                 <table style="margin-bottom: 10px;">
                     <thead>
                         <tr>
-                            <td>Versenyző</td>
                             <td>Kategória</td>
+                            <td>Versenyző</td>
                         </tr>
                     </thead>
                     <tbody>
-                        @for (entry of entries[comp.id.toString()]; track entry.id) {
-                            <tr>
-                                <td>{{getCompetitorName(entry.versenyzoid)}}</td>
+                        <tr *ngFor="let entry of getEntryArray(comp.id.toString()); let i = index">
+                            @if (true) {
                                 <td>{{getCategoryName(entry.kategoriaid)}}</td>
-                            </tr>
-                        }
-                        @empty {
+                            } @else {
+                                <!-- ha ugyanaz lenne mint az elozo -->
+                                <td></td>
+                            }
+                            <td>{{getCompetitorName(entry.versenyzoid)}}</td>
+                        </tr>
+                        @if(getEntryArray(comp.id.toString()).length == 0){
                             <tr><td>A versenyre még nem érkezett nevezés</td></tr>
                         }
                     </tbody>

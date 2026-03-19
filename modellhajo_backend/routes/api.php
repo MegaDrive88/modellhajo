@@ -204,7 +204,7 @@ Route::middleware("auth:sanctum")->get('/checkAdmin', function (Request $request
 
 Route::middleware(["auth:sanctum", "ability:admin"])->get('/getRoleRequests', function (Request $request){
     return response()->json(
-        UserModel::with("role")->whereRaw('szerepkor_id <> 4 AND szerepkort_elfogadta IS NULL')->get()
+        UserModel::with("role")->whereRaw('szerepkor_id = 1 AND szerepkort_elfogadta IS NULL')->get()
     );
 });
 
@@ -348,6 +348,8 @@ Route::middleware(['auth:sanctum', 'abilities:competitor,supporter'])->
 post('/enterCompetition/{id}', function ($id, Request $request) {
     $assoc = $request->input("assocId") == -1 ? null : $request->input("assocId");
     $skip = [];
+    $request->user()->mmsz_id = $request->input("mmszid");
+    $request->user()->save();
     foreach ($request->input("entry") as $cat) {
         if (CompetitionEntryModel::whereRaw("versenyzoid = ".$request->user()->id." AND kategoriaid = ".$cat." AND versenyid = ".$id)->get()->count() != 0){
             array_push($skip, $cat);
