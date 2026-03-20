@@ -211,6 +211,14 @@ export class DataService {
     );
   }
 
+  updateCompetition(id: number, competition: Omit<Competition, 'id' | 'letrehozo_id'>) {
+    return this.http.put<BasicResponse>(
+      `${this.API_URL}/editCompetition/${id}`,
+      competition,
+      { headers: this.getHeaders() }
+    );
+  }
+
   createCompetitionCategories(data: { compId: number; categs: number[] }) {
     return this.http.post<BasicResponse>(
       `${this.API_URL}/createCompetitionCategories`,

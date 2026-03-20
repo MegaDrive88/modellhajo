@@ -5,102 +5,105 @@
         <div class="col-12 col-md-6 py-2 px-5">
             <h3>Verseny felvétele</h3>
             <form #f="ngForm" (ngSubmit)="sendCompetitionData()">
-                <div>
-                    <span class="mandatory-star">Verseny neve</span>
-                    <input name="nev" type="text" required placeholder="pl.: Példa Kupa" class="form-control" [(ngModel)]="newComp.nev">
-                </div>
-                <div>
-                    <span class="mandatory-star">Verseny helyszíne</span>
-                    <input name="helyszin" type="text" required placeholder="pl.: Alsótiszabánatos, Magyarország" class="form-control" [(ngModel)]="newComp.helyszin">
-                </div>
-                 <div class="row">
-                    <div class="col-6">
-                        <span class="mandatory-star">Verseny kezdete</span>
-                        <input name="kezdet" type="datetime-local" required class="form-control" [(ngModel)]="newComp.kezdet">
+                <fieldset [disabled]="!formEditable">
+                    <div>
+                        <span class="mandatory-star">Verseny neve</span>
+                        <input name="nev" type="text" required placeholder="pl.: Példa Kupa" class="form-control" [(ngModel)]="newComp.nev">
                     </div>
-                    <div class="col-6">
-                        <span class="mandatory-star">Verseny vége</span>
-                        <input name="veg" type="datetime-local" required class="form-control" [(ngModel)]="newComp.veg">
+                    <div>
+                        <span class="mandatory-star">Verseny helyszíne</span>
+                        <input name="helyszin" type="text" required placeholder="pl.: Alsótiszabánatos, Magyarország" class="form-control" [(ngModel)]="newComp.helyszin">
                     </div>
-                </div>
-                @if (this.newComp.kezdet > this.newComp.veg){
-                    <p class="formError">Kezdeti dátum nem lehet a végdátum után</p>
-                }
-                <div>
-                    <span>Évad, üres esetén a megrendezés éve</span>
-                    <input name="evszam" type="text" placeholder="Évszám" class="form-control" [(ngModel)]="newComp.evszam">
-                </div>
-                @if (newComp.evszam?.length != 0 && newComp.evszam?.length != 4){
-                    <p class="formError">Vagy egy évszámot adjon meg, vagy hagyja üresen</p>
-                }
-                <div>
-                    <span class="mandatory-star">Megjelenés ideje</span>
-                    <input name="megjelenik" type="datetime-local" required class="form-control" [(ngModel)]="newComp.megjelenik">
-                </div>
-                <div>
-                    <span class="mandatory-star">Nevezési határidő</span>
-                    <input name="nevezesi_hatarido" type="datetime-local" required class="form-control" [(ngModel)]="newComp.nevezesi_hatarido">
-                    @if (this.newComp.nevezesi_hatarido > this.newComp.kezdet){
-                        <p class="formError">Nevezési határidő a verseny kezdete előtt kell legyen</p>
+                     <div class="row">
+                        <div class="col-6">
+                            <span class="mandatory-star">Verseny kezdete</span>
+                            <input name="kezdet" type="datetime-local" required class="form-control" [(ngModel)]="newComp.kezdet">
+                        </div>
+                        <div class="col-6">
+                            <span class="mandatory-star">Verseny vége</span>
+                            <input name="veg" type="datetime-local" required class="form-control" [(ngModel)]="newComp.veg">
+                        </div>
+                    </div>
+                    @if (this.newComp.kezdet > this.newComp.veg){
+                        <p class="formError">Kezdeti dátum nem lehet a végdátum után</p>
                     }
-                </div>
-                <div>
-                    <span>Leírás</span>
-                    <textarea [(ngModel)]="newComp.leiras" name="leiras" class="form-control" placeholder="Verseny leírása (opcionális)"></textarea>
-                </div>
-                <div>
-                    <span class="mandatory-star">Szervező egyesület</span>
-                    <select name="egyesulet" class="form-select" [(ngModel)]="newComp.szervezo_egyesulet" #assocSelector="ngModel">
-                        <option value="-1">-- Kérem válasszon --</option>
-                        @for (item of associations; track $index) {
-                            <option value="{{item.id}}">{{item.nev}}</option>
+                    <div>
+                        <span>Évad, üres esetén a megrendezés éve</span>
+                        <input name="evszam" type="text" placeholder="Évszám" class="form-control" [(ngModel)]="newComp.evszam">
+                    </div>
+                    @if (newComp.evszam?.length != 0 && newComp.evszam?.length != 4){
+                        <p class="formError">Vagy egy évszámot adjon meg, vagy hagyja üresen</p>
+                    }
+                    <div>
+                        <span class="mandatory-star">Megjelenés ideje</span>
+                        <input name="megjelenik" type="datetime-local" required class="form-control" [(ngModel)]="newComp.megjelenik">
+                    </div>
+                    <div>
+                        <span class="mandatory-star">Nevezési határidő</span>
+                        <input name="nevezesi_hatarido" type="datetime-local" required class="form-control" [(ngModel)]="newComp.nevezesi_hatarido">
+                        @if (this.newComp.nevezesi_hatarido > this.newComp.kezdet){
+                            <p class="formError">Nevezési határidő a verseny kezdete előtt kell legyen</p>
                         }
-                    </select>
-                    @if (assocSelector.dirty && newComp.szervezo_egyesulet == -1){
-                        <p class="formError">Válasszon egy egyesületet</p>
-                    }
-                </div>
-                <div>
-                    <span class="mandatory-star">Kategóriák</span>
-                    <ng-select 
-                        #catSelector="ngModel"
-                        [multiple]="true"
-                        bindLabel="nev"
-                        bindValue="id"
-                        [items]="categories"
-                        placeholder="Kérem válasszon legalább egyet"
-                        name="competitionCategories"
-                        [(ngModel)]="newCompetitionCategories"
-                        >
-                    </ng-select>
-                    @if (catSelector.touched && newCompetitionCategories.length == 0){
-                        <p class="formError">Válasszon legalább 1 kategóriát</p>
-                    }
-                </div>
-                <div>
-                    <span class="mandatory-star">Nevezési díjak</span>
-                    <table style="color: white;">
-                        <tr>
-                            <td>Junior:</td>
-                            <td>
-                                <input style="text-align: right;" name="nevezesi_dij_junior" type="text" required placeholder="0" class="form-control" [(ngModel)]="newComp.nevezesi_dij_junior">
-                            </td>
-                            <td>Ft</td>
-                        </tr>
-                        <tr>
-                            <td>Teljes árú:</td>
-                            <td>
-                                <input style="text-align: right;" name="nevezesi_dij_normal" type="text" required placeholder="0" class="form-control" [(ngModel)]="newComp.nevezesi_dij_normal">
-                            </td>
-                            <td>Ft</td>
-                        </tr>
-                    </table>
-                </div>
-                <div>
-                    <span>Borítókép</span>
-                    <input type="file" class="form-control" #competitionThumbnailInput accept="image/*">
-                </div>
-                <button type="submit" class="blue-button" [disabled]="!FormEnabled()">Rögzít</button>
+                    </div>
+                    <div>
+                        <span>Leírás</span>
+                        <textarea [(ngModel)]="newComp.leiras" name="leiras" class="form-control" placeholder="Verseny leírása (opcionális)"></textarea>
+                    </div>
+                    <div>
+                        <span class="mandatory-star">Szervező egyesület</span>
+                        <select name="egyesulet" class="form-select" [(ngModel)]="newComp.szervezo_egyesulet" #assocSelector="ngModel">
+                            <option value="-1">-- Kérem válasszon --</option>
+                            @for (item of associations; track $index) {
+                                <option value="{{item.id}}">{{item.nev}}</option>
+                            }
+                        </select>
+                        @if (assocSelector.dirty && newComp.szervezo_egyesulet == -1){
+                            <p class="formError">Válasszon egy egyesületet</p>
+                        }
+                    </div>
+                    <div>
+                        <span class="mandatory-star">Kategóriák</span>
+                        <ng-select
+                            #catSelector="ngModel"
+                            [multiple]="true"
+                            bindLabel="nev"
+                            bindValue="id"
+                            [items]="categories"
+                            placeholder="Kérem válasszon legalább egyet"
+                            name="competitionCategories"
+                            [(ngModel)]="newCompetitionCategories"
+                            [disabled]="!formEditable"
+                            >
+                        </ng-select>
+                        @if (catSelector.touched && newCompetitionCategories.length == 0){
+                            <p class="formError">Válasszon legalább 1 kategóriát</p>
+                        }
+                    </div>
+                    <div>
+                        <span class="mandatory-star">Nevezési díjak</span>
+                        <table style="color: white;">
+                            <tr>
+                                <td>Junior:</td>
+                                <td>
+                                    <input style="text-align: right;" name="nevezesi_dij_junior" type="text" required placeholder="0" class="form-control" [(ngModel)]="newComp.nevezesi_dij_junior">
+                                </td>
+                                <td>Ft</td>
+                            </tr>
+                            <tr>
+                                <td>Teljes árú:</td>
+                                <td>
+                                    <input style="text-align: right;" name="nevezesi_dij_normal" type="text" required placeholder="0" class="form-control" [(ngModel)]="newComp.nevezesi_dij_normal">
+                                </td>
+                                <td>Ft</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <span>Borítókép</span>
+                        <input type="file" class="form-control" #competitionThumbnailInput accept="image/*">
+                    </div>
+                    <button type="submit" class="blue-button" [disabled]="!FormEnabled()">Mentés</button>
+                </fieldset>
 
             </form>
         </div>
@@ -123,12 +126,18 @@
                                 <li>{{cat.nev}}</li>
                             }
                         </ul>
-                        <button class="blue-inverse-button" style="margin-left: auto; margin-top: auto;" (click)="deleteCompetition(comp.id)">Törlés</button>
+                        <div style="margin-left: auto; margin-top: auto; display: flex; gap: 10px;">
+                            <button class="blue-button" (click)="editCompetition(comp.id)">Szerkesztés</button>
+                            <button class="blue-inverse-button" (click)="deleteCompetition(comp.id)">Törlés</button>
+                        </div>
                     </div>
                 </div>
             }
             @empty {
                 <p>Ön még nem hozott létre versenyt</p>
             }
+            <button class="blue-button w-100 py-1" (click)="newCompCommand()">
+                <img style="width: 50px;" src="plus.png" alt="">
+            </button>
         </div>
     </div>

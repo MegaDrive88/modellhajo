@@ -28,7 +28,8 @@ export class CompetitionsComponent implements OnInit {
   protected newCompetitionCategories: number[] = []
   protected userCompetitions!: Competition[]
   protected competitionCategories!: CompetitionCategory[]
-
+  protected formEditable = false
+  private editMode = -1
   @ViewChild('competitionThumbnailInput') thumbnailInput!: ElementRef<HTMLInputElement>
   
   private today(){
@@ -90,6 +91,9 @@ export class CompetitionsComponent implements OnInit {
           this.newComp.kep_fajlnev = file.name
           this.newComp.kep_url = data.url
       }
+      if(this.editMode != -1){
+        this.ds.deleteCompetition(this.editMode).pipe(takeUntilDestroyed(this.destroyRef)).subscribe()
+      }
       this.ds.createCompetition(this.newComp).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: data => {
           if (data.success) {
@@ -98,10 +102,12 @@ export class CompetitionsComponent implements OnInit {
               .subscribe({
                 next: result => {
                   if (result.success) {
-                    alert("Sikeres verseny létrehozás")
+                    if(this.editMode == -1) alert("Sikeres verseny létrehozás")
+                    else alert("Sikeres módosítás")
                     this.ds.loader.loadingOff()
                     this.ds.router.navigateByUrl('/competitions', { replaceUrl: true })
                       .then(() => this.ngOnInit())
+                    this.formEditable = false
                   }
                 },
                 error: err => {
@@ -116,6 +122,7 @@ export class CompetitionsComponent implements OnInit {
           this.ds.loader.loadingOff()
         }
       })
+   
   }
   FormEnabled(){
         return (
@@ -141,5 +148,39 @@ export class CompetitionsComponent implements OnInit {
           error: err => console.error(err)
         })
     }
+  }
+  editCompetition(id: number){
+    this.editMode = id
+    let comp = this.userCompetitions.find(x => x.id == id)!
+    this.newComp = structuredClone(comp)
+    this.newComp.kezdet = new Date(comp.kezdet).toISOString().slice(0, 16)
+    this.newComp.veg = new Date(comp.veg).toISOString().slice(0, 16)
+    this.newComp.nevezesi_hatarido = new Date(comp.nevezesi_hatarido).toISOString().slice(0, 16)
+    this.newComp.megjelenik = new Date(comp.megjelenik).toISOString().slice(0, 16)
+    this.newCompetitionCategories = this.newComp.categories.map(x=>x.id)
+    this.formEditable = true
+  }
+  newCompCommand(){
+    this.editMode = -1
+    this.newComp = {
+      kezdet: this.today(),
+      veg: this.today(),
+      nev: '',
+      evszam: '',
+      helyszin: '',
+      megjelenik: this.today(),
+      nevezesi_hatarido: this.today(),
+      gps_x: null,
+      gps_y: null,
+      szervezo_egyesulet: -1,
+      leiras: null,
+      nevezesi_dij_junior: null,
+      nevezesi_dij_normal: null,
+      kep_url: null,
+      kep_fajlnev: null,
+      categories:[]
+    }
+    this.newCompetitionCategories = []
+    this.formEditable = true
   }
 }

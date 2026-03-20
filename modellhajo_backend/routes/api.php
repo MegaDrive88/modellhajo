@@ -413,3 +413,34 @@ Route::middleware(["auth:sanctum", "ability:organizer"])->get('/getCompetitors',
         'competitors' => UserModel::where("szerepkor_id", 2)->get()
     ]);
 });
+
+// Route::middleware(["auth:sanctum", "ability:organizer"])->put('/editCompetition/{id}', function ($id, Request $request){
+//     $evszam = $request->input("evszam");
+//     if ($request->input("evszam") == ""){
+//         $evszam = explode('-', $request->input("kezdet"))[0];
+//     }
+//     $data = $request->validate([
+//         'nev' => 'required',
+//         'helyszin' => 'required',
+//         'nevezesi_dij_junior' => 'required|min:0',
+//         'nevezesi_dij_normal' => 'required|min:0',
+//         'szervezo_egyesulet' => 'min:1',
+//     ]);
+//     $competition = CompetitionModel::where('id', '=', $id)->first();
+//     if (!$competition) {
+//         return response()->json([
+//             'error' => 'NO_SUCH_COMPETITION'
+//         ], 404);
+//     }
+//     $competition->update([
+//         ...$request->all(),
+//         'evszam' => $evszam,
+//     ]);
+//     return response()->json([
+//         'success' => true,
+//     ]);
+// });
+
+// Route::middleware(["auth:sanctum", "ability:organizer"])->delete('/deleteCompetitionCategories/{id}', function($id, Request $request){
+
+// });

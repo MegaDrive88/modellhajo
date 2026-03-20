@@ -45,8 +45,10 @@ export class ShowCompetitonComponent implements OnInit {
 - versenyzo dashboard: kovetkezo verseny, ranglista
 - telepites naplo
 - server error, file not found
+- kulon adatbazis sema
 
+- versenyeket datum alapjan sortolni
 - lezajlott versenynel eredmenyek az "egy verseny" oldalon
 - sweet alert
-- loader ugy szar ahogy van!!!!!!!!!
+- loader ugy szar ahogy van!!!!!!!!! - localstorage ugy mint menuitemeknel, vagy ngrx
 */
