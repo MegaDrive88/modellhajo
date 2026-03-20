@@ -11,8 +11,11 @@
                         <input name="nev" type="text" required placeholder="pl.: Példa Kupa" class="form-control" [(ngModel)]="newComp.nev">
                     </div>
                     <div>
-                        <span class="mandatory-star">Verseny helyszíne</span>
+                        <span class="mandatory-star" >Verseny helyszíne (szövegesen)</span>
                         <input name="helyszin" type="text" required placeholder="pl.: Alsótiszabánatos, Magyarország" class="form-control" [(ngModel)]="newComp.helyszin">
+                    </div>
+                    <div #map style="height: 300px;">
+                        
                     </div>
                      <div class="row">
                         <div class="col-6">

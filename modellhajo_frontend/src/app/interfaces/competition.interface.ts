@@ -10,8 +10,8 @@ export default interface Competition{
     helyszin: string;
     megjelenik: Date | string;
     nevezesi_hatarido: Date | string;
-    gps_x: number | null;
-    gps_y: number | null;
+    gps_lat: number | null;
+    gps_lon: number | null;
     szervezo_egyesulet: number | null;
     leiras: string | null;
     nevezesi_dij_junior: number | null;
