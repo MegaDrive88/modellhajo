@@ -107,6 +107,24 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
     getCompetitorName(id:number){
         return this.competitors.find(x=>x.id == id)?.megjeleno_nev
     }
+    entrySort(arr: CompetitionEntry[]){
+        arr.sort((a, b) => {
+            const categoryA = this.categories.find(x=>x.id == a.kategoriaid)!.nev;
+            const categoryB = this.categories.find(x=>x.id == b.kategoriaid)!.nev;
+            
+            if (categoryA > categoryB) return 1;
+            if (categoryA < categoryB) return -1;
+    
+            const nameA = this.competitors.find(x=> x.id == a.versenyzoid)!.megjeleno_nev;
+            const nameB = this.competitors.find(x=> x.id == b.versenyzoid)!.megjeleno_nev;
+    
+            if (nameA < nameB) return -1;
+            if (nameA > nameB) return 1;
+    
+            return 0;
+          }); 
+          return arr
+      }
 }
 /*TODO 
 - tobb rendezo egy versenyhez
@@ -127,4 +145,5 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - loader ugy szar ahogy van!!!!!!!!! - localstorage ugy mint menuitemeknel, vagy ngrx
 
 - fajlnev visszatoltes
+- email validacio, frontenden is (elvieg van mar xdd)
 */

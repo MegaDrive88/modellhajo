@@ -263,6 +263,12 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
   }
   newCompCommand(){
     this.editMode = -1
+    this.leafletMap.eachLayer((l:any)=>{
+      if (l instanceof L.Marker) {
+        this.leafletMap.removeLayer(l);
+      }
+      
+    })
     this.newComp = {
       kezdet: this.today(),
       veg: this.today(),

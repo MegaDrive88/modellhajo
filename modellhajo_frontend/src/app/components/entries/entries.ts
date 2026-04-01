@@ -69,10 +69,10 @@ export class EntriesComponent implements OnInit {
       return arr
   }
   exportCSVCommand(versenyid: number){
-    const topRow = "Versenyzo neve;Versenyzo MMSZ azonositoja;Versenyzo e-mail cime;Kategoria\n"
+    const topRow = "Kategória;Versenyző neve;Versenyző MMSZ azonosítója;Versenyző e-mail címe\n"
     let rows: string[] = []
     for(const entry of this.entrySort(this.entries[versenyid.toString()])){
-      rows.push(`${this.getCompetitorName(entry.versenyzoid)};${this.competitors.find(x=>x.id == entry.versenyzoid)?.mmsz_id};${this.competitors.find(x=>x.id == entry.versenyzoid)?.email};${this.getCategoryName(entry.kategoriaid)}`)
+      rows.push(`${this.getCategoryName(entry.kategoriaid)};${this.getCompetitorName(entry.versenyzoid)};${this.competitors.find(x=>x.id == entry.versenyzoid)?.mmsz_id};${this.competitors.find(x=>x.id == entry.versenyzoid)?.email}`)
     }
     this.downloadFile(`${topRow}${rows.join('\n')}`, `${versenyid}_${this.competitions.find(x=>x.id == versenyid)?.nev.replaceAll(" ", "_")}.csv`, "text/plain")
   }

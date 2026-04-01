@@ -14,9 +14,10 @@
                         <span class="mandatory-star" >Verseny helyszíne (szövegesen)</span>
                         <input name="helyszin" type="text" required placeholder="pl.: Alsótiszabánatos, Magyarország" class="form-control" [(ngModel)]="newComp.helyszin">
                     </div>
-                    <div>
+                    <div style="position: relative;">
                         <div #map style="height: 300px;">
                         </div>
+                        <div *ngIf="!formEditable" id="map-disable-overlay"></div>
                         <span style="font-size: 90%;">Ne felejtsen el a 'Save' gombra kattintani szerkesztés vagy törlés esetén!</span>
                     </div>
                      <div class="row">

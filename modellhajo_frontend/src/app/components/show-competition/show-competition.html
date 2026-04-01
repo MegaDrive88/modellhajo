@@ -14,26 +14,39 @@
                             <h1 class="text-center" style="color: darkred;">Ez a verseny már lezajlott!</h1>
                         }
                         <h1 class="text-center">{{competition?.nev}}</h1>
-                        <h2 class="text-center">{{competition?.kezdet | date:"y.MM.dd HH:mm"}} - {{competition?.veg | date:"y.MM.dd HH:mm"}}</h2>
+                        <h2 class="text-center">{{competition?.kezdet | date:"y.MM.dd. HH:mm"}} - {{competition?.veg | date:"y.MM.dd. HH:mm"}}</h2>
                         <h2 class="text-center">A verseny helyszíne: {{competition?.helyszin}}</h2>
                         <div #map style="height: 500px; width: 80%; margin-bottom: 15px;" [style.visibility]="competition?.veg! >= today ? 'visible' : 'hidden'"></div>
                         <div class="row">
                             @if (ds.getUser()) {
                             <div class="col-6">
                                 <h4>Nevezések:</h4>
-                                @for (item of entriesByCompetition; track $index) {
-                                    <!-- TODO: szebbre -->
-                                    {{getCategoryName(item.kategoriaid)}}: {{getCompetitorName(item.versenyzoid)}}
-                                }
-                                @empty{
-                                    Még nem érkezett nevezés
-                                }
+                                <table style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <td>Kategória</td>
+                                            <td>Versenyző</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (item of entrySort(entriesByCompetition); track $index) {
+                                            <tr>
+                                                <td>{{getCategoryName(item.kategoriaid)}}</td>
+                                                <td>{{getCompetitorName(item.versenyzoid)}}</td>
+                                            </tr>
+                                        }
+                                        @empty{
+                                            <td>Még nem érkezett nevezés</td>
+                                        }
+                                    </tbody>
+                                </table>
+                                
                             </div>
                             }
                             
                             <div [class]="ds.getUser() ? 'col-6' : 'col-12 text-center'">
                                 @if(competition?.veg! >= today){
-                                    <p [innerHTML]="competition?.leiras?.replaceAll(`\n`, '<br>')" style="max-width: 750px; text-align: justify;"></p>
+                                    <p [innerHTML]="competition?.leiras?.replaceAll(`\n`, '<br>')" style="max-width: 750px;" [style.textAlign]="ds.getUser() ? 'justify' : 'center'"></p>
                                     <h3>Nevezési díjak:</h3>
                                     <h5>Teljes árú: {{competition?.nevezesi_dij_normal}} Ft</h5>
                                     <h5>Junior: {{competition?.nevezesi_dij_junior}} Ft</h5>
