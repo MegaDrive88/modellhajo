@@ -35,9 +35,9 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
     ngOnInit(): void {
         delete (L.Icon.Default.prototype as any)._getIconUrl;
         L.Icon.Default.mergeOptions({
-            iconRetinaUrl: '../marker-icon-2x.png',
-            iconUrl: '../marker-icon.png',
-            shadowUrl: '../marker-shadow.png'
+            iconRetinaUrl: new URL('assets/marker-icon-2x.png', document.baseURI).href,
+            iconUrl: new URL('assets/marker-icon.png', document.baseURI).href,
+            shadowUrl: new URL('assets/marker-shadow.png', document.baseURI).href
         });
         this.ds.loader.loadingOn()
         const competitionId = Number(this.route.snapshot.paramMap.get('id')!)
@@ -127,5 +127,4 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - loader ugy szar ahogy van!!!!!!!!! - localstorage ugy mint menuitemeknel, vagy ngrx
 
 - fajlnev visszatoltes
-- osszes nevezes publikus!!
 */

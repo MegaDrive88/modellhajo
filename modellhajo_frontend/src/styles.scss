@@ -13,6 +13,7 @@
 @import 'bootstrap/scss/forms';
 @import "@ng-select/ng-select/themes/default.theme.css";
 @import "sweetalert2/themes/material-ui.css";
+@import "sweetalert2/src/sweetalert2.scss";
 
 html {
   @include mat.theme((

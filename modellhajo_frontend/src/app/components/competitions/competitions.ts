@@ -14,8 +14,6 @@ import * as L from 'leaflet'
 import 'leaflet-draw';
 import 'leaflet-control-geocoder';
 import Swal from 'sweetalert2';
-import 'sweetalert2/src/sweetalert2.scss'
-import 'sweetalert2/themes/material-ui.css'
 
 @Component({
   selector: 'competitions-root',
@@ -144,9 +142,9 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     L.Icon.Default.mergeOptions({
-      iconRetinaUrl: '../marker-icon-2x.png',
-      iconUrl: '../marker-icon.png',
-      shadowUrl: '../marker-shadow.png'
+        iconRetinaUrl: new URL('assets/marker-icon-2x.png', document.baseURI).href,
+        iconUrl: new URL('assets/marker-icon.png', document.baseURI).href,
+        shadowUrl: new URL('assets/marker-shadow.png', document.baseURI).href
     });
     this.ds.loader.loadingOn()
     // Use forkJoin to guarantee both calls complete before processing

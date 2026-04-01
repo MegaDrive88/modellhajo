@@ -22,7 +22,6 @@ RUN php artisan route:cache
 CMD php artisan storage:link || true && \
     php artisan serve --host 0.0.0.0 --port 8000
 
-# mkdir -p storage/app/public
 # docker exec -it modellhajo_app bash
 # rm -rf public/storage
 # php artisan storage:link
