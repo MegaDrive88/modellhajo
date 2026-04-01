@@ -12,6 +12,7 @@
 @import 'bootstrap/scss/buttons';
 @import 'bootstrap/scss/forms';
 @import "@ng-select/ng-select/themes/default.theme.css";
+@import "sweetalert2/themes/material-ui.css";
 
 html {
   @include mat.theme((

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { TopBarComponent } from "../top-bar";
 import { RouterLink } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'landing-root',
@@ -15,6 +16,6 @@ export class LandingPageComponent {
   // https://namba8.com/wp/
   // https://www.facebook.com/groups/607199946958953/
   WIPalert(){
-    alert("Hamarosan")
+    Swal.fire({title: 'Hamarosan', theme: 'material-ui-dark'})
   }
 }

@@ -7,6 +7,7 @@ import { DataService } from '../../services/data.service';
 import { forkJoin } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'calendar-root',
@@ -40,7 +41,7 @@ export class CalendarComponent {
       },
       error: (err) => {
         console.error('Failed to load competitions', err)
-        alert('Hiba történt a versenyek betöltésekor.')
+        Swal.fire({title: 'Hiba történt a versenyek betöltésekor.', theme: 'material-ui-dark'})
         this.ds.loader.loadingOff()
       }
     })

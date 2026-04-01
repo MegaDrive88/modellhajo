@@ -5,6 +5,7 @@ import CompetitionEntry from '../../interfaces/competition.entry.interface';
 import { forkJoin } from 'rxjs';
 import Competition from '../../interfaces/competition.interface';
 import Category from '../../interfaces/category.interface';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'myEntries-root',
@@ -48,8 +49,8 @@ export class MyEntriesComponent implements OnInit{
   }
   cancelEntry(id: number){
     this.ds.cancelEntry(id).subscribe({
-      next:()=>{
-        alert("Nevezését sikeresen lemondta az adott kategóriában.")
+      next:async()=>{
+        await Swal.fire({title: 'Nevezését sikeresen lemondta az adott kategóriában.', theme: 'material-ui-dark'})
         location.reload()
       }
     })

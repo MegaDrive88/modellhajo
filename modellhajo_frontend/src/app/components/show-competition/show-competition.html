@@ -16,13 +16,31 @@
                         <h1 class="text-center">{{competition?.nev}}</h1>
                         <h2 class="text-center">{{competition?.kezdet | date:"y.MM.dd HH:mm"}} - {{competition?.veg | date:"y.MM.dd HH:mm"}}</h2>
                         <h2 class="text-center">A verseny helyszíne: {{competition?.helyszin}}</h2>
-                        @if(competition?.veg! >= today){
-                            <div>térkép ide</div>
-                            <p>{{competition?.leiras}}</p>
-                            <h3>Nevezési díjak:</h3>
-                            <h5>Teljes árú: {{competition?.nevezesi_dij_normal}} Ft</h5>
-                            <h5>Junior: {{competition?.nevezesi_dij_junior}} Ft</h5>
-                        }<br>
+                        <div #map style="height: 500px; width: 80%; margin-bottom: 15px;" [style.visibility]="competition?.veg! >= today ? 'visible' : 'hidden'"></div>
+                        <div class="row">
+                            @if (ds.getUser()) {
+                            <div class="col-6">
+                                <h4>Nevezések:</h4>
+                                @for (item of entriesByCompetition; track $index) {
+                                    <!-- TODO: szebbre -->
+                                    {{getCategoryName(item.kategoriaid)}}: {{getCompetitorName(item.versenyzoid)}}
+                                }
+                                @empty{
+                                    Még nem érkezett nevezés
+                                }
+                            </div>
+                            }
+                            
+                            <div [class]="ds.getUser() ? 'col-6' : 'col-12 text-center'">
+                                @if(competition?.veg! >= today){
+                                    <p [innerHTML]="competition?.leiras?.replaceAll(`\n`, '<br>')" style="max-width: 750px; text-align: justify;"></p>
+                                    <h3>Nevezési díjak:</h3>
+                                    <h5>Teljes árú: {{competition?.nevezesi_dij_normal}} Ft</h5>
+                                    <h5>Junior: {{competition?.nevezesi_dij_junior}} Ft</h5>
+                                }
+                            </div>
+                        </div>
+                        <br>
                             <!-- szervezo egyesuletet valahova -->
                         @if(competition?.nevezesi_hatarido! >= today){
                             <a class="blue-button" [routerLink]="[`/competition_register/${competition?.id}`]">Nevezés</a>

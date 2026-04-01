@@ -4,7 +4,7 @@
     <section class="content" style="color: white; flex-direction: column; padding:80px 50px;">
         <h2 class="text-center mb-3">Versenynaptár</h2>
         <div class="row w-100 no-gutters">
-            <div class="comp-filters-wrapper col-3">
+            <!-- <div class="comp-filters-wrapper col-3">
                 <div class="comp-filters">
                     szűrők
                     <br>
@@ -12,8 +12,8 @@
                     <br>
                     <br>
                 </div>
-            </div>
-            <div class="competitions-wrapper col-9">
+            </div> -->
+            <div class="competitions-wrapper col-12">
                 @for (comp of competitions; track comp.id) {
                 <a [routerLink]="[`/competition/${comp.id}`]" style="text-decoration: none;">
                     <div class="competition-card">

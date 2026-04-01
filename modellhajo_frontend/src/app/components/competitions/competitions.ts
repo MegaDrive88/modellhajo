@@ -13,7 +13,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import * as L from 'leaflet'
 import 'leaflet-draw';
 import 'leaflet-control-geocoder';
-
+import Swal from 'sweetalert2';
+import 'sweetalert2/src/sweetalert2.scss'
+import 'sweetalert2/themes/material-ui.css'
 
 @Component({
   selector: 'competitions-root',
@@ -33,12 +35,15 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
   protected competitionCategories!: CompetitionCategory[]
   protected formEditable = false
   private editMode = -1
+  private markerPlaced = false
+  private drawnItems!:L.FeatureGroup
   @ViewChild("map") map!:ElementRef
+  private leafletMap!:L.DrawMap
   @ViewChild('competitionThumbnailInput') thumbnailInput!: ElementRef<HTMLInputElement>
   
   ngAfterViewInit(): void {
-      const map = L.map(this.map.nativeElement, {
-      maxZoom: 20,
+      this.leafletMap = L.map(this.map.nativeElement, {
+      maxZoom: 18,
       minZoom: 10,
       center: [47.68, 17.63],
       zoom: 15
@@ -51,18 +56,18 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
     const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       attribution: 'Tiles &copy; Esri &mdash; Source: Esri, Maxar, USDA, USGS, and the GIS User Community'
     })
-    streetLayer.addTo(map);
+    streetLayer.addTo(this.leafletMap);
     const baseMaps = {
       "Street": streetLayer,
       "Satellite": satelliteLayer,
     };
-    L.control.layers(baseMaps,).addTo(map);
+    L.control.layers(baseMaps,).addTo(this.leafletMap);
 
-    const drawnItems = new L.FeatureGroup();
-    map.addLayer(drawnItems);
+    this.drawnItems = new L.FeatureGroup();
+    this.leafletMap.addLayer(this.drawnItems);
     const drawControl = new L.Control.Draw({
       edit: {
-        featureGroup: drawnItems,
+        featureGroup: this.drawnItems,
         // remove: false
       },
       draw: {
@@ -74,13 +79,30 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
         circlemarker: false
       }
     });
-    map.addControl(drawControl);
-    map.on('draw:created', (event: L.LeafletEvent) => { // csak egyet!
+    this.leafletMap.addControl(drawControl);
+    this.leafletMap.on('draw:created', (event: L.LeafletEvent) => {
+      if (this.markerPlaced) return
       const layer = event.layer;
-      drawnItems.addLayer(layer);
+      this.drawnItems.addLayer(layer);
+      this.newComp.gps_lat = (layer as any)._latlng.lat
+      this.newComp.gps_lon = (layer as any)._latlng.lng
+      this.markerPlaced = true
     });
 
+    this.leafletMap.on('draw:edited', (event: any) => {      
+      event.layers.eachLayer((l: any)=>{        
+        this.newComp.gps_lat = l._latlng.lat
+        this.newComp.gps_lon = l._latlng.lng
+      })
+    });
 
+    this.leafletMap.on('draw:deleted', (event: any) => {
+      event.layers.eachLayer((l: any)=>{
+        this.newComp.gps_lat = null
+        this.newComp.gps_lon = null
+        this.markerPlaced = false
+      })
+    });
 
     const geocoder = (L.Control as any).Geocoder.nominatim({
       geocodingQueryParams: {
@@ -92,8 +114,8 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
       geocoder: geocoder
     }).on('markgeocode', (e: any) => {
     const center = e.geocode.center; 
-      map.setView([center.lat, center.lng], 12);
-    }).addTo(map);
+      this.leafletMap.setView([center.lat, center.lng], 12);
+    }).addTo(this.leafletMap);
   }
 
   private today(){
@@ -135,7 +157,7 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
     }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: ({ assocAndCats, compCats, userComps }) => {
         this.associations = assocAndCats.associations
-        this.categories = assocAndCats.categories
+        this.categories = assocAndCats.categories.sort((a, b) => a.nev.localeCompare(b.nev))
         this.competitionCategories = compCats.categories
         this.userCompetitions = userComps.data
         for (const comp of this.userCompetitions) {
@@ -145,7 +167,7 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
       },
       error: (err) => {
         console.error('Failed to load competition data', err)
-        alert('Hiba történt az adatok betöltésekor.')
+        Swal.fire({title: 'Hiba történt az adatok betöltésekor.', theme: 'material-ui-dark'})
         this.ds.loader.loadingOff()
       }
     })
@@ -172,8 +194,8 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
               .subscribe({
                 next: result => {
                   if (result.success) {
-                    if(this.editMode == -1) alert("Sikeres verseny létrehozás")
-                    else alert("Sikeres módosítás")
+                    if(this.editMode == -1) Swal.fire({title: "Sikeres verseny létrehozás", theme: "material-ui-dark"})
+                    else Swal.fire({title: "Sikeres módosítás", theme: "material-ui-dark"})
                     this.ds.loader.loadingOff()
                     this.ds.router.navigateByUrl('/competitions', { replaceUrl: true })
                       .then(() => this.ngOnInit())
@@ -228,6 +250,17 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
     this.newComp.nevezesi_hatarido = new Date(comp.nevezesi_hatarido).toISOString().slice(0, 16)
     this.newComp.megjelenik = new Date(comp.megjelenik).toISOString().slice(0, 16)
     this.newCompetitionCategories = this.newComp.categories.map(x=>x.id)
+    this.leafletMap.eachLayer((l:any)=>{
+      if (l instanceof L.Marker) {
+        this.leafletMap.removeLayer(l);
+      }
+      
+    })
+    if (this.newComp.gps_lat !== null && this.newComp.gps_lon !== null){
+      this.drawnItems.addLayer(L.marker({lat: this.newComp.gps_lat, lng: this.newComp.gps_lon}, { draggable: false }))
+      this.leafletMap.setView([this.newComp.gps_lat, this.newComp.gps_lon]);
+      this.markerPlaced = true
+    }
     this.formEditable = true
   }
   newCompCommand(){

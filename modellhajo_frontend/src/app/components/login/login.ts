@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Md5 } from 'ts-md5';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'login-root',
@@ -48,7 +49,7 @@ export class LoginComponent implements OnInit {
         this.ds.loader.loadingOff()
       },
       error: () => {
-        alert('Szerverhiba, próbálja újra később!')
+        Swal.fire({title: 'Szerverhiba, próbálja újra később!', theme: 'material-ui-dark'})
         this.ds.loader.loadingOff()
       }
     })

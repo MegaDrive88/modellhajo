@@ -9,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import Category from '../../interfaces/category.interface';
 import Association from '../../interfaces/association.interface';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'competitionRegister-root',
@@ -48,7 +49,7 @@ export class CompetitionRegisterComponent implements OnInit{
           this.ds.loader.loadingOff(); // tul hamar lekapcsol, menubar miatt valszeg
         },
         error: (err) => {
-          alert("Nem létezik ilyen verseny")
+          Swal.fire({title: 'Nem létezik ilyen verseny', theme: 'material-ui-dark'})
           this.ds.router.navigateByUrl('/dashboard')
           console.log(err);
           this.ds.loader.loadingOff();
@@ -57,7 +58,7 @@ export class CompetitionRegisterComponent implements OnInit{
   }
   enterCompetition(){    
     if(!this.mmszid){
-      alert("A nevezéshez szükséges MMSZ azonosító Önnek nincs kitöltve")
+      Swal.fire({title: 'A nevezéshez szükséges MMSZ azonosító Önnek nincs kitöltve', theme: 'material-ui-dark'})
       return
     }
     let user = this.ds.getUser()
@@ -66,8 +67,8 @@ export class CompetitionRegisterComponent implements OnInit{
     this.ds.loader.loadingOn()
     this.ds.enterCompetition(this.competition?.id!, this.newCompetitionCategories, this.selectedAssoc, this.mmszid).subscribe({
       next:(data)=>{        
-        if(data.skipped.length > 0) alert(`Ön már nevezett ${data.skipped.map((x :any)=>this.competitionCategories.find(y=>y.id == x)?.nev).join(", ")} kategóriá(k)ban${data.delta != 0 ? ", a többiben sikeresen nevezett" : ""}`)
-        else alert(`Sikeresen nevezett a(z) ${this.competition?.nev} versenyre`)
+        if(data.skipped.length > 0) Swal.fire({title: `Ön már nevezett ${data.skipped.map((x :any)=>this.competitionCategories.find(y=>y.id == x)?.nev).join(", ")} kategóriá(k)ban${data.delta != 0 ? ", a többiben sikeresen nevezett" : ""}`, theme: 'material-ui-dark'})
+        else Swal.fire({title: `Sikeresen nevezett a(z) ${this.competition?.nev} versenyre`, theme: 'material-ui-dark'})
         this.ds.loader.loadingOff()
         this.ds.router.navigateByUrl("/my_entries")
       }

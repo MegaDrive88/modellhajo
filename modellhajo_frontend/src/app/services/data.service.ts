@@ -281,4 +281,8 @@ export class DataService {
   getCompetitors(){
     return this.http.get<CompetitorsResponse>(`${this.API_URL}/getCompetitors`, {headers: this.getHeaders()})
   }
+
+  getEntriesByCompetitionId(id: number){    
+    return this.http.get<EntriesResponse>(`${this.API_URL}/getEntriesByCompetitionId/${id}`, {headers: this.getHeaders()})
+  }
 }

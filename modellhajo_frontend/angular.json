@@ -38,7 +38,9 @@
               "src/styles.scss",
               "node_modules/leaflet/dist/leaflet.css",
               "node_modules/leaflet-draw/dist/leaflet.draw.css",
-              "node_modules/leaflet-control-geocoder/dist/Control.Geocoder.css"
+              "node_modules/leaflet-control-geocoder/dist/Control.Geocoder.css",
+              "sweetalert2/src/sweetalert2.scss",
+              "sweetalert2/themes/material-ui.css"
             ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",

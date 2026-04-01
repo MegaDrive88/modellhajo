@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'user-register-root',
@@ -28,7 +29,7 @@ export class UserRegisterComponent {
     this.ds.createAccount(this.newUser).subscribe({
       next: (data)=>{
         if(data.success){
-          alert("Sikeres felhasználó létrehozás")
+          Swal.fire({title: "Sikeres felhasználó létrehozás", theme: "material-ui-dark"})
           this.ds.router.navigateByUrl("/login")
         }
         else{
@@ -36,7 +37,7 @@ export class UserRegisterComponent {
         }
       },
       error:()=>{
-        alert("Szerverhiba, próbálja újra később!")
+        Swal.fire({title: 'Szerverhiba, próbálja újra később!', theme: 'material-ui-dark'})
       }
     })
   }

@@ -9,6 +9,9 @@ form{
     gap: 15px;
     flex-direction: column;
     }
+    &:has(fieldset:disabled){
+        opacity: .8;
+    }
 }
 table{
     width: 100%;

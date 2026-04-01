@@ -183,6 +183,7 @@ Route::post('/createAccount', function (Request $request){
     }
 
     $user->szerepkor_id = $request->input("szerepkor_id");
+    $user->mmsz_id = $request->input("mmszid"); // unique ez is..
 
     if ($request->input("password") == $request->input("conf_password")){
         $user->jelszo = chr(rand(65, 90)).md5("PasswordSalted".$request->input("password")).chr(rand(65, 90));
@@ -387,6 +388,16 @@ Route::middleware(['auth:sanctum', 'abilities:organizer'])->get('/getEntriesByOr
     ]);
 });
 
+Route::get('/getEntriesByCompetitionId/{id}', function($id){
+    $entries = CompetitionEntryModel::whereHas('competition', function ($query) use($id) {
+        $query->where('versenyid', $id);
+    })->get()->groupBy('versenyid');
+    return response()->json([
+        'success' => true,
+        'entries' => $entries
+    ]);
+});
+
 Route::middleware(['auth:sanctum', 'abilities:competitor,supporter'])->delete('/cancelEntry/{id}', function($id, Request $request){
 //csak sajatot -- tobbi vegpontnal is lehet problema? -- verseny torlesenel majd az osszes rendezo kozott kell lennie
 //ugy is lesz backend rework
@@ -407,7 +418,7 @@ Route::middleware(['auth:sanctum', 'abilities:competitor,supporter'])->delete('/
     ]);
 });
 
-Route::middleware(["auth:sanctum", "ability:organizer"])->get('/getCompetitors', function (Request $request){
+Route::middleware(["auth:sanctum"])->get('/getCompetitors', function (Request $request){
     return response()->json([
         'success' => true,
         'competitors' => UserModel::where("szerepkor_id", 2)->get()

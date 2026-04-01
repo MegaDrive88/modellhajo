@@ -4,6 +4,7 @@ import { DataService } from '../../services/data.service';
 import { FormsModule } from '@angular/forms';
 import User from '../../interfaces/user.interface';
 import { TranslatePipe } from '@ngx-translate/core';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'userManagement-root',
@@ -32,7 +33,7 @@ export class UserManagementComponent implements OnInit{
         next:(data)=>{
             if(data.success){
                 this.ds.setUser(data.user)
-                alert("Adatai sikeresen módosultak!")
+            Swal.fire({title: 'Adatai sikeresen módosultak!', theme: 'material-ui-dark'})
             }
         },
         error:(err)=>{this.userDataErrorString = err.error.error}
@@ -44,7 +45,7 @@ export class UserManagementComponent implements OnInit{
         next:(data)=>{
             if(data.success){
                 this.ds.setUser(data.user)
-                alert("Sikeres jelszó változtatás, kérjük jelentkezzen be újra!")
+            Swal.fire({title: 'Sikeres jelszó változtatás, kérjük jelentkezzen be újra!', theme: 'material-ui-dark'})
                 this.ds.logout()
             }
         },
