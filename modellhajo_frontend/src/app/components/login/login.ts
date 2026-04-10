@@ -37,7 +37,6 @@ export class LoginComponent implements OnInit {
       isEmail: isEmail,
       pwdHash: Md5.hashStr(`PasswordSalted${this.password}`)
     }
-    this.ds.loader.loadingOn()
     this.ds.login(loginModel).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.loginSuccess = data.success
@@ -46,11 +45,9 @@ export class LoginComponent implements OnInit {
           this.ds.setToken(data.access_token!)
           this.ds.router.navigateByUrl('/dashboard')
         }
-        this.ds.loader.loadingOff()
       },
       error: () => {
         Swal.fire({title: 'Szerverhiba, próbálja újra később!', theme: 'material-ui-dark'})
-        this.ds.loader.loadingOff()
       }
     })
   }

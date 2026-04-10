@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { LoadingIndicatorComponent } from './components/loading-indicator';
+import { LoaderComponent } from './components/loading-indicator';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, LoadingIndicatorComponent],
+  imports: [RouterOutlet, LoaderComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

@@ -17,7 +17,6 @@ export class MenuBarComponent implements OnInit {
   protected menuItems: MenuItem[] = []
 
   ngOnInit() {
-    this.ds.loader.loadingOn()
     const cached = this.ds.getMenuItems()
     if (!cached) {
       this.ds.retrieveMenuItems().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
@@ -26,16 +25,13 @@ export class MenuBarComponent implements OnInit {
             this.menuItems = data.items
             this.ds.setMenuItems(data.items)
           }
-          this.ds.loader.loadingOff()
         },
         error: (err) => {
           console.error('Failed to load menu items', err)
-          this.ds.loader.loadingOff()
         }
       })
     } else {
       this.menuItems = cached
-      this.ds.loader.loadingOff()
     }
 
     import('bootstrap');

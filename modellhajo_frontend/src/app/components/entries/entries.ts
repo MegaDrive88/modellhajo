@@ -25,7 +25,6 @@ export class EntriesComponent implements OnInit {
   protected categories!:Category[]
   protected competitors!:User[]
   ngOnInit(): void {
-    this.ds.loader.loadingOn()
     forkJoin({
       competitions: this.ds.getUserCompetitions(),
       entries: this.ds.getEntriesByOrganizerId(),
@@ -36,7 +35,6 @@ export class EntriesComponent implements OnInit {
       this.competitions = competitions.data
       this.categories = categories.categories
       this.competitors = competitors.competitors     
-      this.ds.loader.loadingOff()
     });
   }
   getCategoryName(id:number){

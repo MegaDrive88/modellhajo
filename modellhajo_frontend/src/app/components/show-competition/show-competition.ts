@@ -39,7 +39,6 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
             iconUrl: new URL('assets/marker-icon.png', document.baseURI).href,
             shadowUrl: new URL('assets/marker-shadow.png', document.baseURI).href
         });
-        this.ds.loader.loadingOn()
         const competitionId = Number(this.route.snapshot.paramMap.get('id')!)
         if(this.ds.getUser()){
             forkJoin({
@@ -58,9 +57,8 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
                     this.entriesByCompetition = Object.values(entries.entries ?? {}).flat()
                     this.categories = assocsAndCats.categories
                     this.competitors = competitors.competitors
-                    this.ds.loader.loadingOff()
                 },
-                error: (err)=>{console.log(err); this.ds.loader.loadingOff()}
+                error: (err)=>{console.log(err)}
             })  
         }
         else{
@@ -70,9 +68,8 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
                         this.competition = data.data
                         this.compLoaded$.next(data.data)
                     }
-                    this.ds.loader.loadingOff()
                 },
-                error: (err)=>{console.log(err); this.ds.loader.loadingOff()}
+                error: (err)=>{console.log(err)}
             })
         }
     }
@@ -128,10 +125,8 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 }
 /*TODO 
 - tobb rendezo egy versenyhez
-- verseny szerkesztes
 - szurok
 - tamogatohoz versenyzot kapcsolni
-- openstreetmap
 - backend rework
 - email kuldes
 - rendezo dashboard: kovetkezo esemen
@@ -142,8 +137,9 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 
 - versenyeket datum alapjan sortolni
 - lezajlott versenynel eredmenyek az "egy verseny" oldalon
-- loader ugy szar ahogy van!!!!!!!!! - localstorage ugy mint menuitemeknel, vagy ngrx
+- loader ugy szar ahogy van!!!!!!!!!
 
 - fajlnev visszatoltes
 - email validacio, frontenden is (elvieg van mar xdd)
+- nevezesek szerkesztese
 */

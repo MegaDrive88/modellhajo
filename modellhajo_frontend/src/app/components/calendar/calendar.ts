@@ -24,7 +24,6 @@ export class CalendarComponent {
   protected competitionCategories!: CompetitionCategory[]
   protected today = new Date().toISOString()
   ngOnInit(): void {
-    this.ds.loader.loadingOn()
     forkJoin({
       compCats: this.ds.getCompetitionCategories(),
       allComps: this.ds.getAllCompetitions()
@@ -37,12 +36,10 @@ export class CalendarComponent {
             comp.categories = this.competitionCategories.filter(x => x.versenyid == comp.id).map(x => x.category)
           }
         }
-        this.ds.loader.loadingOff()
       },
       error: (err) => {
         console.error('Failed to load competitions', err)
         Swal.fire({title: 'Hiba történt a versenyek betöltésekor.', theme: 'material-ui-dark'})
-        this.ds.loader.loadingOff()
       }
     })
   }

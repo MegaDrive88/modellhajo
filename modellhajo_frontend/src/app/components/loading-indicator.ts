@@ -1,80 +1,37 @@
-import {
-  Component,
-  ContentChild,
-  Input,
-  OnInit,
-  TemplateRef
-} from '@angular/core';
-import { Router, RouteConfigLoadStart, RouteConfigLoadEnd } from '@angular/router';
-import { Observable, tap } from 'rxjs';
-import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import { Component, OnInit } from "@angular/core";
+import { AsyncPipe, NgIf } from "@angular/common";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { LoadingService } from '../services/loading.service';
+import { Observable } from "rxjs";
+import { LoaderService } from "../services/loading.service";
 
 @Component({
-  selector: 'loading-indicator',
-  standalone: true,
-  imports: [
-    AsyncPipe,
-    NgTemplateOutlet,
-    MatProgressSpinnerModule
-  ],
+  selector: 'app-loader-component',
+  imports: [MatProgressSpinnerModule, NgIf, AsyncPipe],
   template: `
-    @if (loading$ | async) {
-        <div class="spinner-container">
-            @if (customLoadingIndicator) {
-            <ng-container
-                *ngTemplateOutlet="customLoadingIndicator">
-            </ng-container>
-            } @else {
-            <mat-spinner></mat-spinner>
-            }
-        </div>
+    <div *ngIf="loading$ | async" class="overlay">
+        <mat-spinner></mat-spinner>
+    </div>
+  `,
+  styles: `
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
     }
   `,
-  styles:`
-    .spinner-container {
-        position: fixed;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(0, 0, 0, 0.32);
-        z-index: 2000;
-    }
-  `,
+
 })
-export class LoadingIndicatorComponent implements OnInit {
-
-  loading$: Observable<boolean>;
-
-  @Input()
-  detectRouteTransitions = false;
-
-  @ContentChild('loading')
-  customLoadingIndicator!: TemplateRef<any>;
-
-  constructor(
-    private loadingService: LoadingService,
-    private router: Router
-  ) {
-    this.loading$ = this.loadingService.loading$;
-  }
-
-  ngOnInit() {
-    if (this.detectRouteTransitions) {
-      this.router.events
-        .pipe(
-          tap(event => {
-            if (event instanceof RouteConfigLoadStart) {
-              this.loadingService.loadingOn();
-            }
-            if (event instanceof RouteConfigLoadEnd) {
-              this.loadingService.loadingOff();
-            }
-          })
-        )
-        .subscribe();
-    }
+export class LoaderComponent implements OnInit {
+  loading$!: Observable<boolean>;
+  constructor(private loaderService: LoaderService) {}
+  ngOnInit(): void {
+    this.loading$ = this.loaderService.loading$;
   }
 }

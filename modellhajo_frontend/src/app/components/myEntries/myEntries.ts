@@ -28,7 +28,6 @@ export class MyEntriesComponent implements OnInit{
   ngOnInit(): void {
     // nevezések -> versenyid alapjan versenyek, csoportositva felhasznalo id alapjan
     const userId = this.ds.getUser()?.id!;
-    this.ds.loader.loadingOn()
     forkJoin({
       competitions: this.ds.getAllCompetitions(),
       entries: this.ds.getEntriesByUserId(userId),
@@ -38,7 +37,6 @@ export class MyEntriesComponent implements OnInit{
       this.keys = Object.keys(entries.entries);
       this.competitions = competitions.data
       this.categories = categories.categories
-      this.ds.loader.loadingOff()
     });
   }
   getCompById(key:string){

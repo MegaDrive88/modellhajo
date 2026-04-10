@@ -3,7 +3,6 @@ import User from '../interfaces/user.interface';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import MenuItem from '../interfaces/menuitem.interface';
 import { Router } from '@angular/router';
-import { LoadingService } from './loading.service';
 import Association from '../interfaces/association.interface';
 import Category from '../interfaces/category.interface';
 import Competition from '../interfaces/competition.interface';
@@ -76,7 +75,6 @@ export interface CompetitorsResponse {
 export class DataService {
   private readonly http = inject(HttpClient);
   public readonly router = inject(Router);
-  public readonly loader = inject(LoadingService);
   public readonly API_URL = environment.apiUrl;
   public readonly STORAGE_URL = environment.storageUrl;
 

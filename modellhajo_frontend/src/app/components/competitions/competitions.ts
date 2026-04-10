@@ -146,7 +146,6 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
         iconUrl: new URL('assets/marker-icon.png', document.baseURI).href,
         shadowUrl: new URL('assets/marker-shadow.png', document.baseURI).href
     });
-    this.ds.loader.loadingOn()
     // Use forkJoin to guarantee both calls complete before processing
     forkJoin({
       assocAndCats: this.ds.getAssociationsAndCategories(),
@@ -161,17 +160,14 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
         for (const comp of this.userCompetitions) {
           comp.categories = this.competitionCategories.filter(x => x.versenyid == comp.id).map(x => x.category)
         }
-        this.ds.loader.loadingOff()
       },
       error: (err) => {
         console.error('Failed to load competition data', err)
         Swal.fire({title: 'Hiba történt az adatok betöltésekor.', theme: 'material-ui-dark'})
-        this.ds.loader.loadingOff()
       }
     })
   }
   async sendCompetitionData(){
-      this.ds.loader.loadingOn()
       const fileInput = this.thumbnailInput.nativeElement
       if (fileInput.files && fileInput.files[0]){
           const file = fileInput.files[0]
@@ -194,7 +190,6 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
                   if (result.success) {
                     if(this.editMode == -1) Swal.fire({title: "Sikeres verseny létrehozás", theme: "material-ui-dark"})
                     else Swal.fire({title: "Sikeres módosítás", theme: "material-ui-dark"})
-                    this.ds.loader.loadingOff()
                     this.ds.router.navigateByUrl('/competitions', { replaceUrl: true })
                       .then(() => this.ngOnInit())
                     this.formEditable = false
@@ -202,14 +197,12 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
                 },
                 error: err => {
                   console.error(err)
-                  this.ds.loader.loadingOff()
                 }
               })
           }
         },
         error: err => {
           console.error(err)
-          this.ds.loader.loadingOff()
         }
       })
    

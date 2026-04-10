@@ -32,7 +32,6 @@ export class CompetitionRegisterComponent implements OnInit{
   protected mmszid:any
   ngOnInit(){
       this.mmszid = this.ds.getUser()?.mmsz_id
-      this.ds.loader.loadingOn();
       const competitionId = Number(this.route.snapshot.paramMap.get('id')!);
       forkJoin({
         competition: this.ds.getCompetitionById(competitionId),
@@ -46,13 +45,11 @@ export class CompetitionRegisterComponent implements OnInit{
           categories.categories = categories.categories.filter(x => x.versenyid == this.competition?.id);
           this.competitionCategories = categories.categories.map(x => x.category);
           this.associations = [{id:-1, nev: "Nincs megadva", logo_url:undefined}, ...associations.associations]
-          this.ds.loader.loadingOff(); // tul hamar lekapcsol, menubar miatt valszeg
         },
         error: (err) => {
           Swal.fire({title: 'Nem létezik ilyen verseny', theme: 'material-ui-dark'})
           this.ds.router.navigateByUrl('/dashboard')
           console.log(err);
-          this.ds.loader.loadingOff();
         }
       });
   }
@@ -64,12 +61,10 @@ export class CompetitionRegisterComponent implements OnInit{
     let user = this.ds.getUser()
     user!.mmsz_id = this.mmszid
     this.ds.setUser(user!)
-    this.ds.loader.loadingOn()
     this.ds.enterCompetition(this.competition?.id!, this.newCompetitionCategories, this.selectedAssoc, this.mmszid).subscribe({
       next:(data)=>{        
         if(data.skipped.length > 0) Swal.fire({title: `Ön már nevezett ${data.skipped.map((x :any)=>this.competitionCategories.find(y=>y.id == x)?.nev).join(", ")} kategóriá(k)ban${data.delta != 0 ? ", a többiben sikeresen nevezett" : ""}`, theme: 'material-ui-dark'})
         else Swal.fire({title: `Sikeresen nevezett a(z) ${this.competition?.nev} versenyre`, theme: 'material-ui-dark'})
-        this.ds.loader.loadingOff()
         this.ds.router.navigateByUrl("/my_entries")
       }
     })
