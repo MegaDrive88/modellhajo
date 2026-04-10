@@ -137,9 +137,9 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 
 - versenyeket datum alapjan sortolni
 - lezajlott versenynel eredmenyek az "egy verseny" oldalon
-- loader ugy szar ahogy van!!!!!!!!!
 
 - fajlnev visszatoltes
 - email validacio, frontenden is (elvieg van mar xdd)
 - nevezesek szerkesztese
+- szolni az uj usernek hogy varjon amig az admin elfogadja a szerepkoret
 */
