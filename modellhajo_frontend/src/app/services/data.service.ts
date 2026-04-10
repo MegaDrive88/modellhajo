@@ -283,4 +283,8 @@ export class DataService {
   getEntriesByCompetitionId(id: number){    
     return this.http.get<EntriesResponse>(`${this.API_URL}/getEntriesByCompetitionId/${id}`, {headers: this.getHeaders()})
   }
+
+  createNewEmail(to: string){
+    return this.http.post(`${this.API_URL}/storeEmail`, {to: to})
+  }
 }

@@ -22,11 +22,11 @@ class DatabaseMail extends Mailable
 
     public function build()
     {
-        return $this->from($this->email->felado_email)
-                    ->subject($this->email->targy)
+        return $this->subject($this->email->targy)
                     ->html($this->email->tartalom_html);
+                    // ->from($this->email->felado_email)
     }
-    
+
     // /**
     //  * Get the message envelope.
     //  */

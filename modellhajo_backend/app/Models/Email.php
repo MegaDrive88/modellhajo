@@ -11,7 +11,6 @@ class Email extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'felado_email',
         'cimzett_email',
         'targy',
         'tartalom_html',

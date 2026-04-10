@@ -26,6 +26,7 @@ export class UserRegisterComponent {
   }
   protected errorString = ""
   protected sendRegisterData(){
+    if(!this.newUser.email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) return // valami message
     this.ds.createAccount(this.newUser).subscribe({
       next: (data)=>{
         if(data.success){

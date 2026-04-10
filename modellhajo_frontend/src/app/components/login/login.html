@@ -14,7 +14,10 @@
                 <button class="blue-inverse-button" type="button" (click)="ds.router.navigateByUrl('/')">Vissza</button> 
                 <button class="blue-button" type="submit">Belépés</button> 
             </div>
-            <a [routerLink]="['/user_register']" class="my-0" style="color: white;">Nincs még fiókja?</a>
+            <div class="text-center">
+                <a [routerLink]="['/user_register']" class="my-0" style="color: white;">Nincs még fiókja?</a><br>
+                <a [routerLink]="['/forgot_password']" class="my-0" style="color: white;">Elfelejtett jelszó</a>
+            </div>
             @if (!loginSuccess){
                 <p class="errorBox w-100 my-0">Hibás felhasználónév vagy jelszó!</p>
             }

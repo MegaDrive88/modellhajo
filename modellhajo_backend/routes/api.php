@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\UserModel; 
 use App\Models\RoleModel;
 use App\Models\AssociationModel;
+use App\Models\Email;
 use App\Models\CompetitionModel;
 use App\Models\MenuItemModel;
 use App\Models\CompetitionCategoryModel;
@@ -455,3 +456,12 @@ Route::middleware(["auth:sanctum"])->get('/getCompetitors', function (Request $r
 // Route::middleware(["auth:sanctum", "ability:organizer"])->delete('/deleteCompetitionCategories/{id}', function($id, Request $request){
 
 // });
+
+Route::post('/storeEmail', function(Request $request){
+    $email = new Email();
+    $email->cimzett_email = $request->input("to");
+    $email->targy = "Modellhajó - Elfelejtett jelszó";
+    $email->letrehozva = now();
+    $email->tartalom_html = htmlspecialchars('<h1>Ez egy teszt</h1>');
+    $email->save();
+});
