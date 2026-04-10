@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -11,13 +10,10 @@ class ResetPasswordNotification extends Notification
 {
     use Queueable;
 
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(
+        private readonly string $recipientName,
+        private readonly string $resetUrl,
+    ) {}
 
     /**
      * Get the notification's delivery channels.
@@ -35,9 +31,13 @@ class ResetPasswordNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
+            ->subject('Modellhajó - Jelszó visszaállítás')
+            ->greeting('Kedves '.$this->recipientName.'!')
+            ->line('Jelszó-visszaállítási kérelmet kaptunk a fiókjához.')
+            ->action('Jelszó visszaállítása', $this->resetUrl)
+            ->line('Ha nem Ön kezdeményezte ezt a kérést, hagyja figyelmen kívül ezt az e-mailt.')
+            ->salutation('Üdvözlettel, Modellhajó');
+            
     }
 
     /**

@@ -23,7 +23,7 @@ export class ForgotPasswordComponent {
       })
       return
     }
-    this.ds.createNewEmail(this.email).subscribe({
+    this.ds.forgotPassword(this.email).subscribe({
       next: () => {
         Swal.fire({
           title: "Nézze meg az e-mailjeit!",
@@ -31,7 +31,15 @@ export class ForgotPasswordComponent {
           icon: 'success'
         })
       },
-      error: () => {
+      error: (err) => {
+        if (err?.error?.error === 'USER_NOT_FOUND') {
+          Swal.fire({
+            title: "Nincs ilyen e-mail címmel felhasználó",
+            theme: "material-ui-dark",
+            icon: "warning"
+          })
+          return
+        }
         Swal.fire({
           title: "Hiba történt, próbálja újra később",
           theme: "material-ui-dark",

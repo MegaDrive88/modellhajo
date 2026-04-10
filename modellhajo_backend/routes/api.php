@@ -11,7 +11,12 @@ use App\Models\MenuItemModel;
 use App\Models\CompetitionCategoryModel;
 use App\Models\CategoryModel;
 use App\Models\CompetitionEntryModel;
+use App\Notifications\ResetPasswordNotification;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
 
 // $output = new Symfony\Component\Console\Output\ConsoleOutput();
@@ -22,6 +27,30 @@ Route::get('/',function () {
         'status' => 'ok',
     ]);
 });
+
+$queuePasswordResetEmail = function (UserModel $user, string $token): void {
+    $frontendUrl = rtrim(env('FRONTEND_URL', 'http://localhost:4200'), '/');
+    $resetUrl = $frontendUrl.'/reset_password?token='.urlencode($token).'&email='.urlencode($user->email);
+
+    $email = Email::create([
+        'cimzett_email' => $user->email,
+        'targy' => 'Modellhajó - Elfelejtett jelszó',
+        'tartalom_html' => htmlspecialchars(
+            '<p>Kedves '.e($user->megjeleno_nev).'!</p>' .
+            '<p>Jelszó-visszaállítási kérelmet kaptunk a fiókjához.</p>' .
+            '<p>A jelszó visszaállításához kattintson az alábbi linkre:</p>' .
+            '<p><a href="'.e($resetUrl).'">Jelszó visszaállítása</a></p>' .
+            '<p>Ha nem Ön kezdeményezte ezt a kérést, hagyja figyelmen kívül ezt az e-mailt.</p>'
+        ),
+        'letrehozva' => now(),
+        'elkuldve' => null,
+    ]);
+
+    Notification::route('mail', $user->email)
+        ->notify(new ResetPasswordNotification($user->megjeleno_nev, $resetUrl));
+
+    $email->update(['elkuldve' => now()]);
+};
 
 
 Route::post('/login', function (Request $request) {
@@ -197,6 +226,98 @@ Route::post('/createAccount', function (Request $request){
     return response()->json([
         "success" => true,
         "user" => $user
+    ]);
+});
+
+Route::post('/forgotPassword', function (Request $request) use ($queuePasswordResetEmail) {
+    $request->validate([
+        'email' => 'required|email',
+    ]);
+
+    $normalizedEmail = mb_strtolower(trim((string) $request->input('email')));
+    $user = UserModel::whereRaw('LOWER(email) = ?', [$normalizedEmail])->first();
+
+    if (!$user) {
+        return response()->json([
+            'success' => false,
+            'error' => 'USER_NOT_FOUND',
+        ], 404);
+    }
+
+    $token = Str::random(64);
+    $table = config('auth.passwords.users.table', 'password_reset_tokens');
+
+    DB::table($table)->updateOrInsert(
+        ['email' => $user->email],
+        [
+            'token' => Hash::make($token),
+            'created_at' => now(),
+        ]
+    );
+
+    $queuePasswordResetEmail($user, $token);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Elküldtük a visszaállító linket.',
+    ]);
+});
+
+Route::post('/resetPassword', function (Request $request) {
+    $request->validate([
+        'email' => 'required|email',
+        'token' => 'required|string',
+        'new_password' => 'required|string|min:6',
+        'conf_password' => 'required|string|min:6',
+    ]);
+
+    if ($request->input('new_password') !== $request->input('conf_password')) {
+        return response()->json([
+            'success' => false,
+            'error' => 'PASSWORD_MISMATCH',
+        ], 400);
+    }
+
+    $table = config('auth.passwords.users.table', 'password_reset_tokens');
+    $tokenRow = DB::table($table)->where('email', $request->input('email'))->first();
+
+    if (!$tokenRow) {
+        return response()->json([
+            'success' => false,
+            'error' => 'INVALID_OR_EXPIRED_TOKEN',
+        ], 400);
+    }
+
+    $expiryInMinutes = (int) config('auth.passwords.users.expire', 60);
+    $expired = !$tokenRow->created_at || Carbon::parse($tokenRow->created_at)->addMinutes($expiryInMinutes)->isPast();
+
+    if ($expired || !Hash::check($request->input('token'), $tokenRow->token)) {
+        if ($expired) {
+            DB::table($table)->where('email', $request->input('email'))->delete();
+        }
+
+        return response()->json([
+            'success' => false,
+            'error' => 'INVALID_OR_EXPIRED_TOKEN',
+        ], 400);
+    }
+
+    $user = UserModel::where('email', $request->input('email'))->first();
+
+    if (!$user) {
+        return response()->json([
+            'success' => false,
+            'error' => 'INVALID_OR_EXPIRED_TOKEN',
+        ], 400);
+    }
+
+    $user->jelszo = chr(rand(65, 90)).md5('PasswordSalted'.$request->input('new_password')).chr(rand(65, 90));
+    $user->save();
+
+    DB::table($table)->where('email', $request->input('email'))->delete();
+
+    return response()->json([
+        'success' => true,
     ]);
 });
 
@@ -457,11 +578,29 @@ Route::middleware(["auth:sanctum"])->get('/getCompetitors', function (Request $r
 
 // });
 
-Route::post('/storeEmail', function(Request $request){
-    $email = new Email();
-    $email->cimzett_email = $request->input("to");
-    $email->targy = "Modellhajó - Elfelejtett jelszó";
-    $email->letrehozva = now();
-    $email->tartalom_html = htmlspecialchars('<h1>Ez egy teszt</h1>');
-    $email->save();
+Route::post('/storeEmail', function(Request $request) use ($queuePasswordResetEmail){
+    $request->validate([
+        'to' => 'required|email',
+    ]);
+
+    $user = UserModel::where('email', $request->input('to'))->first();
+
+    if ($user) {
+        $token = Str::random(64);
+        $table = config('auth.passwords.users.table', 'password_reset_tokens');
+
+        DB::table($table)->updateOrInsert(
+            ['email' => $user->email],
+            [
+                'token' => Hash::make($token),
+                'created_at' => now(),
+            ]
+        );
+
+        $queuePasswordResetEmail($user, $token);
+    }
+
+    return response()->json([
+        'success' => true,
+    ]);
 });

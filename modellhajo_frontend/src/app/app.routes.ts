@@ -8,6 +8,7 @@ export const routes: Routes = [
     { path: 'login', loadComponent: () => import('./components/login/login').then(m => m.LoginComponent) },
     { path: 'user_register', loadComponent: () => import('./components/userRegister/userRegister').then(m => m.UserRegisterComponent) },
     { path: 'forgot_password', loadComponent: () => import('./components/forgot-password-component/forgot-password-component').then(m => m.ForgotPasswordComponent) },
+    { path: 'reset_password', loadComponent: () => import('./components/reset-password-component/reset-password-component').then(m => m.ResetPasswordComponent) },
     { path: 'calendar', loadComponent: () => import('./components/calendar/calendar').then(m => m.CalendarComponent) },
     { path: 'competition_register/:id', canActivate: [roleGuard], data: {roles: [2, 5]}, loadComponent: () => import('./components/competitionRegister/competitionRegister').then(m => m.CompetitionRegisterComponent) },
     { path: 'dashboard', canActivate: [authGuard], loadComponent: () => import('./components/dashboard/dashboard').then(m => m.DashboardComponent) },

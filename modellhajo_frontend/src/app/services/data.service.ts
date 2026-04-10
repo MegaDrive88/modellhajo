@@ -69,6 +69,16 @@ export interface CompetitorsResponse {
   competitors: User[];
 }
 
+export interface ForgotPasswordResponse {
+  success: boolean;
+  message?: string;
+}
+
+export interface ResetPasswordResponse {
+  success: boolean;
+  error?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -284,7 +294,15 @@ export class DataService {
     return this.http.get<EntriesResponse>(`${this.API_URL}/getEntriesByCompetitionId/${id}`, {headers: this.getHeaders()})
   }
 
+  forgotPassword(email: string){
+    return this.http.post<ForgotPasswordResponse>(`${this.API_URL}/forgotPassword`, { email })
+  }
+
+  resetPassword(payload: { email: string; token: string; new_password: string; conf_password: string }){
+    return this.http.post<ResetPasswordResponse>(`${this.API_URL}/resetPassword`, payload)
+  }
+
   createNewEmail(to: string){
-    return this.http.post(`${this.API_URL}/storeEmail`, {to: to})
+    return this.forgotPassword(to)
   }
 }
