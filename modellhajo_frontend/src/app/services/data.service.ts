@@ -140,7 +140,7 @@ export class DataService {
   logout() {
     const headers = this.getHeaders();
     if (headers) {
-      this.http.post<BasicResponse>(`${this.API_URL}/logout`, {}, { headers }).subscribe({
+      this.http.post<BasicResponse>(`${this.API_URL}/auth/logout`, {}, { headers }).subscribe({
         error: () => {}
       });
     }
@@ -168,35 +168,35 @@ export class DataService {
   }
 
   checkTokenExpired() {
-    return this.http.get<boolean>(`${this.API_URL}/checkTokenExpired`, { headers: this.getHeaders() });
+    return this.http.get<boolean>(`${this.API_URL}/auth/check-token`, { headers: this.getHeaders() });
   }
 
   retrieveMenuItems() {
     return this.http.get<MenuItemsResponse>(
-      `${this.API_URL}/getMenuItems`,
+      `${this.API_URL}/users/menu-items`,
       { headers: this.getHeaders() }
     );
   }
 
   login(loginModel: { user: string; isEmail: boolean; pwdHash: string }) {
-    return this.http.post<LoginResponse>(`${this.API_URL}/login`, loginModel);
+    return this.http.post<LoginResponse>(`${this.API_URL}/auth/login`, loginModel);
   }
 
   getAssociationsAndCategories() {
     return this.http.get<AssociationsAndCategoriesResponse>(
-      `${this.API_URL}/getAssociationsAndCategories`
+      `${this.API_URL}/lookups/associations-categories`
     );
   }
 
   getCompetitionCategories() {
     return this.http.get<CompetitionCategoriesResponse>(
-      `${this.API_URL}/getCompetitionCategories`
+      `${this.API_URL}/competitions/categories`
     );
   }
 
   getUserCompetitions() {
     return this.http.get<CompetitionsResponse>(
-      `${this.API_URL}/getUserCompetitions`,
+      `${this.API_URL}/competitions/mine`,
       { headers: this.getHeaders() }
     );
   }
@@ -204,7 +204,7 @@ export class DataService {
   async uploadCompetitionThumbnail(formdata: FormData): Promise<UploadThumbnailResponse> {
     return firstValueFrom(
       this.http.post<UploadThumbnailResponse>(
-        `${this.API_URL}/uploadCompetitionThumbnail`,
+        `${this.API_URL}/competitions/thumbnail`,
         formdata,
         { headers: this.getHeaders() }
       )
@@ -213,15 +213,15 @@ export class DataService {
 
   createCompetition(newComp: Omit<Competition, 'id' | 'letrehozo_id'>) {
     return this.http.post<CreateCompetitionResponse>(
-      `${this.API_URL}/createCompetition`,
+      `${this.API_URL}/competitions`,
       newComp,
       { headers: this.getHeaders() }
     );
   }
 
-  updateCompetition(id: number, competition: Omit<Competition, 'id' | 'letrehozo_id'>) {
+  updateCompetition(id: number, competition: Omit<Competition, 'id' | 'letrehozo_id'> & { categs?: number[] }) {
     return this.http.put<BasicResponse>(
-      `${this.API_URL}/editCompetition/${id}`,
+      `${this.API_URL}/competitions/${id}`,
       competition,
       { headers: this.getHeaders() }
     );
@@ -229,7 +229,7 @@ export class DataService {
 
   createCompetitionCategories(data: { compId: number; categs: number[] }) {
     return this.http.post<BasicResponse>(
-      `${this.API_URL}/createCompetitionCategories`,
+      `${this.API_URL}/competitions/categories`,
       data,
       { headers: this.getHeaders() }
     );
@@ -237,69 +237,69 @@ export class DataService {
 
   deleteCompetition(id: number) {
     return this.http.delete<BasicResponse>(
-      `${this.API_URL}/deleteCompetition/${id}`,
+      `${this.API_URL}/competitions/${id}`,
       { headers: this.getHeaders() }
     );
   }
 
   getAllCompetitions() {
-    return this.http.get<CompetitionsResponse>(`${this.API_URL}/getAllCompetitions`);
+    return this.http.get<CompetitionsResponse>(`${this.API_URL}/competitions`);
   }
 
   createAccount(newUser:any){
-    return this.http.post<any>(`${this.API_URL}/createAccount`, newUser)
+    return this.http.post<any>(`${this.API_URL}/auth/register`, newUser)
   }
 
   getRoleRequests(){
-    return this.http.get<User[]>(`${this.API_URL}/getRoleRequests`, {headers: this.getHeaders()})
+    return this.http.get<User[]>(`${this.API_URL}/admin/role-requests`, {headers: this.getHeaders()})
   }
 
   decideRoleRequest(verdict: boolean, id: number){
-    return this.http.patch<BasicResponse>(`${this.API_URL}/decideRoleRequest/${verdict}`, {id: id}, {headers: this.getHeaders()})
+    return this.http.patch<BasicResponse>(`${this.API_URL}/admin/role-requests/${verdict}`, {id: id}, {headers: this.getHeaders()})
   }
 
   getCompetitionById(id: number){
-    return this.http.get<CompetitionResponse>(`${this.API_URL}/getCompetition/${id}`)
+    return this.http.get<CompetitionResponse>(`${this.API_URL}/competitions/${id}`)
   }
 
   updateUser(userData: User){
-    return this.http.patch<any>(`${this.API_URL}/updateUser/${userData.id}`, userData, {headers: this.getHeaders()} )
+    return this.http.patch<any>(`${this.API_URL}/users/${userData.id}`, userData, {headers: this.getHeaders()} )
   }
 
   updatePassword(id: number, passwordModel: any){
-    return this.http.patch<any>(`${this.API_URL}/updatePassword/${id}`, passwordModel, {headers: this.getHeaders()} )
+    return this.http.patch<any>(`${this.API_URL}/users/${id}/password`, passwordModel, {headers: this.getHeaders()} )
   }
 
   enterCompetition(id: number, entry: number[], assocId: number, mmszid: string){
-    return this.http.post<any>(`${this.API_URL}/enterCompetition/${id}`, {entry:entry, assocId: assocId, mmszid:mmszid}, {headers: this.getHeaders()} )
+    return this.http.post<any>(`${this.API_URL}/competitions/${id}/entries`, {entry:entry, assocId: assocId, mmszid:mmszid}, {headers: this.getHeaders()} )
   }
 
   getEntriesByUserId(id: number){
-    return this.http.get<EntriesResponse>(`${this.API_URL}/getEntriesByUserId/${id}`, {headers: this.getHeaders()})
+    return this.http.get<EntriesResponse>(`${this.API_URL}/users/${id}/entries`, {headers: this.getHeaders()})
   }
 
   getEntriesByOrganizerId(){
-    return this.http.get<EntriesResponse>(`${this.API_URL}/getEntriesByOrganizerId`, {headers: this.getHeaders()})
+    return this.http.get<EntriesResponse>(`${this.API_URL}/organizer/entries`, {headers: this.getHeaders()})
   }
 
   cancelEntry(id:number){
-    return this.http.delete<any>(`${this.API_URL}/cancelEntry/${id}`, {headers: this.getHeaders()})
+    return this.http.delete<any>(`${this.API_URL}/entries/${id}`, {headers: this.getHeaders()})
   }
 
   getCompetitors(){
-    return this.http.get<CompetitorsResponse>(`${this.API_URL}/getCompetitors`, {headers: this.getHeaders()})
+    return this.http.get<CompetitorsResponse>(`${this.API_URL}/users/competitors`, {headers: this.getHeaders()})
   }
 
   getEntriesByCompetitionId(id: number){    
-    return this.http.get<EntriesResponse>(`${this.API_URL}/getEntriesByCompetitionId/${id}`, {headers: this.getHeaders()})
+    return this.http.get<EntriesResponse>(`${this.API_URL}/competitions/${id}/entries`, {headers: this.getHeaders()})
   }
 
   forgotPassword(email: string){
-    return this.http.post<ForgotPasswordResponse>(`${this.API_URL}/forgotPassword`, { email })
+    return this.http.post<ForgotPasswordResponse>(`${this.API_URL}/auth/password/forgot`, { email })
   }
 
   resetPassword(payload: { email: string; token: string; new_password: string; conf_password: string }){
-    return this.http.post<ResetPasswordResponse>(`${this.API_URL}/resetPassword`, payload)
+    return this.http.post<ResetPasswordResponse>(`${this.API_URL}/auth/password/reset`, payload)
   }
 
   createNewEmail(to: string){
@@ -307,6 +307,6 @@ export class DataService {
   }
 
   manuallyEnterCompetitor(id:number, data: Object){
-    return this.http.post<any>(`${this.API_URL}/manuallyEnterCompetitor/${id}`, data, {headers: this.getHeaders()})
+    return this.http.post<any>(`${this.API_URL}/competitions/${id}/entries/manual`, data, {headers: this.getHeaders()})
   }
 }

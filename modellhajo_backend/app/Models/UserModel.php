@@ -23,4 +23,14 @@ class UserModel extends Authenticatable
     public function role(){
         return $this->belongsTo(RoleModel::class, 'szerepkor_id', 'id');
     }
+
+    public static function createLegacyPasswordHash(string $rawPassword): string
+    {
+        return chr(rand(65, 90)).md5('PasswordSalted'.$rawPassword).chr(rand(65, 90));
+    }
+
+    public static function matchesLegacyPassword(string $rawPassword, string $storedHash): bool
+    {
+        return substr($storedHash, 1, -1) === md5('PasswordSalted'.$rawPassword);
+    }
 }

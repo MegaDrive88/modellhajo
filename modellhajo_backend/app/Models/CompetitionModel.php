@@ -27,4 +27,14 @@ class CompetitionModel extends Model
         'kep_url',
         'kep_fajlnev'
     ];
+
+    public function categories()
+    {
+        return $this->hasMany(CompetitionCategoryModel::class, 'versenyid', 'id');
+    }
+
+    public function entries()
+    {
+        return $this->hasMany(CompetitionEntryModel::class, 'versenyid', 'id');
+    }
 }

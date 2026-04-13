@@ -177,9 +177,26 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
           this.newComp.kep_fajlnev = file.name
           this.newComp.kep_url = data.url
       }
-      if(this.editMode != -1){
-        this.ds.deleteCompetition(this.editMode).pipe(takeUntilDestroyed(this.destroyRef)).subscribe()
+      if (this.editMode !== -1) {
+        this.ds.updateCompetition(this.editMode, {
+          ...this.newComp,
+          categs: this.newCompetitionCategories,
+        }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+          next: result => {
+            if (result.success) {
+              Swal.fire({title: "Sikeres módosítás", theme: "material-ui-dark"})
+              this.ds.router.navigateByUrl('/competitions', { replaceUrl: true })
+                .then(() => this.ngOnInit())
+              this.formEditable = false
+            }
+          },
+          error: err => {
+            console.error(err)
+          }
+        })
+        return
       }
+
       this.ds.createCompetition(this.newComp).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: data => {
           if (data.success) {
@@ -188,8 +205,7 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
               .subscribe({
                 next: result => {
                   if (result.success) {
-                    if(this.editMode == -1) Swal.fire({title: "Sikeres verseny létrehozás", theme: "material-ui-dark"})
-                    else Swal.fire({title: "Sikeres módosítás", theme: "material-ui-dark"})
+                    Swal.fire({title: "Sikeres verseny létrehozás", theme: "material-ui-dark"})
                     this.ds.router.navigateByUrl('/competitions', { replaceUrl: true })
                       .then(() => this.ngOnInit())
                     this.formEditable = false
@@ -221,7 +237,7 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
         )
   }
   deleteCompetition(id: number){
-    if (confirm("Biztosan törölni szeretné?")) {
+    if (confirm("Biztosan törölni szeretné?")) { // swal
         this.ds.deleteCompetition(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: data => {
             if (data.success) {

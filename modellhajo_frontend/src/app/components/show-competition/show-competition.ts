@@ -127,7 +127,6 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - tobb rendezo egy versenyhez
 - szurok
 - tamogatohoz versenyzot kapcsolni
-- backend rework
 - rendezo dashboard: kovetkezo esemen
 - versenyzo dashboard: kovetkezo verseny, ranglista
 - telepites naplo
@@ -140,4 +139,5 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - szolni az uj usernek hogy varjon amig az admin elfogadja a szerepkoret
 - elfogadasrol email
 - docker compose
+- admin lasson minden versenyt
 */

@@ -15,9 +15,20 @@ class CompetitionEntryModel extends Model
         'versenyzoid',
         'kategoriaid',
         'versenyid',
+        'egyesulet',
     ];
     public function competition()
     {
         return $this->belongsTo(CompetitionModel::class, 'versenyid', 'id');
+    }
+
+    public function competitor()
+    {
+        return $this->belongsTo(UserModel::class, 'versenyzoid', 'id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(CategoryModel::class, 'kategoriaid', 'id');
     }
 }
