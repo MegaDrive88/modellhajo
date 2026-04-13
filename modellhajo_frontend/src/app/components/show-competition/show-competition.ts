@@ -133,7 +133,6 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - versenyzo dashboard: kovetkezo verseny, ranglista
 - telepites naplo
 - server error, file not found
-- kulon adatbazis sema
 
 - versenyeket datum alapjan sortolni
 - lezajlott versenynel eredmenyek az "egy verseny" oldalon

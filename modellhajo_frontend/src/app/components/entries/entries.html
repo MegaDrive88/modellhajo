@@ -16,21 +16,25 @@
                         <tr>
                             <td>Kategória</td>
                             <td>Versenyző</td>
+                            <td></td>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let entry of getEntryArray(comp.id.toString()); let i = index">
-                            @if (true) {
-                                <td>{{getCategoryName(entry.kategoriaid)}}</td>
-                            } @else {
-                                <!-- ha ugyanaz lenne mint az elozo -->
-                                <td></td>
-                            }
+                            <td>{{getCategoryName(entry.kategoriaid)}}</td>
                             <td>{{getCompetitorName(entry.versenyzoid)}}</td>
+                            <td>
+                                <button class="btn btn-danger py-0" (click)="deleteEntry(entry)">Törlés</button>
+                            </td>
                         </tr>
                         @if(getEntryArray(comp.id.toString()).length == 0){
                             <tr><td>A versenyre még nem érkezett nevezés</td></tr>
                         }
+                        <tr>
+                            <td colspan="3" class="text-center pt-2">
+                                <button class="blue-button w-100">Új +</button>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
                 <button class="blue-button" style="margin-top: auto;" (click)="exportCSVCommand(comp.id)">Exportálás excel fájlba</button>

@@ -520,7 +520,7 @@ Route::get('/getEntriesByCompetitionId/{id}', function($id){
     ]);
 });
 
-Route::middleware(['auth:sanctum', 'abilities:competitor,supporter'])->delete('/cancelEntry/{id}', function($id, Request $request){
+Route::middleware(['auth:sanctum', 'abilities:competitor,supporter,organizer'])->delete('/cancelEntry/{id}', function($id, Request $request){
 //csak sajatot -- tobbi vegpontnal is lehet problema? -- verseny torlesenel majd az osszes rendezo kozott kell lennie
 //ugy is lesz backend rework
 //nevezesi hataridot nezni
@@ -531,9 +531,10 @@ Route::middleware(['auth:sanctum', 'abilities:competitor,supporter'])->delete('/
             'error' => "No such entry"
         ]);
     }
-    if ($entry->versenyzoid != $request->user()->id){
-        return response()->json(['success' => false, 'error' => "Competitor ID-s do not match"], 403);
-    }
+    // if ($entry->versenyzoid != $request->user()->id){
+    //     return response()->json(['success' => false, 'error' => "Competitor ID-s do not match"], 403);
+    // }
+    // organizer miatt commentelve
     $entry->delete();
     return response()->json([
         'success' => true,

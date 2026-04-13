@@ -7,6 +7,7 @@ import Competition from '../../interfaces/competition.interface';
 import Category from '../../interfaces/category.interface';
 import User from '../../interfaces/user.interface';
 import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'entries-root',
@@ -84,16 +85,23 @@ export class EntriesComponent implements OnInit {
     link.click();
     document.body.removeChild(link);
   }
+  deleteEntry(entry: CompetitionEntry){
+    this.ds.cancelEntry(entry.id).subscribe({
+      next: async () => {
+        await Swal.fire({
+          title: `${this.getCompetitorName(entry.versenyzoid)} nevezése ${this.getCategoryName(entry.kategoriaid)} kategóriában sikeresen visszavonva`,
+          theme: "material-ui-dark",
+          icon: "success"
+        })
+        location.reload()
+      },
+      error: () => {
+        Swal.fire({
+          title: "Hiba történt a törlés során!",
+          theme: "material-ui-dark",
+          icon: "error"
+        })
+      }
+    })
+  }
 }
-
-
-
-//   // Export button command
-//   exportCSVCommand(){
-//     const topRow: string = Object.keys(this.courses[0]).slice(0, -2).join(";") + "\n"
-//     let rows: string[] = []
-//     for (const course of this.courses) {
-//       rows.push(`${course.startDate};${course.endDate};${course.language};${course.category};${course.courseName};${course.courseNameEnglish};${course.difficulty};${course.instructor};${course.price}`)
-//     }
-//     this.downloadFile(`${topRow}${rows.join('\n')}`, "courses.csv", "text/plain")
-//   }
