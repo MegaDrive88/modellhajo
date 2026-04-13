@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Email;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -15,7 +16,7 @@ class DatabaseMail extends Mailable
 
     public $email;
 
-    public function __construct()
+    public function __construct(Email $email)
     {
         $this->email = $email;
     }
@@ -23,7 +24,7 @@ class DatabaseMail extends Mailable
     public function build()
     {
         return $this->subject($this->email->targy)
-                    ->html($this->email->tartalom_html);
+                    ->html(htmlspecialchars_decode($this->email->tartalom_html));
                     // ->from($this->email->felado_email)
     }
 

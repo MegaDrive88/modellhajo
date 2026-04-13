@@ -267,8 +267,8 @@ Route::post('/resetPassword', function (Request $request) {
     $request->validate([
         'email' => 'required|email',
         'token' => 'required|string',
-        'new_password' => 'required|string|min:6',
-        'conf_password' => 'required|string|min:6',
+        'new_password' => 'required|string',
+        'conf_password' => 'required|string',
     ]);
 
     if ($request->input('new_password') !== $request->input('conf_password')) {

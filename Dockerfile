@@ -21,6 +21,7 @@ RUN php artisan route:cache
 # Set storage symlink and start Laravel at container startup
 CMD php artisan storage:link || true && \
     php artisan serve --host 0.0.0.0 --port 8000
+# php artisan schedule:work
 
 # docker exec -it modellhajo_app bash
 # rm -rf public/storage

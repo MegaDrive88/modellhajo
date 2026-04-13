@@ -119,9 +119,9 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
             if (nameA > nameB) return 1;
     
             return 0;
-          }); 
-          return arr
-      }
+        }); 
+        return arr
+    }
 }
 /*TODO 
 - tobb rendezo egy versenyhez
@@ -139,7 +139,7 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - lezajlott versenynel eredmenyek az "egy verseny" oldalon
 
 - fajlnev visszatoltes
-- email validacio, frontenden is (elvieg van mar xdd)
 - nevezesek szerkesztese
 - szolni az uj usernek hogy varjon amig az admin elfogadja a szerepkoret
+- elfogadasrol email
 */

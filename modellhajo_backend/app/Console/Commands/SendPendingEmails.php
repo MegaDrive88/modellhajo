@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\Email;
+use App\Mail\DatabaseMail;
+use Illuminate\Support\Facades\Mail;
 
 
 class SendPendingEmails extends Command
