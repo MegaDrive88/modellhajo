@@ -24,15 +24,38 @@
                             <td>{{getCategoryName(entry.kategoriaid)}}</td>
                             <td>{{getCompetitorName(entry.versenyzoid)}}</td>
                             <td>
-                                <button class="btn btn-danger py-0" (click)="deleteEntry(entry)">Törlés</button>
+                                <button class="btn btn-danger py-0 w-100" (click)="deleteEntry(entry)">Törlés</button>
                             </td>
                         </tr>
                         @if(getEntryArray(comp.id.toString()).length == 0){
                             <tr><td>A versenyre még nem érkezett nevezés</td></tr>
                         }
+                        <tr><td colspan="3"><hr></td></tr>
                         <tr>
-                            <td colspan="3" class="text-center pt-2">
-                                <button class="blue-button w-100">Új +</button>
+                            <td>
+                                <ng-select
+                                placeholder="Új felvétele - írjon ide a kereséshez"
+                                [items]="categories"
+                                bindLabel="nev"
+                                bindValue="id"
+                                [(ngModel)]="newEntry.category"
+                                appendTo="body"
+                                >
+                                </ng-select>
+                            </td>
+                            <td>
+                                <ng-select
+                                [items]="competitors"
+                                bindLabel="megjeleno_nev"
+                                bindValue="id"
+                                placeholder="Új felvétele - írjon ide a kereséshez"
+                                [(ngModel)]="newEntry.competitor"
+                                appendTo="body"
+                                >
+                                </ng-select>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary w-100 py-1" (click)="createEntry(comp.id)">Felvétel</button>
                             </td>
                         </tr>
                     </tbody>

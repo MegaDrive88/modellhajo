@@ -605,3 +605,16 @@ Route::post('/storeEmail', function(Request $request) use ($queuePasswordResetEm
         'success' => true,
     ]);
 });
+
+Route::middleware(["auth:sanctum", "ability:organizer"])->post('/manuallyEnterCompetitor/{id}', function($id, Request $request){
+    $entry = new CompetitionEntryModel();
+    //validate
+    //egyesulet id
+    $entry->kategoriaid = $request->input("category");
+    $entry->versenyzoid = $request->input("competitor");
+    $entry->versenyid = $id;
+    $entry->save();
+    return response()->json([
+        'success' => true,
+    ]);
+});

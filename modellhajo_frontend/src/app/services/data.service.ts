@@ -305,4 +305,8 @@ export class DataService {
   createNewEmail(to: string){
     return this.forgotPassword(to)
   }
+
+  manuallyEnterCompetitor(id:number, data: Object){
+    return this.http.post<any>(`${this.API_URL}/manuallyEnterCompetitor/${id}`, data, {headers: this.getHeaders()})
+  }
 }

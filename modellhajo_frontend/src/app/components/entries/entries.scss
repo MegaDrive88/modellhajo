@@ -34,8 +34,10 @@
     }
 }
 .competitions-wrapper{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    max-width: 80%;
+    display: flex;
+    margin: auto;
+    flex-direction: column;
     gap: 10px;
 }
 .category-wrapper{
@@ -44,4 +46,17 @@
     margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
+}
+table{
+    border-collapse: separate;
+    border-spacing: 15px 0;
+}
+hr{
+    margin: 2px 0;
+}
+td{
+    width: 40%;
+    &:nth-child(3){
+        width: 20%;
+    }
 }

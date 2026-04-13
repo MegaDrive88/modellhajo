@@ -128,11 +128,9 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - szurok
 - tamogatohoz versenyzot kapcsolni
 - backend rework
-- email kuldes
 - rendezo dashboard: kovetkezo esemen
 - versenyzo dashboard: kovetkezo verseny, ranglista
 - telepites naplo
-- server error, file not found
 
 - versenyeket datum alapjan sortolni
 - lezajlott versenynel eredmenyek az "egy verseny" oldalon
@@ -141,4 +139,5 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - nevezesek szerkesztese
 - szolni az uj usernek hogy varjon amig az admin elfogadja a szerepkoret
 - elfogadasrol email
+- docker compose
 */

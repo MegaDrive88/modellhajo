@@ -8,10 +8,12 @@ import Category from '../../interfaces/category.interface';
 import User from '../../interfaces/user.interface';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
+import { NgSelectComponent } from '@ng-select/ng-select';
+import { FormsModule } from "@angular/forms";
 
 @Component({
   selector: 'entries-root',
-  imports: [MenuBarComponent, CommonModule],
+  imports: [MenuBarComponent, CommonModule, NgSelectComponent, FormsModule],
   templateUrl: './entries.html',
   styleUrls: [
     '../../app.scss',
@@ -25,6 +27,8 @@ export class EntriesComponent implements OnInit {
   protected competitions!:Competition[]
   protected categories!:Category[]
   protected competitors!:User[]
+
+  protected newEntry = {competitor: null, category: null}
   ngOnInit(): void {
     forkJoin({
       competitions: this.ds.getUserCompetitions(),
@@ -103,5 +107,33 @@ export class EntriesComponent implements OnInit {
         })
       }
     })
+  }
+  createEntry(compid: number){
+    if(!this.newEntry.competitor || !this.newEntry.category){
+      Swal.fire({
+        title: "Töltse ki mindkét mezőt",
+        theme: "material-ui-dark",
+        icon: "error"
+      })
+      return
+    }
+    this.ds.manuallyEnterCompetitor(compid, this.newEntry).subscribe({
+      next: async () => {
+        await Swal.fire({
+          title: `${this.getCompetitorName(this.newEntry.competitor!)} ${this.getCategoryName(this.newEntry.category!)} kategóriában sikeresen nevezve!`,
+          theme: "material-ui-dark",
+          icon: "success"
+        })
+        location.reload()
+      },
+      error: () => {
+        Swal.fire({
+          title: "Hiba történt a nevezés során!",
+          theme: "material-ui-dark",
+          icon: "error"
+        })
+      }
+    })
+    
   }
 }
