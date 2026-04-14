@@ -299,4 +299,7 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
     this.newCompetitionCategories = []
     this.formEditable = true
   }
+  selectAllCategories(){
+    
+  }
 }

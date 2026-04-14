@@ -31,7 +31,7 @@
     }
 }
 .competitions-wrapper{
-    max-width: 80%;
+    max-width: 90%;
     display: flex;
     margin: auto;
     flex-direction: column;
@@ -52,8 +52,14 @@ hr{
     margin: 2px 0;
 }
 td{
-    width: 40%;
-    &:nth-child(3){
-        width: 20%;
+    width: 23%;
+    &:last-child{
+        width: 10%;
     }
+    &:nth-child(5),&:nth-child(4){
+        width: 10%;
+    }
+}
+input[type="number"]{
+    text-align: right;
 }

@@ -146,8 +146,9 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - rendezo nem tud nevezni, errol szoljunk neki
 - nevezesi hatarido kezdet elott 2 nap by default meg tobbi datumot is optimalizalni
 - kategoria valasztasnal MIND gomb
-- mmszid csak opcionalis
+- mmszid csak opcionali                                                   s
 - rajtszam csv-be is
-- terkep alulra
-- nevezes gomb felulre
+- datum osszehasonlitast megjavitani
+- manual-nál jobb hibauzenet ha mar letezo nevezes
+- rajtszám szerkeszt
 */

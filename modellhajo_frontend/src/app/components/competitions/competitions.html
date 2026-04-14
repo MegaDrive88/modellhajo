@@ -69,18 +69,22 @@
                     </div>
                     <div>
                         <span class="mandatory-star">Kategóriák</span>
-                        <ng-select
-                            #catSelector="ngModel"
-                            [multiple]="true"
-                            bindLabel="nev"
-                            bindValue="id"
-                            [items]="categories"
-                            placeholder="Kérem válasszon legalább egyet"
-                            name="competitionCategories"
-                            [(ngModel)]="newCompetitionCategories"
-                            [disabled]="!formEditable"
-                            >
-                        </ng-select>
+                        <div class="d-flex">
+                            <ng-select
+                                #catSelector="ngModel"
+                                [multiple]="true"
+                                bindLabel="nev"
+                                bindValue="id"
+                                [items]="categories"
+                                placeholder="Kérem válasszon legalább egyet"
+                                name="competitionCategories"
+                                [(ngModel)]="newCompetitionCategories"
+                                [disabled]="!formEditable"
+                                class="w-100"
+                                >
+                            </ng-select>
+                            <button class="btn" (click)="selectAllCategories()">Mind</button>
+                        </div>
                         @if (catSelector.touched && newCompetitionCategories.length == 0){
                             <p class="formError">Válasszon legalább 1 kategóriát</p>
                         }

@@ -107,6 +107,8 @@ class EntryController extends Controller
             'kategoriaid' => $request->input('category'),
             'versenyzoid' => $request->input('competitor'),
             'versenyid' => $id,
+            'egyesulet' => $request->input('assoc'),
+            'rajtszam' => $request->input('number'),
         ]);
 
         return response()->json([

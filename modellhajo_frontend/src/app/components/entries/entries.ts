@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { FormsModule } from "@angular/forms";
+import Association from '../../interfaces/association.interface';
 
 @Component({
   selector: 'entries-root',
@@ -27,19 +28,21 @@ export class EntriesComponent implements OnInit {
   protected competitions!:Competition[]
   protected categories!:Category[]
   protected competitors!:User[]
+  protected associations!:Association[]
 
-  protected newEntry = {competitor: null, category: null}
+  protected newEntry = {competitor: null, category: null, assoc: null, number: null}
   ngOnInit(): void {
     forkJoin({
       competitions: this.ds.getUserCompetitions(),
       entries: this.ds.getEntriesByOrganizerId(),
-      categories: this.ds.getAssociationsAndCategories(),
+      ca: this.ds.getAssociationsAndCategories(),
       competitors: this.ds.getCompetitors()
-    }).subscribe(({ competitions, entries, categories, competitors }) => {      
+    }).subscribe(({ competitions, entries, ca, competitors }) => {      
       this.entries = entries.entries      
       this.competitions = competitions.data
-      this.categories = categories.categories
+      this.categories = ca.categories
       this.competitors = competitors.competitors     
+      this.associations = ca.associations
     });
   }
   getCategoryName(id:number){
@@ -47,6 +50,9 @@ export class EntriesComponent implements OnInit {
   }
   getCompetitorName(id:number){
     return this.competitors.find(x=>x.id == id)?.megjeleno_nev
+  }
+  getAssociationName(id:number){
+    return this.associations.find(x=>x.id == id)?.nev
   }
   getEntryArray(compid: string):CompetitionEntry[] {
     let _entries = this.entries[compid]
@@ -72,10 +78,10 @@ export class EntriesComponent implements OnInit {
       return arr
   }
   exportCSVCommand(versenyid: number){
-    const topRow = "Kategória;Versenyző neve;Versenyző MMSZ azonosítója;Versenyző e-mail címe\n"
+    const topRow = "Kategória;Versenyző neve;Versenyző rajtzáma;Versenyző MMSZ azonosítója;Versenyző e-mail címe\n"
     let rows: string[] = []
     for(const entry of this.entrySort(this.entries[versenyid.toString()])){
-      rows.push(`${this.getCategoryName(entry.kategoriaid)};${this.getCompetitorName(entry.versenyzoid)};${this.competitors.find(x=>x.id == entry.versenyzoid)?.mmsz_id};${this.competitors.find(x=>x.id == entry.versenyzoid)?.email}`)
+      rows.push(`${this.getCategoryName(entry.kategoriaid)};${this.getCompetitorName(entry.versenyzoid)};${entry.rajtszam ?? '-'};${this.competitors.find(x=>x.id == entry.versenyzoid)?.mmsz_id};${this.competitors.find(x=>x.id == entry.versenyzoid)?.email}`)
     }
     this.downloadFile(`${topRow}${rows.join('\n')}`, `${versenyid}_${this.competitions.find(x=>x.id == versenyid)?.nev.replaceAll(" ", "_")}.csv`, "text/plain")
   }
@@ -123,10 +129,11 @@ export class EntriesComponent implements OnInit {
           title: `${this.getCompetitorName(this.newEntry.competitor!)} ${this.getCategoryName(this.newEntry.category!)} kategóriában sikeresen nevezve!`,
           theme: "material-ui-dark",
           icon: "success"
-        })
+        })        
         location.reload()
       },
       error: () => {
+        //ilyen nevezes mar van - kulon hibat dobni ra
         Swal.fire({
           title: "Hiba történt a nevezés során!",
           theme: "material-ui-dark",
@@ -135,5 +142,11 @@ export class EntriesComponent implements OnInit {
       }
     })
     
+  }
+  updateNumber(id: number){
+    
+  }
+  deleteAllEntries(compId: number){
+
   }
 }

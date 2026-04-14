@@ -16,6 +16,7 @@ class CompetitionEntryModel extends Model
         'kategoriaid',
         'versenyid',
         'egyesulet',
+        'rajtszam',
     ];
     public function competition()
     {
