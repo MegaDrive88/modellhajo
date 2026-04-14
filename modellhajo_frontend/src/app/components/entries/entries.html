@@ -14,10 +14,11 @@
                 <table style="margin-bottom: 10px;">
                     <thead>
                         <tr>
-                            <td>Kategória</td>
-                            <td>Versenyző</td>
-                            <td></td>
+                            <th>Kategória</th>
+                            <th>Versenyző</th>
+                            <th></th>
                         </tr>
+                        <tr><td colspan="3"><hr></td></tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let entry of getEntryArray(comp.id.toString()); let i = index">

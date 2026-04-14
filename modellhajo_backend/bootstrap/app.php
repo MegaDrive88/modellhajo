@@ -8,7 +8,10 @@ use App\Http\Middleware\DisconnectDatabaseConnections;
 use Laravel\Sanctum\Http\Middleware\CheckAbilities;
 use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
 
-return Application::configure(basePath: dirname(__DIR__))
+unset($_ENV['APP_ENV'], $_SERVER['APP_ENV']);
+putenv('APP_ENV');
+
+$app = Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',
@@ -28,3 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();
+
+$app->loadEnvironmentFrom('.env');
+
+return $app;

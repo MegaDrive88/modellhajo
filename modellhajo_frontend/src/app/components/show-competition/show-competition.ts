@@ -125,7 +125,6 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 }
 /*TODO 
 - tobb rendezo egy versenyhez
-- szurok
 - tamogatohoz versenyzot kapcsolni
 - rendezo dashboard: kovetkezo esemen
 - versenyzo dashboard: kovetkezo verseny, ranglista
@@ -138,6 +137,17 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - nevezesek szerkesztese
 - szolni az uj usernek hogy varjon amig az admin elfogadja a szerepkoret
 - elfogadasrol email
-- docker compose
+- docker compose és schedule work
 - admin lasson minden versenyt
+- valami jobb hibauzenet ha az uj jelszavak nem egyeznek elfelejtettnél
+- tovabbi backend rework
+- email, ha valaki regisztral/nevez
+- rajtszamot rendezo adhassa meg
+- rendezo nem tud nevezni, errol szoljunk neki
+- nevezesi hatarido kezdet elott 2 nap by default meg tobbi datumot is optimalizalni
+- kategoria valasztasnal MIND gomb
+- mmszid csak opcionalis
+- rajtszam csv-be is
+- terkep alulra
+- nevezes gomb felulre
 */
