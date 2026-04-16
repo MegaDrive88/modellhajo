@@ -40,7 +40,11 @@ export class EntriesComponent implements OnInit {
       competitors: this.ds.getCompetitors()
     }).subscribe(({ competitions, entries, ca, competitors }) => {      
       this.entries = entries.entries      
-      this.competitions = competitions.data
+      this.competitions = competitions.data.sort((a, b) => {
+        const dateA = new Date(a.kezdet).getTime();
+        const dateB = new Date(b.kezdet).getTime();
+        return dateB - dateA;
+      });
       this.categories = ca.categories
       this.competitors = competitors.competitors     
       this.associations = ca.associations
