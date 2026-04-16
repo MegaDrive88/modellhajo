@@ -151,4 +151,5 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - datum osszehasonlitast megjavitani
 - manual-nál jobb hibauzenet ha mar letezo nevezes
 - rajtszám szerkeszt
+- app_key publikus
 */

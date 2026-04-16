@@ -286,6 +286,26 @@ export class DataService {
     return this.http.delete<any>(`${this.API_URL}/entries/${id}`, {headers: this.getHeaders()})
   }
 
+  deleteAllEntries(compId: number){
+    return this.http.delete<BasicResponse>(`${this.API_URL}/deleteAllEntries/${compId}`, {headers: this.getHeaders()})
+  }
+
+  bulkUpdateEntryNumbers(compId: number, entries: { id: number; rajtszam: number | null }[]){
+    return this.http.patch<BasicResponse>(
+      `${this.API_URL}/bulkUpdateEntryNumbers/${compId}`,
+      { entries },
+      { headers: this.getHeaders() }
+    )
+  }
+
+  updateEntryNumber(id: number, rajtszam: number | null){
+    return this.http.patch<BasicResponse>(
+      `${this.API_URL}/entries/${id}`,
+      { rajtszam },
+      { headers: this.getHeaders() }
+    )
+  }
+
   getCompetitors(){
     return this.http.get<CompetitorsResponse>(`${this.API_URL}/users/competitors`, {headers: this.getHeaders()})
   }

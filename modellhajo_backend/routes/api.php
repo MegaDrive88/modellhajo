@@ -49,6 +49,9 @@ Route::middleware(['auth:sanctum', 'ability:organizer'])->group(function () {
     Route::get('/competitions/mine', [CompetitionController::class, 'mine']);
     Route::post('/competitions/categories', [CompetitionController::class, 'createCategories']);
     Route::post('/competitions/{id}/entries/manual', [EntryController::class, 'manuallyEnterCompetitor'])->whereNumber('id');
+    Route::patch('/competitions/{id}/entries/numbers', [EntryController::class, 'bulkUpdateNumbers'])->whereNumber('id');
+    Route::delete('/competitions/{id}/entries', [EntryController::class, 'deleteAllEntries'])->whereNumber('id');
+    Route::patch('/entries/{id}', [EntryController::class, 'updateNumber'])->whereNumber('id');
     Route::get('/organizer/entries', [EntryController::class, 'byOrganizer']);
 });
 
@@ -99,6 +102,9 @@ Route::middleware(['auth:sanctum', 'ability:organizer'])->group(function () {
     Route::get('/getUserCompetitions', [CompetitionController::class, 'mine']);
     Route::post('/createCompetitionCategories', [CompetitionController::class, 'createCategories']);
     Route::post('/manuallyEnterCompetitor/{id}', [EntryController::class, 'manuallyEnterCompetitor']);
+    Route::patch('/bulkUpdateEntryNumbers/{id}', [EntryController::class, 'bulkUpdateNumbers']);
+    Route::patch('/updateEntryNumber/{id}', [EntryController::class, 'updateNumber']);
+    Route::delete('/deleteAllEntries/{id}', [EntryController::class, 'deleteAllEntries']);
     Route::get('/getEntriesByOrganizerId', [EntryController::class, 'byOrganizer']);
 });
 

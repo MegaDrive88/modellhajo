@@ -25,6 +25,7 @@ export class EntriesComponent implements OnInit {
   protected entries!: {
     [versenyid: string] : CompetitionEntry[]
   }
+  protected entryNumbers: Record<number, number | string | null> = {}
   protected competitions!:Competition[]
   protected categories!:Category[]
   protected competitors!:User[]
@@ -43,6 +44,12 @@ export class EntriesComponent implements OnInit {
       this.categories = ca.categories
       this.competitors = competitors.competitors     
       this.associations = ca.associations
+
+      for (const competitionEntries of Object.values(this.entries)) {
+        for (const entry of competitionEntries) {
+          this.entryNumbers[entry.id] = entry.rajtszam
+        }
+      }
     });
   }
   getCategoryName(id:number){
@@ -95,6 +102,19 @@ export class EntriesComponent implements OnInit {
     link.click();
     document.body.removeChild(link);
   }
+
+  private parseRajtszam(value: number | string | null | undefined): number | null | undefined {
+    if (value === null || value === undefined || value === '') {
+      return null
+    }
+
+    const parsed = Number(value)
+    if (!Number.isInteger(parsed) || parsed < 0) {
+      return undefined
+    }
+
+    return parsed
+  }
   deleteEntry(entry: CompetitionEntry){
     this.ds.cancelEntry(entry.id).subscribe({
       next: async () => {
@@ -141,12 +161,106 @@ export class EntriesComponent implements OnInit {
         })
       }
     })
-    
   }
-  updateNumber(id: number){
-    
-  }
-  deleteAllEntries(compId: number){
 
+  updateNumber(id: number){
+    const rajtszam = this.parseRajtszam(this.entryNumbers[id])
+
+    if (rajtszam === undefined) {
+      Swal.fire({
+        title: "A rajtszám csak nem negatív egész szám lehet",
+        theme: "material-ui-dark",
+        icon: "error"
+      })
+      return
+    }
+
+    this.ds.updateEntryNumber(id, rajtszam).subscribe({
+      next: async () => {
+        await Swal.fire({
+          title: "A rajtszám sikeresen mentve",
+          theme: "material-ui-dark",
+          icon: "success"
+        })
+        location.reload()
+      },
+      error: () => {
+        Swal.fire({
+          title: "Hiba történt a rajtszám mentése során!",
+          theme: "material-ui-dark",
+          icon: "error"
+        })
+      }
+    })
   }
+
+  saveAllEntries(compId: number){
+    const competitionEntries = this.getEntryArray(compId.toString())
+    const payload = competitionEntries.map(entry => {
+      const rajtszam = this.parseRajtszam(this.entryNumbers[entry.id])
+      return { id: entry.id, rajtszam }
+    })
+
+    if (payload.some(item => item.rajtszam === undefined)) {
+      Swal.fire({
+        title: "A rajtszám csak nem negatív egész szám lehet",
+        theme: "material-ui-dark",
+        icon: "error"
+      })
+      return
+    }
+
+    this.ds.bulkUpdateEntryNumbers(compId, payload as { id: number; rajtszam: number | null }[]).subscribe({
+      next: async () => {
+        await Swal.fire({
+          title: "Az összes rajtszám sikeresen mentve",
+          theme: "material-ui-dark",
+          icon: "success"
+        })
+        location.reload()
+      },
+      error: () => {
+        Swal.fire({
+          title: "Hiba történt az összes rajtszám mentése során!",
+          theme: "material-ui-dark",
+          icon: "error"
+        })
+      }
+    })
+  }
+
+  deleteAllEntries(compId: number){
+    Swal.fire({
+      title: "Biztosan törli az összes nevezést ebből a versenyből?",
+      text: "Ez csak az adott verseny nevezéseit törli.",
+      theme: "material-ui-dark",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Törlés",
+      cancelButtonText: "Mégse"
+    }).then((result) => {
+      if (!result.isConfirmed) {
+        return
+      }
+
+      this.ds.deleteAllEntries(compId).subscribe({
+        next: async () => {
+          await Swal.fire({
+            title: "Az összes nevezés sikeresen törölve",
+            theme: "material-ui-dark",
+            icon: "success"
+          })
+          location.reload()
+        },
+        error: () => {
+          Swal.fire({
+            title: "Hiba történt az összes nevezés törlése során!",
+            theme: "material-ui-dark",
+            icon: "error"
+          })
+        }
+      })
+    })
+  }
+
 }

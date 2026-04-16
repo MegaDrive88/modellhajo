@@ -18,7 +18,12 @@
                             <th>Versenyző</th>
                             <th>Egyesület</th>
                             <th style="text-align: right;">Rajtszám</th>
-                            <th colspan="2"><button class="btn btn-danger w-100" (click)="deleteAllEntries(comp.id)">Összes törlése</button></th>
+                            <th colspan="2">
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-primary w-100" (click)="saveAllEntries(comp.id)">Összes mentése</button>
+                                    <button class="btn btn-danger w-100" (click)="deleteAllEntries(comp.id)">Összes törlése</button>
+                                </div>
+                            </th>
                         </tr>
                         <tr><td colspan="6"><hr></td></tr>
                     </thead>
@@ -28,7 +33,7 @@
                             <td>{{getCompetitorName(entry.versenyzoid)}}</td>
                             <td>{{getAssociationName(entry.egyesulet!) ?? '-'}}</td>
                             <td>
-                                <input type="number" class="form-control" [value]="entry.rajtszam ?? null">
+                                <input type="number" min="0" class="form-control" [(ngModel)]="entryNumbers[entry.id]">
                             </td>
                             <td>
                                 <button class="btn btn-primary py-0 w-100" (click)="updateNumber(entry.id)">Mentés</button>

@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\CompetitionEntryModel;
+use App\Models\CompetitionModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EntryController extends Controller
 {
@@ -95,6 +97,91 @@ class EntryController extends Controller
         }
 
         $entry->delete();
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    public function updateNumber(int $id, Request $request): JsonResponse
+    {
+        $entry = CompetitionEntryModel::where('id', $id)->first();
+
+        if (!$entry) {
+            return response()->json([
+                'success' => false,
+                'error' => 'No such entry',
+            ], 404);
+        }
+
+        $validated = $request->validate([
+            'rajtszam' => ['nullable', 'integer', 'min:0'],
+        ]);
+
+        $entry->rajtszam = $validated['rajtszam'] ?? null;
+        $entry->save();
+
+        return response()->json([
+            'success' => true,
+            'entry' => $entry,
+        ]);
+    }
+
+    public function bulkUpdateNumbers(int $id, Request $request): JsonResponse
+    {
+        $competition = CompetitionModel::where('id', $id)
+            ->where('letrehozo_id', $request->user()->id)
+            ->first();
+
+        if (!$competition) {
+            return response()->json([
+                'success' => false,
+                'error' => 'NO_SUCH_COMPETITION',
+            ], 404);
+        }
+
+        $validated = $request->validate([
+            'entries' => ['required', 'array'],
+            'entries.*.id' => ['required', 'integer'],
+            'entries.*.rajtszam' => ['nullable', 'integer', 'min:0'],
+        ]);
+
+        DB::transaction(function () use ($id, $validated): void {
+            foreach ($validated['entries'] as $entryData) {
+                $entry = CompetitionEntryModel::where('id', $entryData['id'])
+                    ->where('versenyid', $id)
+                    ->first();
+
+                if (!$entry) {
+                    continue;
+                }
+
+                $entry->rajtszam = $entryData['rajtszam'] ?? null;
+                $entry->save();
+            }
+        });
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    public function deleteAllEntries(int $id, Request $request): JsonResponse
+    {
+        $competition = CompetitionModel::where('id', $id)
+            ->where('letrehozo_id', $request->user()->id)
+            ->first();
+
+        if (!$competition) {
+            return response()->json([
+                'success' => false,
+                'error' => 'NO_SUCH_COMPETITION',
+            ], 404);
+        }
+
+        DB::transaction(function () use ($id): void {
+            CompetitionEntryModel::where('versenyid', '=', $id)->delete();
+        });
 
         return response()->json([
             'success' => true,
