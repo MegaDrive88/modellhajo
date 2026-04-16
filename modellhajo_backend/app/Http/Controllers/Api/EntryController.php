@@ -64,7 +64,9 @@ class EntryController extends Controller
         if ($request->user()->isadmin){
             return response()->json([
                 'success' => true,
-                'entries' => CompetitionEntryModel::all(),
+                'entries' => CompetitionEntryModel::orderBy('versenyid', 'desc')
+                    ->get()
+                    ->groupBy('versenyid'),
             ]);
         }
         $entries = CompetitionEntryModel::whereHas('competition', function ($query) use ($request) {
