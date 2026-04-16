@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\CompetitionEntryModel;
 use App\Models\CompetitionModel;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -118,8 +119,15 @@ class EntryController extends Controller
             'rajtszam' => ['nullable', 'integer', 'min:1'],
         ]);
 
-        $entry->rajtszam = $validated['rajtszam'] ?? null;
-        $entry->save();
+        try {
+            $entry->rajtszam = $validated['rajtszam'] ?? null;
+            $entry->save();
+        } catch (UniqueConstraintViolationException $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $this->mapUniqueConstraintErrorType($e->getMessage()),
+            ], 409);
+        }
 
         return response()->json([
             'success' => true,
@@ -146,20 +154,27 @@ class EntryController extends Controller
             'entries.*.rajtszam' => ['nullable', 'integer', 'min:1'],
         ]);
 
-        DB::transaction(function () use ($id, $validated): void {
-            foreach ($validated['entries'] as $entryData) {
-                $entry = CompetitionEntryModel::where('id', $entryData['id'])
-                    ->where('versenyid', $id)
-                    ->first();
+        try {
+            DB::transaction(function () use ($id, $validated): void {
+                foreach ($validated['entries'] as $entryData) {
+                    $entry = CompetitionEntryModel::where('id', $entryData['id'])
+                        ->where('versenyid', $id)
+                        ->first();
 
-                if (!$entry) {
-                    continue;
+                    if (!$entry) {
+                        continue;
+                    }
+
+                    $entry->rajtszam = $entryData['rajtszam'] ?? null;
+                    $entry->save();
                 }
-
-                $entry->rajtszam = $entryData['rajtszam'] ?? null;
-                $entry->save();
-            }
-        });
+            });
+        } catch (UniqueConstraintViolationException $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $this->mapUniqueConstraintErrorType($e->getMessage()),
+            ], 409);
+        }
 
         return response()->json([
             'success' => true,
@@ -190,16 +205,49 @@ class EntryController extends Controller
 
     public function manuallyEnterCompetitor(int $id, Request $request): JsonResponse
     {
-        CompetitionEntryModel::create([
-            'kategoriaid' => $request->input('category'),
-            'versenyzoid' => $request->input('competitor'),
-            'versenyid' => $id,
-            'egyesulet' => $request->input('assoc'),
-            'rajtszam' => $request->input('number'),
+        $validated = $request->validate([
+            'number' => ['nullable', 'integer', 'min:1'],
         ]);
+
+        try {
+            CompetitionEntryModel::create([
+                'kategoriaid' => $request->input('category'),
+                'versenyzoid' => $request->input('competitor'),
+                'versenyid' => $id,
+                'egyesulet' => $request->input('assoc'),
+                'rajtszam' => $validated['number'] ?? null,
+            ]);
+        } catch (UniqueConstraintViolationException $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $this->mapUniqueConstraintErrorType($e->getMessage()),
+            ], 409);
+        }
 
         return response()->json([
             'success' => true,
         ]);
+    }
+
+    private function mapUniqueConstraintErrorType(string $message): array
+    {
+        if (str_contains($message, 'Key (kategoriaid, versenyid, rajtszam)')) {
+            return [
+                'type' => 'ENTRY_NUMBER_TAKEN',
+                'message' => 'Ebben a kategóriában már szerepel ez a rajtszám.',
+            ];
+        }
+
+        if (str_contains($message, 'Key (versenyzoid, kategoriaid, versenyid)')) {
+            return [
+                'type' => 'ENTRY_ALREADY_EXISTS',
+                'message' => 'A versenyző már nevezve van ebben a kategóriában.',
+            ];
+        }
+
+        return [
+            'type' => 'UNIQUE_CONSTRAINT',
+            'message' => 'Egyedi megszorítás sérült.',
+        ];
     }
 }

@@ -167,16 +167,14 @@ export class EntriesComponent implements OnInit {
         location.reload()
       },
       error: (e) => {
-        console.log(e.error);
-        
-        if(e.error.message.includes("Key (kategoriaid, versenyid, rajtszam)")){
+        if(e.error?.error?.type === "ENTRY_NUMBER_TAKEN"){
           Swal.fire({
             title: "Ebben a kategóriában már szerepel ez a rajtszám",
             theme: "material-ui-dark",
             icon: "error"
           })
         }
-        else if(e.error.message.includes("Key (versenyzoid, kategoriaid, versenyid)")){
+        else if(e.error?.error?.type === "ENTRY_ALREADY_EXISTS"){
           Swal.fire({
             title: "A versenyző már nevezve van ebben a kategóriában!",
             theme: "material-ui-dark",
@@ -216,7 +214,7 @@ export class EntriesComponent implements OnInit {
         location.reload()
       },
       error: (e) => {        
-        if(e.error.message.includes("unique")){
+        if(e.error?.error?.type === "ENTRY_NUMBER_TAKEN"){
           Swal.fire({
             title: "Ebben a kategóriában már szerepel ez a rajtszám",
             theme: "material-ui-dark",
@@ -259,12 +257,21 @@ export class EntriesComponent implements OnInit {
         })
         location.reload()
       },
-      error: () => {
-        Swal.fire({
-          title: "Hiba történt az összes rajtszám mentése során!",
-          theme: "material-ui-dark",
-          icon: "error"
-        })
+      error: (e) => {
+        if(e.error?.error?.type === "ENTRY_NUMBER_TAKEN"){
+          Swal.fire({
+            title: "Ebben a kategóriában már szerepel ez a rajtszám",
+            theme: "material-ui-dark",
+            icon: "error"
+          })
+        }
+        else{
+          Swal.fire({
+            title: "Hiba történt az összes rajtszám mentése során!",
+            theme: "material-ui-dark",
+            icon: "error"
+          })
+        }
       }
     })
   }
