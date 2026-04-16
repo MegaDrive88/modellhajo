@@ -135,7 +135,6 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - szolni az uj usernek hogy varjon amig az admin elfogadja a szerepkoret
 - elfogadasrol email
 - docker compose és schedule work
-- admin lasson minden versenyt
 - valami jobb hibauzenet ha az uj jelszavak nem egyeznek elfelejtettnél
 - tovabbi backend rework
 - email, ha valaki regisztral/nevez
