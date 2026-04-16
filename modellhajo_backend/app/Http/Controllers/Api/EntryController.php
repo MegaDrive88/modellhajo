@@ -61,6 +61,12 @@ class EntryController extends Controller
 
     public function byOrganizer(Request $request): JsonResponse
     {
+        if ($request->user()->isadmin){
+            return response()->json([
+                'success' => true,
+                'data' => CompetitionEntryModel::all(),
+            ]);
+        }
         $entries = CompetitionEntryModel::whereHas('competition', function ($query) use ($request) {
             $query->where('letrehozo_id', $request->user()->id);
         })
