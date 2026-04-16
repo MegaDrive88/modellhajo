@@ -115,7 +115,7 @@ class EntryController extends Controller
         }
 
         $validated = $request->validate([
-            'rajtszam' => ['nullable', 'integer', 'min:0'],
+            'rajtszam' => ['nullable', 'integer', 'min:1'],
         ]);
 
         $entry->rajtszam = $validated['rajtszam'] ?? null;
@@ -143,7 +143,7 @@ class EntryController extends Controller
         $validated = $request->validate([
             'entries' => ['required', 'array'],
             'entries.*.id' => ['required', 'integer'],
-            'entries.*.rajtszam' => ['nullable', 'integer', 'min:0'],
+            'entries.*.rajtszam' => ['nullable', 'integer', 'min:1'],
         ]);
 
         DB::transaction(function () use ($id, $validated): void {

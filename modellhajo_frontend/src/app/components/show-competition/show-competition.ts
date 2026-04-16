@@ -133,8 +133,6 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - versenyeket datum alapjan sortolni
 - lezajlott versenynel eredmenyek az "egy verseny" oldalon
 
-- fajlnev visszatoltes
-- nevezesek szerkesztese
 - szolni az uj usernek hogy varjon amig az admin elfogadja a szerepkoret
 - elfogadasrol email
 - docker compose és schedule work
@@ -142,14 +140,11 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - valami jobb hibauzenet ha az uj jelszavak nem egyeznek elfelejtettnél
 - tovabbi backend rework
 - email, ha valaki regisztral/nevez
-- rajtszamot rendezo adhassa meg
 - rendezo nem tud nevezni, errol szoljunk neki
 - nevezesi hatarido kezdet elott 2 nap by default meg tobbi datumot is optimalizalni
-- kategoria valasztasnal MIND gomb
 - mmszid csak opcionali                                                   s
-- rajtszam csv-be is
 - datum osszehasonlitast megjavitani
 - manual-nál jobb hibauzenet ha mar letezo nevezes
-- rajtszám szerkeszt
-- app_key publikus
+
+-tobb session lehet problema ugyanazzal az acc-al? -- nagyon kerdeses, csak egy otlet
 */

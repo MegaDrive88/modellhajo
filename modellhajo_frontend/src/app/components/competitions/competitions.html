@@ -83,7 +83,7 @@
                                 class="w-100"
                                 >
                             </ng-select>
-                            <button class="btn" (click)="selectAllCategories()">Mind</button>
+                            <button class="btn" (click)="selectAllCategories($event)">Mind</button>
                         </div>
                         @if (catSelector.touched && newCompetitionCategories.length == 0){
                             <p class="formError">Válasszon legalább 1 kategóriát</p>
@@ -111,6 +111,9 @@
                     <div>
                         <span>Borítókép</span>
                         <input type="file" class="form-control" #competitionThumbnailInput accept="image/*">
+                        @if (newComp.kep_fajlnev) {
+                            <span>Jelenleg: {{newComp.kep_fajlnev}}</span>
+                        }
                     </div>
                     <button type="submit" class="blue-button" [disabled]="!FormEnabled()">Mentés</button>
                 </fieldset>

@@ -33,7 +33,7 @@
                             <td>{{getCompetitorName(entry.versenyzoid)}}</td>
                             <td>{{getAssociationName(entry.egyesulet!) ?? '-'}}</td>
                             <td>
-                                <input type="number" min="0" class="form-control" [(ngModel)]="entryNumbers[entry.id]">
+                                <input type="number" min="1" class="form-control" [(ngModel)]="entryNumbers[entry.id]">
                             </td>
                             <td>
                                 <button class="btn btn-primary py-0 w-100" (click)="updateNumber(entry.id)">Mentés</button>

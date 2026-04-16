@@ -299,7 +299,8 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
     this.newCompetitionCategories = []
     this.formEditable = true
   }
-  selectAllCategories(){
-    
+  selectAllCategories(e:Event){
+    e.preventDefault()
+    this.newCompetitionCategories = this.categories.map(x=>x.id)
   }
 }

@@ -116,22 +116,36 @@ export class EntriesComponent implements OnInit {
     return parsed
   }
   deleteEntry(entry: CompetitionEntry){
-    this.ds.cancelEntry(entry.id).subscribe({
-      next: async () => {
-        await Swal.fire({
-          title: `${this.getCompetitorName(entry.versenyzoid)} nevezése ${this.getCategoryName(entry.kategoriaid)} kategóriában sikeresen visszavonva`,
-          theme: "material-ui-dark",
-          icon: "success"
-        })
-        location.reload()
-      },
-      error: () => {
-        Swal.fire({
-          title: "Hiba történt a törlés során!",
-          theme: "material-ui-dark",
-          icon: "error"
-        })
+    Swal.fire({
+      title: "Biztosan törli ezt a nevezést?",
+      text: `${this.getCompetitorName(entry.versenyzoid)} nevezése ${this.getCategoryName(entry.kategoriaid)} kategóriában törlődni fog.`,
+      theme: "material-ui-dark",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Törlés",
+      cancelButtonText: "Mégse"
+    }).then((result) => {
+      if (!result.isConfirmed) {
+        return
       }
+
+      this.ds.cancelEntry(entry.id).subscribe({
+        next: async () => {
+          await Swal.fire({
+            title: `${this.getCompetitorName(entry.versenyzoid)} nevezése ${this.getCategoryName(entry.kategoriaid)} kategóriában sikeresen visszavonva`,
+            theme: "material-ui-dark",
+            icon: "success"
+          })
+          location.reload()
+        },
+        error: () => {
+          Swal.fire({
+            title: "Hiba történt a törlés során!",
+            theme: "material-ui-dark",
+            icon: "error"
+          })
+        }
+      })
     })
   }
   createEntry(compid: number){
@@ -152,13 +166,30 @@ export class EntriesComponent implements OnInit {
         })        
         location.reload()
       },
-      error: () => {
-        //ilyen nevezes mar van - kulon hibat dobni ra
-        Swal.fire({
-          title: "Hiba történt a nevezés során!",
-          theme: "material-ui-dark",
-          icon: "error"
-        })
+      error: (e) => {
+        console.log(e.error);
+        
+        if(e.error.message.includes("Key (kategoriaid, versenyid, rajtszam)")){
+          Swal.fire({
+            title: "Ebben a kategóriában már szerepel ez a rajtszám",
+            theme: "material-ui-dark",
+            icon: "error"
+          })
+        }
+        else if(e.error.message.includes("Key (versenyzoid, kategoriaid, versenyid)")){
+          Swal.fire({
+            title: "A versenyző már nevezve van ebben a kategóriában!",
+            theme: "material-ui-dark",
+            icon: "error"
+          })
+        }
+        else{
+          Swal.fire({
+            title: "Hiba történt a nevezés során!",
+            theme: "material-ui-dark",
+            icon: "error"
+          })
+        }
       }
     })
   }
@@ -168,7 +199,7 @@ export class EntriesComponent implements OnInit {
 
     if (rajtszam === undefined) {
       Swal.fire({
-        title: "A rajtszám csak nem negatív egész szám lehet",
+        title: "A rajtszám csak pozitív egész szám lehet",
         theme: "material-ui-dark",
         icon: "error"
       })
@@ -184,12 +215,21 @@ export class EntriesComponent implements OnInit {
         })
         location.reload()
       },
-      error: () => {
-        Swal.fire({
-          title: "Hiba történt a rajtszám mentése során!",
-          theme: "material-ui-dark",
-          icon: "error"
-        })
+      error: (e) => {        
+        if(e.error.message.includes("unique")){
+          Swal.fire({
+            title: "Ebben a kategóriában már szerepel ez a rajtszám",
+            theme: "material-ui-dark",
+            icon: "error"
+          })
+        }
+        else{
+          Swal.fire({
+            title: "Hiba történt a rajtszám mentése során!",
+            theme: "material-ui-dark",
+            icon: "error"
+          })
+        }
       }
     })
   }
@@ -203,7 +243,7 @@ export class EntriesComponent implements OnInit {
 
     if (payload.some(item => item.rajtszam === undefined)) {
       Swal.fire({
-        title: "A rajtszám csak nem negatív egész szám lehet",
+        title: "A rajtszám csak pozitív egész szám lehet",
         theme: "material-ui-dark",
         icon: "error"
       })
@@ -234,7 +274,7 @@ export class EntriesComponent implements OnInit {
       title: "Biztosan törli az összes nevezést ebből a versenyből?",
       text: "Ez csak az adott verseny nevezéseit törli.",
       theme: "material-ui-dark",
-      icon: "warning",
+      icon: "question",
       showCancelButton: true,
       confirmButtonText: "Törlés",
       cancelButtonText: "Mégse"
