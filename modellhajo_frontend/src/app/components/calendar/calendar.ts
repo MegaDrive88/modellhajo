@@ -31,7 +31,11 @@ export class CalendarComponent {
       next: ({ compCats, allComps }) => {
         this.competitionCategories = compCats.categories
         if (allComps.success) {
-          this.competitions = allComps.data
+          this.competitions = allComps.data.sort((a, b) => {
+            const dateA = new Date(a.kezdet).getTime();
+            const dateB = new Date(b.kezdet).getTime();
+            return dateB - dateA;
+          });
           for (const comp of this.competitions) {
             comp.categories = this.competitionCategories.filter(x => x.versenyid == comp.id).map(x => x.category)
           }

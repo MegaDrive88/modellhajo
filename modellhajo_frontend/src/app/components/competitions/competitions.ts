@@ -156,7 +156,11 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
         this.associations = assocAndCats.associations
         this.categories = assocAndCats.categories.sort((a, b) => a.nev.localeCompare(b.nev))
         this.competitionCategories = compCats.categories
-        this.userCompetitions = userComps.data
+        this.userCompetitions = userComps.data.sort((a, b) => {
+          const dateA = new Date(a.kezdet).getTime();
+          const dateB = new Date(b.kezdet).getTime();
+          return dateB - dateA;
+        });
         for (const comp of this.userCompetitions) {
           comp.categories = this.competitionCategories.filter(x => x.versenyid == comp.id).map(x => x.category)
         }

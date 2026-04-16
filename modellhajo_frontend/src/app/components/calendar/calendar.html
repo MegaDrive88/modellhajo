@@ -36,8 +36,7 @@
                             </ul>
                             @if(comp.nevezesi_hatarido >= today ){
                                 <a onclick="event.stopPropagation()" [routerLink]="[`/competition_register/${comp.id}`]" class="blue-button" style="margin-left: auto; margin-top: auto; position: absolute; bottom: 15px; right: 15px;">Nevezés - határidő: {{comp.nevezesi_hatarido | date:"y.MM.dd"}}</a>
-                            } @else {
-                                <!-- csak ha lezajlott -->
+                            } @else if (comp.veg < today) {
                                 <a onclick="event.stopPropagation()" class="blue-button" style="margin-left: auto; margin-top: auto;">Eredmény</a>
                             }
                         </div>

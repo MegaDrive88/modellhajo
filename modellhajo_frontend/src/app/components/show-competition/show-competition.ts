@@ -130,7 +130,6 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - versenyzo dashboard: kovetkezo verseny, ranglista
 - telepites naplo
 
-- versenyeket datum alapjan sortolni
 - lezajlott versenynel eredmenyek az "egy verseny" oldalon
 
 - szolni az uj usernek hogy varjon amig az admin elfogadja a szerepkoret
