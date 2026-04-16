@@ -115,6 +115,11 @@ export class EntriesComponent implements OnInit {
 
     return parsed
   }
+
+  private getApiErrorType(e: any): string | undefined {
+    return e?.error?.error?.type ?? e?.error?.type
+  }
+
   deleteEntry(entry: CompetitionEntry){
     Swal.fire({
       title: "Biztosan törli ezt a nevezést?",
@@ -167,14 +172,16 @@ export class EntriesComponent implements OnInit {
         location.reload()
       },
       error: (e) => {
-        if(e.error?.error?.type === "ENTRY_NUMBER_TAKEN"){
+        const errorType = this.getApiErrorType(e)
+
+        if(errorType === "ENTRY_NUMBER_TAKEN"){
           Swal.fire({
             title: "Ebben a kategóriában már szerepel ez a rajtszám",
             theme: "material-ui-dark",
             icon: "error"
           })
         }
-        else if(e.error?.error?.type === "ENTRY_ALREADY_EXISTS"){
+        else if(errorType === "ENTRY_ALREADY_EXISTS"){
           Swal.fire({
             title: "A versenyző már nevezve van ebben a kategóriában!",
             theme: "material-ui-dark",
@@ -214,7 +221,9 @@ export class EntriesComponent implements OnInit {
         location.reload()
       },
       error: (e) => {        
-        if(e.error?.error?.type === "ENTRY_NUMBER_TAKEN"){
+        const errorType = this.getApiErrorType(e)
+
+        if(errorType === "ENTRY_NUMBER_TAKEN"){
           Swal.fire({
             title: "Ebben a kategóriában már szerepel ez a rajtszám",
             theme: "material-ui-dark",
@@ -258,7 +267,9 @@ export class EntriesComponent implements OnInit {
         location.reload()
       },
       error: (e) => {
-        if(e.error?.error?.type === "ENTRY_NUMBER_TAKEN"){
+        const errorType = this.getApiErrorType(e)
+
+        if(errorType === "ENTRY_NUMBER_TAKEN"){
           Swal.fire({
             title: "Ebben a kategóriában már szerepel ez a rajtszám",
             theme: "material-ui-dark",

@@ -116,6 +116,12 @@ class CompetitionController extends Controller
 
     public function mine(Request $request): JsonResponse
     {
+        if ($request->user()->isadmin){
+            return response()->json([
+                'success' => true,
+                'data' => CompetitionModel::all(),
+            ]);
+        }
         return response()->json([
             'success' => true,
             'data' => CompetitionModel::where('letrehozo_id', '=', $request->user()->id)->get(),

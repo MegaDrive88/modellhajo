@@ -231,14 +231,14 @@ class EntryController extends Controller
 
     private function mapUniqueConstraintErrorType(string $message): array
     {
-        if (str_contains($message, 'Key (kategoriaid, versenyid, rajtszam)')) {
+        if (str_contains($message, 't_nevezes_unique_1') || str_contains($message, 'Key (kategoriaid, versenyid, rajtszam)')) {
             return [
                 'type' => 'ENTRY_NUMBER_TAKEN',
                 'message' => 'Ebben a kategóriában már szerepel ez a rajtszám.',
             ];
         }
 
-        if (str_contains($message, 'Key (versenyzoid, kategoriaid, versenyid)')) {
+        if (str_contains($message, 't_nevezes_unique') || str_contains($message, 'Key (versenyzoid, kategoriaid, versenyid)')) {
             return [
                 'type' => 'ENTRY_ALREADY_EXISTS',
                 'message' => 'A versenyző már nevezve van ebben a kategóriában.',
