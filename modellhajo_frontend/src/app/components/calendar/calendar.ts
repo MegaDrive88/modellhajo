@@ -1,6 +1,6 @@
 import { Component, DestroyRef, inject } from '@angular/core';
 import Competition from '../../interfaces/competition.interface';
-import { TopBarComponent } from "../top-bar";
+import { TopBarComponent } from "../top-bar/top-bar";
 import CompetitionCategory from '../../interfaces/competition.category.interface';
 import { DatePipe, NgClass } from '@angular/common';
 import { DataService } from '../../services/data.service';
@@ -22,7 +22,7 @@ export class CalendarComponent {
   private destroyRef = inject(DestroyRef)
   protected competitions!: Competition[]
   protected competitionCategories!: CompetitionCategory[]
-  protected today = new Date().toISOString()
+  protected today = new Date()
   ngOnInit(): void {
     forkJoin({
       compCats: this.ds.getCompetitionCategories(),
@@ -38,7 +38,12 @@ export class CalendarComponent {
           });
           for (const comp of this.competitions) {
             comp.categories = this.competitionCategories.filter(x => x.versenyid == comp.id).map(x => x.category)
+            comp.kezdet = new Date(comp.kezdet)
+            comp.veg = new Date(comp.veg)
+            comp.megjelenik = new Date(comp.megjelenik)
+            comp.nevezesi_hatarido = new Date(comp.nevezesi_hatarido)
           }
+          this.competitions = this.competitions.filter(x => x.megjelenik <= this.today)
         }
       },
       error: (err) => {

@@ -4,7 +4,7 @@ import { DataService } from "../../services/data.service";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import Competition from "../../interfaces/competition.interface";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { TopBarComponent } from "../top-bar";
+import { TopBarComponent } from "../top-bar/top-bar";
 import * as L from 'leaflet'
 import 'leaflet-control-geocoder';
 import { forkJoin, Subject } from "rxjs";
@@ -139,9 +139,7 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - tovabbi backend rework
 - email, ha valaki regisztral/nevez
 - rendezo nem tud nevezni, errol szoljunk neki
-- nevezesi hatarido kezdet elott 2 nap by default meg tobbi datumot is optimalizalni
 - mmszid csak opcionalis
-- datum osszehasonlitast megjavitani
 
--tobb session lehet problema ugyanazzal az acc-al? -- nagyon kerdeses, csak egy otlet
+- szervezo tudjon nevezni
 */

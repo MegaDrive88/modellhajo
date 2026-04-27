@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { MenuBarComponent } from '../menu-bar/menu-bar';
+import { TopBarComponent } from '../top-bar/top-bar';
 import { DataService } from '../../services/data.service';
 import CompetitionEntry from '../../interfaces/competition.entry.interface';
 import { forkJoin } from 'rxjs';
@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 
 @Component({
   selector: 'myEntries-root',
-  imports: [MenuBarComponent],
+  imports: [TopBarComponent],
   templateUrl: './myEntries.html',
   styleUrls: [
     '../../app.scss',

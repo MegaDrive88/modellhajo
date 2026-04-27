@@ -1,5 +1,5 @@
 <!-- versenyzo ne ugyanezt lassa mar -->
-<menu-bar-root/>
+<top-bar-root/>
     <!-- router outlet menubar ala jobb lenne -->
     <div class="row g-0">
         <div class="col-12 col-md-6 py-2 px-5">
@@ -100,7 +100,7 @@
                                 <td>Ft</td>
                             </tr>
                             <tr>
-                                <td>Teljes árú:</td>
+                                <td>Senior:</td>
                                 <td>
                                     <input style="text-align: right;" name="nevezesi_dij_normal" type="text" required placeholder="0" class="form-control" [(ngModel)]="newComp.nevezesi_dij_normal">
                                 </td>
@@ -120,7 +120,7 @@
 
             </form>
         </div>
-        <div class="col-12 col-md-6 p-2">
+        <div class="col-12 col-md-6 p-2" style="color: white;">
             <h3>Általam szerkeszthető versenyek</h3> 
             <!-- todo -->
             @for (comp of userCompetitions; track comp.id) {
@@ -131,7 +131,7 @@
                         <img src="https://media.istockphoto.com/id/1286476479/vector/public-icon-traffic-icons-for-ship.jpg?s=612x612&w=0&k=20&c=NW0sE3lQkkjWwvppDIIiZg0SpVKIdsJYF7cco7CpltM=" alt="">
                     }
                     <div class="user-comp-content">
-                        <b>{{comp.nev}}</b>
+                        <h6>{{comp.nev}}</h6>
                         <span>{{comp.helyszin}}</span>
                         <span>{{comp.kezdet | date:"y.MM.dd, hh:mm"}} - {{comp.veg | date:"y.MM.dd, hh:mm"}}</span>
                         <ul>

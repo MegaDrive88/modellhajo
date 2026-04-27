@@ -1,10 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { MenuBarComponent } from '../menu-bar/menu-bar';
+import { TopBarComponent } from '../top-bar/top-bar';
 import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'dashboard-root',
-  imports: [MenuBarComponent],
+  imports: [TopBarComponent],
   templateUrl: './dashboard.html',
   styleUrls: [
     '../../app.scss',

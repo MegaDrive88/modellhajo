@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, DestroyRef, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
-import { MenuBarComponent } from '../menu-bar/menu-bar';
+import { TopBarComponent } from '../top-bar/top-bar';
 import { FormsModule } from '@angular/forms';
 import Competition from '../../interfaces/competition.interface';
 import { CommonModule } from '@angular/common';
@@ -17,7 +17,7 @@ import Swal from 'sweetalert2';
 
 @Component({
   selector: 'competitions-root',
-  imports: [MenuBarComponent, FormsModule, CommonModule, NgSelectModule],
+  imports: [TopBarComponent, FormsModule, CommonModule, NgSelectModule],
   templateUrl: './competitions.html',
   styleUrls: [
     '../../app.scss',

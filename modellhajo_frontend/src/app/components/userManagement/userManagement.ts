@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { MenuBarComponent } from '../menu-bar/menu-bar';
+import { TopBarComponent } from '../top-bar/top-bar';
 import { DataService } from '../../services/data.service';
 import { FormsModule } from '@angular/forms';
 import User from '../../interfaces/user.interface';
@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 
 @Component({
   selector: 'userManagement-root',
-  imports: [MenuBarComponent, FormsModule, TranslatePipe],
+  imports: [TopBarComponent, FormsModule, TranslatePipe],
   templateUrl: './userManagement.html',
   styleUrls: [
     '../../app.scss',

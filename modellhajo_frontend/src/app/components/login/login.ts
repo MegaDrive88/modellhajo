@@ -5,10 +5,11 @@ import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Md5 } from 'ts-md5';
 import Swal from 'sweetalert2';
+import { TopBarComponent } from "../top-bar/top-bar";
 
 @Component({
   selector: 'login-root',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, TopBarComponent],
   templateUrl: './login.html',
   styleUrls: [
     '../../app.scss',

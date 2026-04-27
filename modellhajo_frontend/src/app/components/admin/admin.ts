@@ -1,11 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { MenuBarComponent } from '../menu-bar/menu-bar';
+import { TopBarComponent } from '../top-bar/top-bar';
 import { DataService } from '../../services/data.service';
 import User from '../../interfaces/user.interface';
 
 @Component({
   selector: 'admin-root',
-  imports: [MenuBarComponent],
+  imports: [TopBarComponent],
   templateUrl: './admin.html',
   styleUrls: [
     '../../app.scss',

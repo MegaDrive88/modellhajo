@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { MenuBarComponent } from '../menu-bar/menu-bar';
+import { TopBarComponent } from '../top-bar/top-bar';
 import { DataService } from '../../services/data.service';
 import { forkJoin } from 'rxjs';
 import CompetitionEntry from '../../interfaces/competition.entry.interface';
@@ -14,7 +14,7 @@ import Association from '../../interfaces/association.interface';
 
 @Component({
   selector: 'entries-root',
-  imports: [MenuBarComponent, CommonModule, NgSelectComponent, FormsModule],
+  imports: [TopBarComponent, CommonModule, NgSelectComponent, FormsModule],
   templateUrl: './entries.html',
   styleUrls: [
     '../../app.scss',

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TopBarComponent } from "../top-bar";
+import { TopBarComponent } from "../top-bar/top-bar";
 import { RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
 

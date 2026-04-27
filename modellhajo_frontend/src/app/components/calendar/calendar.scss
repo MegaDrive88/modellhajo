@@ -28,6 +28,9 @@ $opt-bg: #4483d4b4;
         
     }
     & .comp-card-data{
+        & h3{
+            color: black;
+        }
         display: flex;
         flex-direction: column;
         color: black;

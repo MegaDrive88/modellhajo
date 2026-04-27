@@ -4,10 +4,11 @@ import { RouterLink } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import Swal from 'sweetalert2';
+import { TopBarComponent } from '../top-bar/top-bar';
 
 @Component({
   selector: 'user-register-root',
-  imports: [FormsModule, RouterLink, TranslatePipe],
+  imports: [FormsModule, RouterLink, TranslatePipe, TopBarComponent],
   templateUrl: './userRegister.html',
   styleUrls: [
     '../../app.scss',
