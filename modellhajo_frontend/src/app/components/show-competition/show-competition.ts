@@ -140,9 +140,8 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - email, ha valaki regisztral/nevez
 - rendezo nem tud nevezni, errol szoljunk neki
 - nevezesi hatarido kezdet elott 2 nap by default meg tobbi datumot is optimalizalni
-- mmszid csak opcionali                                                   s
+- mmszid csak opcionalis
 - datum osszehasonlitast megjavitani
-- manual-nál jobb hibauzenet ha mar letezo nevezes
 
 -tobb session lehet problema ugyanazzal az acc-al? -- nagyon kerdeses, csak egy otlet
 */

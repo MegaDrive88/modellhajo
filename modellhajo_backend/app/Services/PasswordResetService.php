@@ -11,7 +11,7 @@ class PasswordResetService
 {
     public function queueResetEmail(UserModel $user, string $token): void
     {
-        $frontendUrl = rtrim(env('FRONTEND_URL', 'http://localhost:4200'), '/');
+        $frontendUrl = rtrim(config('app.frontend_url'), '/');
         $resetUrl = $frontendUrl.'/reset_password?token='.urlencode($token).'&email='.urlencode($user->email);
 
         $email = Email::create([
