@@ -30,13 +30,24 @@
   width: 100%;
   left: 0;
 }
+.fancy-navbar .nav-link.active::after {
+  width: 100%;
+  left: 0;
+}
 .fancy-navbar .dropdown-toggle:hover::after {
     width: auto;
 }
 .fancy-navbar .nav-link:hover {
   color: #0d6efd !important;
 }
+.fancy-navbar .nav-link.active {
+  color: #0d6efd !important;
+}
 .fancy-navbar .dropdown-menu {
   border-radius: 12px;
   overflow: hidden;
+}
+
+.top-bar-spacer {
+  height: 70px;
 }

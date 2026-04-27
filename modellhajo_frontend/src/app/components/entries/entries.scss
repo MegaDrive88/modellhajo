@@ -20,6 +20,9 @@
         
     }
     & .comp-card-data{
+        & h3{
+            color: black;
+        }
         display: flex;
         flex-direction: column;
         color: black;

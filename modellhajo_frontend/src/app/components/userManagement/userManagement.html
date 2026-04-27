@@ -1,5 +1,5 @@
 <top-bar-root/>
-<div class="row g-0 py-2 px-4">
+<div class="row g-0 py-2 px-5">
     <div class="col-12 col-md-6 px-2">
         <h3>Adatmódosítás</h3>
         <form #f1="ngForm" (ngSubmit)="updateUserData()">
@@ -15,10 +15,16 @@
                 <span class="mandatory-star">E-mail cím</span>
                 <input name="email" type="email" required class="form-control" [(ngModel)]="userCopy.email">
             </div>
-            @if (ds.getUser()?.szerepkor_id == 2) {
+            @if ([1, 2].includes(this.ds.getUser()?.szerepkor_id!)) {
                 <div>
                     <span class="">MMSZ Tagsági szám</span>
                     <input name="mmszid" type="text" class="form-control" [(ngModel)]="userCopy.mmsz_id">
+                </div>
+            }
+            @if ([1, 2].includes(this.ds.getUser()?.szerepkor_id!)) {
+                <div>
+                    <span class="">Egyesület</span>
+                    <input name="assoc" type="text" class="form-control">
                 </div>
             }
             <button type="submit" class="blue-button" [disabled]="userCopy.megjeleno_nev == '' || userCopy.felhasznalonev == '' || userCopy.email == ''">Mentés</button>

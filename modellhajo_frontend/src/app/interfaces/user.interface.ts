@@ -12,5 +12,6 @@ export default interface User{
     tamogatott_versenyzo:number|null|undefined;
     mmsz_id:string|null|undefined;
     isadmin:boolean;
+    egyesulet: string|null|undefined
     role: Role;
 }

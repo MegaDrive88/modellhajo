@@ -134,7 +134,7 @@
                         <h6>{{comp.nev}}</h6>
                         <span>{{comp.helyszin}}</span>
                         <span>{{comp.kezdet | date:"y.MM.dd, hh:mm"}} - {{comp.veg | date:"y.MM.dd, hh:mm"}}</span>
-                        <ul>
+                        <ul style="display: grid; grid-template-columns: 1fr 1fr 1fr; margin-top: 5px;">
                             @for (cat of comp.categories; track cat.id) {
                                 <li>{{cat.nev}}</li>
                             }
