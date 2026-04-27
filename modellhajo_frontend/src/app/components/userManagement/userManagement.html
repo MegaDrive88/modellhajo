@@ -24,7 +24,16 @@
             @if ([1, 2].includes(this.ds.getUser()?.szerepkor_id!)) {
                 <div>
                     <span class="">Egyesület</span>
-                    <input name="assoc" type="text" class="form-control">
+                    <ng-select
+                        [items]="associations"
+                        bindLabel="nev"
+                        bindValue="nev"
+                        [addTag]="addAssociationTag"
+                        [clearable]="true"
+                        placeholder="Válasszon vagy írjon be új egyesületet"
+                        name="assoc"
+                        [(ngModel)]="userCopy.egyesulet"
+                    ></ng-select>
                 </div>
             }
             <button type="submit" class="blue-button" [disabled]="userCopy.megjeleno_nev == '' || userCopy.felhasznalonev == '' || userCopy.email == ''">Mentés</button>

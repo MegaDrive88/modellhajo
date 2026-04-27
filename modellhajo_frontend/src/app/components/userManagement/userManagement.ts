@@ -5,10 +5,12 @@ import { FormsModule } from '@angular/forms';
 import User from '../../interfaces/user.interface';
 import { TranslatePipe } from '@ngx-translate/core';
 import Swal from 'sweetalert2';
+import Association from '../../interfaces/association.interface';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'userManagement-root',
-  imports: [TopBarComponent, FormsModule, TranslatePipe],
+  imports: [TopBarComponent, FormsModule, TranslatePipe, NgSelectModule],
   templateUrl: './userManagement.html',
   styleUrls: [
     '../../app.scss',
@@ -17,6 +19,7 @@ import Swal from 'sweetalert2';
 export class UserManagementComponent implements OnInit{
   protected ds = inject(DataService)
   protected userCopy!: User
+  protected associations: Association[] = []
   protected pwdModel = {
     old_password: "",
     new_password: "",
@@ -26,6 +29,25 @@ export class UserManagementComponent implements OnInit{
   protected pwdErrorString = ''
   ngOnInit(): void {
     this.userCopy = structuredClone(this.ds.getUser())!
+    this.ds.getAssociationsAndCategories().subscribe({
+      next: (data) => {
+        this.associations = data.associations
+      }
+    })
+  }
+
+  addAssociationTag = (name: string) => {
+    const trimmed = name.trim()
+    if (!trimmed) {
+      return null
+    }
+
+    const exists = this.associations.some(a => a.nev.toLowerCase() === trimmed.toLowerCase())
+    if (!exists) {
+      this.associations = [...this.associations, { id: 0, nev: trimmed, logo_url: null }]
+    }
+
+    return { id: 0, nev: trimmed, logo_url: null }
   }
   updateUserData(){
     this.userDataErrorString = ""

@@ -26,7 +26,7 @@ import Swal from 'sweetalert2';
 export class CompetitionsComponent implements OnInit, AfterViewInit {
   protected ds = inject(DataService)
   private destroyRef = inject(DestroyRef)
-  protected associations!: Association[]
+  protected associations: Association[] = []
   protected categories!: Category[]
   protected newCompetitionCategories: number[] = []
   protected userCompetitions!: Competition[]
@@ -131,7 +131,7 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
       nevezesi_hatarido: this.today(),
       gps_lat: null,
       gps_lon: null,
-      szervezo_egyesulet: -1,
+      szervezo_egyesulet: null,
       leiras: null,
       nevezesi_dij_junior: null,
       nevezesi_dij_normal: null,
@@ -162,6 +162,7 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
           return dateB - dateA;
         });
         for (const comp of this.userCompetitions) {
+          comp.szervezo_egyesulet = comp.szervezo_egyesulet === null ? null : String(comp.szervezo_egyesulet)
           comp.categories = this.competitionCategories.filter(x => x.versenyid == comp.id).map(x => x.category)
         }
       },
@@ -228,10 +229,11 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
    
   }
   FormEnabled(){
+      const assoc = (this.newComp.szervezo_egyesulet ?? '').toString().trim()
         return (
             this.newComp.nev != "" &&
             this.newComp.helyszin != "" &&
-            this.newComp.szervezo_egyesulet != -1 &&
+        assoc !== "" &&
             this.newComp.nevezesi_dij_junior != null && this.newComp.nevezesi_dij_junior > 0 &&
             this.newComp.nevezesi_dij_normal != null && this.newComp.nevezesi_dij_normal > 0 &&
             (this.newComp.evszam?.length == 4 || this.newComp.evszam?.length == 0) &&
@@ -256,6 +258,7 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
     this.editMode = id
     let comp = this.userCompetitions.find(x => x.id == id)!
     this.newComp = structuredClone(comp)
+    this.newComp.szervezo_egyesulet = this.newComp.szervezo_egyesulet === null ? null : String(this.newComp.szervezo_egyesulet)
     this.newComp.kezdet = new Date(comp.kezdet).toISOString().slice(0, 16)
     this.newComp.veg = new Date(comp.veg).toISOString().slice(0, 16)
     this.newComp.nevezesi_hatarido = new Date(comp.nevezesi_hatarido).toISOString().slice(0, 16)
@@ -292,7 +295,7 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
       nevezesi_hatarido: this.today(),
       gps_lat: null,
       gps_lon: null,
-      szervezo_egyesulet: -1,
+      szervezo_egyesulet: null,
       leiras: null,
       nevezesi_dij_junior: null,
       nevezesi_dij_normal: null,
@@ -306,5 +309,19 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
   selectAllCategories(e:Event){
     e.preventDefault()
     this.newCompetitionCategories = this.categories.map(x=>x.id)
+  }
+
+  addAssociationTag = (name: string) => {
+    const trimmed = name.trim()
+    if (!trimmed) {
+      return null
+    }
+
+    const exists = this.associations.some(a => a.nev.toLowerCase() === trimmed.toLowerCase())
+    if (!exists) {
+      this.associations = [...this.associations, { id: 0, nev: trimmed, logo_url: null }]
+    }
+
+    return { id: 0, nev: trimmed, logo_url: null }
   }
 }

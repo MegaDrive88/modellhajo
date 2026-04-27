@@ -14,7 +14,8 @@ class EntryController extends Controller
 {
     public function enterCompetition(int $id, Request $request): JsonResponse
     {
-        $assoc = (int) $request->input('assocId') === -1 ? null : $request->input('assocId');
+        $assocInput = $request->input('assoc');
+        $assoc = $assocInput === null || trim((string) $assocInput) === '' ? null : trim((string) $assocInput);
         $skip = [];
 
         $request->user()->mmsz_id = $request->input('mmszid');
@@ -217,12 +218,15 @@ class EntryController extends Controller
             'number' => ['nullable', 'integer', 'min:1'],
         ]);
 
+        $assocInput = $request->input('assoc');
+        $assoc = $assocInput === null || trim((string) $assocInput) === '' ? null : trim((string) $assocInput);
+
         try {
             CompetitionEntryModel::create([
                 'kategoriaid' => $request->input('category'),
                 'versenyzoid' => $request->input('competitor'),
                 'versenyid' => $id,
-                'egyesulet' => $request->input('assoc'),
+                'egyesulet' => $assoc,
                 'rajtszam' => $validated['number'] ?? null,
             ]);
         } catch (UniqueConstraintViolationException $e) {

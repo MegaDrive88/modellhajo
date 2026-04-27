@@ -9,8 +9,8 @@
             }@else{
                 <img src="https://media.istockphoto.com/id/1286476479/vector/public-icon-traffic-icons-for-ship.jpg?s=612x612&w=0&k=20&c=NW0sE3lQkkjWwvppDIIiZg0SpVKIdsJYF7cco7CpltM=" alt="">
             }
-            <div class="comp-card-data">
-                <h3>{{getCompById(key)?.nev}}</h3>
+            <div class="comp-card-data" style="overflow: auto;">
+                <h3 style="color: black;">{{getCompById(key)?.nev}}</h3>
                 <p>Kategóriák:</p>
                 @for (entry of myEntries[key]; track $index) {
                     <div class="category-wrapper">

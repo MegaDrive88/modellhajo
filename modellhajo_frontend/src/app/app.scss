@@ -108,10 +108,8 @@ section{
   align-items: center;
   gap: 20px;
 }
-.top-bar-center-menu{
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+.top-bar-left-menu{
+  margin-left: 25px;
   display: flex;
   flex-direction: row;
   gap: 30px;

@@ -12,7 +12,7 @@ export default interface Competition{
     nevezesi_hatarido: Date | string;
     gps_lat: number | null;
     gps_lon: number | null;
-    szervezo_egyesulet: number | null;
+    szervezo_egyesulet: string | null;
     leiras: string | null;
     nevezesi_dij_junior: number | null;
     nevezesi_dij_normal: number | null;

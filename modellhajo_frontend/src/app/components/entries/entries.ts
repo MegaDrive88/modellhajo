@@ -31,7 +31,7 @@ export class EntriesComponent implements OnInit {
   protected competitors!:User[]
   protected associations!:Association[]
 
-  protected newEntry = {competitor: null, category: null, assoc: null, number: null}
+  protected newEntry: { competitor: number | null; category: number | null; assoc: string | null; number: number | null } = { competitor: null, category: null, assoc: null, number: null }
   ngOnInit(): void {
     forkJoin({
       competitions: this.ds.getUserCompetitions(),
@@ -62,8 +62,11 @@ export class EntriesComponent implements OnInit {
   getCompetitorName(id:number){
     return this.competitors.find(x=>x.id == id)?.megjeleno_nev
   }
-  getAssociationName(id:number){
-    return this.associations.find(x=>x.id == id)?.nev
+  getAssociationName(value: string | null | undefined){
+    if (value === null || value === undefined || value === '') {
+      return '-'
+    }
+    return value
   }
   getEntryArray(compid: string):CompetitionEntry[] {
     let _entries = this.entries[compid]
@@ -71,6 +74,7 @@ export class EntriesComponent implements OnInit {
     return this.entrySort(_entries)
   }
   entrySort(arr: CompetitionEntry[]){
+    if(arr.length == 1) return arr
     arr.sort((a, b) => {
         const categoryA = this.categories.find(x=>x.id == a.kategoriaid)!.nev;
         const categoryB = this.categories.find(x=>x.id == b.kategoriaid)!.nev;
@@ -201,6 +205,20 @@ export class EntriesComponent implements OnInit {
         }
       }
     })
+  }
+
+  addAssociationTag = (name: string) => {
+    const trimmed = name.trim()
+    if (!trimmed) {
+      return null
+    }
+
+    const exists = this.associations.some(a => a.nev.toLowerCase() === trimmed.toLowerCase())
+    if (!exists) {
+      this.associations = [...this.associations, { id: 0, nev: trimmed, logo_url: null }]
+    }
+
+    return { id: 0, nev: trimmed, logo_url: null }
   }
 
   updateNumber(id: number){

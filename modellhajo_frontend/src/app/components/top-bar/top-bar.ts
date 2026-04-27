@@ -21,7 +21,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
             <a class="blue-inverse-button" routerLink="/user_register" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Regisztráció</a>
           </div>
         }@else {
-          <ul class="navbar-nav top-bar-center-menu">
+          <ul class="navbar-nav top-bar-left-menu">
             <li class="nav-item">
                 <a class="nav-link" [routerLink]="['/user_management']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Adatmódosítás</a>
             </li>

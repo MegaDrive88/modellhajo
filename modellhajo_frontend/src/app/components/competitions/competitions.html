@@ -57,13 +57,18 @@
                     </div>
                     <div>
                         <span class="mandatory-star">Szervező egyesület</span>
-                        <select name="egyesulet" class="form-select" [(ngModel)]="newComp.szervezo_egyesulet" #assocSelector="ngModel">
-                            <option value="-1">-- Kérem válasszon --</option>
-                            @for (item of associations; track $index) {
-                                <option value="{{item.id}}">{{item.nev}}</option>
-                            }
-                        </select>
-                        @if (assocSelector.dirty && newComp.szervezo_egyesulet == -1){
+                        <ng-select
+                            #assocSelector="ngModel"
+                            [items]="associations"
+                            bindLabel="nev"
+                            bindValue="nev"
+                            [addTag]="addAssociationTag"
+                            [clearable]="true"
+                            placeholder="Válasszon vagy írjon be új egyesületet"
+                            name="egyesulet"
+                            [(ngModel)]="newComp.szervezo_egyesulet"
+                        ></ng-select>
+                        @if (assocSelector.dirty && (!newComp.szervezo_egyesulet || newComp.szervezo_egyesulet.trim() === '')){
                             <p class="formError">Válasszon egy egyesületet</p>
                         }
                     </div>

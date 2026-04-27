@@ -55,7 +55,7 @@ Route::middleware(['auth:sanctum', 'ability:organizer'])->group(function () {
     Route::get('/organizer/entries', [EntryController::class, 'byOrganizer']);
 });
 
-Route::middleware(['auth:sanctum', 'abilities:competitor,supporter'])->group(function () {
+Route::middleware(['auth:sanctum', 'abilities:competitor,supporter,organizer'])->group(function () {
     Route::post('/competitions/{id}/entries', [EntryController::class, 'enterCompetition'])->whereNumber('id');
     Route::get('/users/{id}/entries', [EntryController::class, 'byUser']);
 });
@@ -108,7 +108,7 @@ Route::middleware(['auth:sanctum', 'ability:organizer'])->group(function () {
     Route::get('/getEntriesByOrganizerId', [EntryController::class, 'byOrganizer']);
 });
 
-Route::middleware(['auth:sanctum', 'abilities:competitor,supporter'])->group(function () {
+Route::middleware(['auth:sanctum', 'abilities:competitor,supporter,organizer'])->group(function () {
     Route::post('/enterCompetition/{id}', [EntryController::class, 'enterCompetition']);
     Route::get('/getEntriesByUserId/{id}', [EntryController::class, 'byUser']);
 });

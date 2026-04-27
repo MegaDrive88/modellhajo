@@ -38,7 +38,7 @@ class CompetitionController extends Controller
             'helyszin' => 'required',
             'nevezesi_dij_junior' => 'required|min:0',
             'nevezesi_dij_normal' => 'required|min:0',
-            'szervezo_egyesulet' => 'min:1',
+            'szervezo_egyesulet' => 'required|string|max:255',
         ]);
 
         $competition = CompetitionModel::create([
@@ -65,7 +65,7 @@ class CompetitionController extends Controller
             'helyszin' => 'required',
             'nevezesi_dij_junior' => 'required|min:0',
             'nevezesi_dij_normal' => 'required|min:0',
-            'szervezo_egyesulet' => 'min:1',
+            'szervezo_egyesulet' => 'required|string|max:255',
         ]);
 
         $competition = CompetitionModel::where('id', '=', $id)->first();

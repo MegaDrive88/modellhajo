@@ -8,6 +8,19 @@
             <span class="mandatory-star">MMSZ Tagsági azonosító</span>
             <input name="mmszid" type="text" class="form-control" [(ngModel)]="mmszid">
         </div>
+        <div>
+            <span>Melyik egyesület színeiben versenyez? (üresen is hagyhatja)</span>
+            <ng-select
+                [items]="associations"
+                bindLabel="nev"
+                bindValue="nev"
+                [addTag]="addAssociationTag"
+                [clearable]="true"
+                placeholder="Válasszon vagy írjon be új egyesületet"
+                name="association"
+                [(ngModel)]="selectedAssoc"
+            ></ng-select>
+        </div>
          <div>
             <span class="mandatory-star">Kategória(k)</span>
             <ng-select 
@@ -22,14 +35,7 @@
                 >
             </ng-select>
         </div>
-        <div>
-            <span>Válassza ki, melyik egyesület színeiben versenyez</span>
-            <select name="assocSelector" class="form-select" [(ngModel)]="selectedAssoc">
-                @for (assoc of associations; track assoc.id) {
-                    <option value="{{assoc.id}}">{{assoc.nev}}</option>
-                }
-            </select>
-        </div>
+        
         <button class="blue-button" (click)="enterCompetition()" [disabled]="newCompetitionCategories.length == 0">Nevezés</button>
     </form>
 </div>

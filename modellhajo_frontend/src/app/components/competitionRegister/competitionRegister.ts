@@ -28,10 +28,11 @@ export class CompetitionRegisterComponent implements OnInit{
   protected newCompetitionCategories: number[] = []
   protected competitionCategories: Category[] = []
   protected associations: Association[] = []
-  protected selectedAssoc = -1
+  protected selectedAssoc: string | null = null
   protected mmszid:any
   ngOnInit(){
       this.mmszid = this.ds.getUser()?.mmsz_id
+      this.selectedAssoc = this.ds.getUser()?.egyesulet ?? null
       const competitionId = Number(this.route.snapshot.paramMap.get('id')!);
       forkJoin({
         competition: this.ds.getCompetitionById(competitionId),
@@ -44,7 +45,7 @@ export class CompetitionRegisterComponent implements OnInit{
           if (competition.success) this.competition = competition.data;
           categories.categories = categories.categories.filter(x => x.versenyid == this.competition?.id);
           this.competitionCategories = categories.categories.map(x => x.category);
-          this.associations = [{id:-1, nev: "Nincs megadva", logo_url:undefined}, ...associations.associations]
+          this.associations = associations.associations
         },
         error: (err) => {
           Swal.fire({title: 'Nem létezik ilyen verseny', theme: 'material-ui-dark'})
@@ -68,5 +69,19 @@ export class CompetitionRegisterComponent implements OnInit{
         this.ds.router.navigateByUrl("/my_entries")
       }
     })
+  }
+
+  addAssociationTag = (name: string) => {
+    const trimmed = name.trim()
+    if (!trimmed) {
+      return null
+    }
+
+    const exists = this.associations.some(a => a.nev.toLowerCase() === trimmed.toLowerCase())
+    if (!exists) {
+      this.associations = [...this.associations, { id: 0, nev: trimmed, logo_url: null }]
+    }
+
+    return { id: 0, nev: trimmed, logo_url: null }
   }
 }

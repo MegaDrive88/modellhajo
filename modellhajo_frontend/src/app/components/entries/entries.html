@@ -31,7 +31,7 @@
                         <tr *ngFor="let entry of getEntryArray(comp.id.toString()); let i = index">
                             <td>{{getCategoryName(entry.kategoriaid)}}</td>
                             <td>{{getCompetitorName(entry.versenyzoid)}}</td>
-                            <td>{{getAssociationName(entry.egyesulet!) ?? '-'}}</td>
+                            <td>{{getAssociationName(entry.egyesulet)}}</td>
                             <td>
                                 <input type="number" min="1" class="form-control" [(ngModel)]="entryNumbers[entry.id]">
                             </td>
@@ -73,8 +73,10 @@
                                 <ng-select
                                 [items]="associations"
                                 bindLabel="nev"
-                                bindValue="id"
-                                placeholder="Írjon ide a kereséshez"
+                                bindValue="nev"
+                                [addTag]="addAssociationTag"
+                                [clearable]="true"
+                                placeholder="Válasszon / írjon be újat"
                                 [(ngModel)]="newEntry.assoc"
                                 appendTo="body"
                                 >

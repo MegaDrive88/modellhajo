@@ -52,6 +52,9 @@ class UserController extends Controller
             $user->mmsz_id = $request->input('mmsz_id');
         }
 
+        $egyesulet = $request->input('egyesulet');
+        $user->egyesulet = ($egyesulet === null || $egyesulet === '') ? null : $egyesulet;
+
         try {
             $user->save();
 
@@ -140,7 +143,7 @@ class UserController extends Controller
     {
         return response()->json([
             'success' => true,
-            'competitors' => UserModel::where('szerepkor_id', 2)->get(),
+            'competitors' => UserModel::whereRaw('szerepkor_id = 2 OR szerepkor_id = 1 OR szerepkor_id = 5')->get(),
         ]);
     }
 }
