@@ -48,7 +48,7 @@ export class MyEntriesComponent implements OnInit{
   cancelEntry(id: number){
     this.ds.cancelEntry(id).subscribe({
       next:async()=>{
-        await Swal.fire({title: 'Nevezését sikeresen lemondta az adott kategóriában.', theme: 'material-ui-dark'})
+        await Swal.fire({title: 'Nevezését sikeresen lemondta az adott kategóriában.', theme: 'material-ui-dark', icon: 'success'})
         location.reload()
       }
     })

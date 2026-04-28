@@ -16,6 +16,6 @@ export class LandingPageComponent {
   // https://namba8.com/wp/
   // https://www.facebook.com/groups/607199946958953/
   WIPalert(){
-    Swal.fire({title: 'Hamarosan', theme: 'material-ui-dark'})
+    Swal.fire({title: 'Hamarosan', theme: 'material-ui-dark', icon: 'info'})
   }
 }

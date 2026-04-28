@@ -8,7 +8,7 @@ $opt-bg: #4483d4b4;
     gap: 15px;
 }
 .competition-card{
-    height: 300px;
+    height: 330px;
     border-radius: 15px;
     display: flex;
     position: relative;
@@ -38,7 +38,7 @@ $opt-bg: #4483d4b4;
         padding: 25px;
         background-color: var(--mat-sys-primary-container);
         border-left: 1px solid var(--mat-sys-primary);
-        justify-content: center;
+        justify-content: start;
     }
 }
 .comp-filters-wrapper{

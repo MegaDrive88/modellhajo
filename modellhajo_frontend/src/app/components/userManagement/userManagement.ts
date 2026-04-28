@@ -55,7 +55,7 @@ export class UserManagementComponent implements OnInit{
         next:(data)=>{
             if(data.success){
                 this.ds.setUser(data.user)
-            Swal.fire({title: 'Adatai sikeresen módosultak!', theme: 'material-ui-dark'})
+            Swal.fire({title: 'Adatai sikeresen módosultak!', theme: 'material-ui-dark', icon: 'success'})
             }
         },
         error:(err)=>{this.userDataErrorString = err.error.error}
@@ -67,7 +67,7 @@ export class UserManagementComponent implements OnInit{
         next:(data)=>{
             if(data.success){
                 this.ds.setUser(data.user)
-            Swal.fire({title: 'Sikeres jelszó változtatás, kérjük jelentkezzen be újra!', theme: 'material-ui-dark'})
+            Swal.fire({title: 'Sikeres jelszó változtatás, kérjük jelentkezzen be újra!', theme: 'material-ui-dark', icon: 'success'})
                 this.ds.logout()
             }
         },

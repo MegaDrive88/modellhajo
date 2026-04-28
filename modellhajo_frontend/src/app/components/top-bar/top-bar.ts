@@ -11,7 +11,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   template:`
     <nav class="navbar fancy-navbar fixed-top">
       <div class="container-fluid px-4 top-bar-layout">
-        <a class="navbar-brand" [routerLink]="['/']">
+        <a class="navbar-brand" [routerLink]="['/']" title="Főoldal">
           <img src="logo.webp" alt="" style="width: 80px">
         </a>
 

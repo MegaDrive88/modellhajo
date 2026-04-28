@@ -19,7 +19,8 @@ export class ForgotPasswordComponent {
     if (!this.email || !this.email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
       Swal.fire({
         title: "Hibás e-mail cím formátum",
-        theme: "material-ui-dark"
+        theme: "material-ui-dark",
+        icon: 'warning'
       })
       return
     }

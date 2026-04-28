@@ -48,7 +48,7 @@ export class CalendarComponent {
       },
       error: (err) => {
         console.error('Failed to load competitions', err)
-        Swal.fire({title: 'Hiba történt a versenyek betöltésekor.', theme: 'material-ui-dark'})
+        Swal.fire({title: 'Hiba történt a versenyek betöltésekor.', theme: 'material-ui-dark', icon: 'error'})
       }
     })
   }

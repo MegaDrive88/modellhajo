@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
         }
       },
       error: () => {
-        Swal.fire({title: 'Szerverhiba, próbálja újra később!', theme: 'material-ui-dark'})
+        Swal.fire({title: 'Szerverhiba, próbálja újra később!', theme: 'material-ui-dark', icon: 'error'})
       }
     })
   }

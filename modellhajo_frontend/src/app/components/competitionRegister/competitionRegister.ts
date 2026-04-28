@@ -48,7 +48,7 @@ export class CompetitionRegisterComponent implements OnInit{
           this.associations = associations.associations
         },
         error: (err) => {
-          Swal.fire({title: 'Nem létezik ilyen verseny', theme: 'material-ui-dark'})
+          Swal.fire({title: 'Nem létezik ilyen verseny', theme: 'material-ui-dark', icon: 'error'})
           this.ds.router.navigateByUrl('/dashboard')
           console.log(err);
         }
@@ -56,7 +56,7 @@ export class CompetitionRegisterComponent implements OnInit{
   }
   enterCompetition(){    
     if(!this.mmszid){
-      Swal.fire({title: 'A nevezéshez szükséges MMSZ azonosító Önnek nincs kitöltve', theme: 'material-ui-dark'})
+      Swal.fire({title: 'A nevezéshez szükséges MMSZ azonosító Önnek nincs kitöltve', theme: 'material-ui-dark', icon: 'warning'})
       return
     }
     let user = this.ds.getUser()
@@ -64,8 +64,8 @@ export class CompetitionRegisterComponent implements OnInit{
     this.ds.setUser(user!)
     this.ds.enterCompetition(this.competition?.id!, this.newCompetitionCategories, this.selectedAssoc, this.mmszid).subscribe({
       next:(data)=>{        
-        if(data.skipped.length > 0) Swal.fire({title: `Ön már nevezett ${data.skipped.map((x :any)=>this.competitionCategories.find(y=>y.id == x)?.nev).join(", ")} kategóriá(k)ban${data.delta != 0 ? ", a többiben sikeresen nevezett" : ""}`, theme: 'material-ui-dark'})
-        else Swal.fire({title: `Sikeresen nevezett a(z) ${this.competition?.nev} versenyre`, theme: 'material-ui-dark'})
+        if(data.skipped.length > 0) Swal.fire({title: `Ön már nevezett ${data.skipped.map((x :any)=>this.competitionCategories.find(y=>y.id == x)?.nev).join(", ")} kategóriá(k)ban${data.delta != 0 ? ", a többiben sikeresen nevezett" : ""}`, theme: 'material-ui-dark', icon: 'warning'})
+        else Swal.fire({title: `Sikeresen nevezett a(z) ${this.competition?.nev} versenyre`, theme: 'material-ui-dark', icon: 'success'})
         this.ds.router.navigateByUrl("/my_entries")
       }
     })

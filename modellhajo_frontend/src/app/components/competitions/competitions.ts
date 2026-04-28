@@ -168,7 +168,7 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
       },
       error: (err) => {
         console.error('Failed to load competition data', err)
-        Swal.fire({title: 'Hiba történt az adatok betöltésekor.', theme: 'material-ui-dark'})
+        Swal.fire({title: 'Hiba történt az adatok betöltésekor.', theme: 'material-ui-dark', icon: 'error'})
       }
     })
   }
@@ -188,8 +188,8 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
           categs: this.newCompetitionCategories,
         }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: result => {
-            if (result.success) {
-              Swal.fire({title: "Sikeres módosítás", theme: "material-ui-dark"})
+              if (result.success) {
+              Swal.fire({title: "Sikeres módosítás", theme: "material-ui-dark", icon: 'success'})
               this.ds.router.navigateByUrl('/competitions', { replaceUrl: true })
                 .then(() => this.ngOnInit())
               this.formEditable = false
@@ -209,8 +209,8 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
               .pipe(takeUntilDestroyed(this.destroyRef))
               .subscribe({
                 next: result => {
-                  if (result.success) {
-                    Swal.fire({title: "Sikeres verseny létrehozás", theme: "material-ui-dark"})
+                    if (result.success) {
+                    Swal.fire({title: "Sikeres verseny létrehozás", theme: "material-ui-dark", icon: 'success'})
                     this.ds.router.navigateByUrl('/competitions', { replaceUrl: true })
                       .then(() => this.ngOnInit())
                     this.formEditable = false
