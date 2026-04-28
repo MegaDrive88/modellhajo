@@ -243,16 +243,27 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
         )
   }
   deleteCompetition(id: number){
-    if (confirm("Biztosan törölni szeretné?")) { // swal
-        this.ds.deleteCompetition(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-          next: data => {
-            if (data.success) {
-              this.userCompetitions = this.userCompetitions.filter(c => c.id !== id)
-            }
-          },
-          error: err => console.error(err)
-        })
-    }
+    Swal.fire({
+      title: 'Biztosan törölni szeretné a versenyt?',
+      icon: 'warning',
+      theme: 'material-ui-dark',
+      showCancelButton: true,
+      confirmButtonText: 'Törlés',
+      cancelButtonText: 'Mégse'
+    }).then((result) => {
+      if (!result.isConfirmed) {
+        return
+      }
+
+      this.ds.deleteCompetition(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        next: data => {
+          if (data.success) {
+            this.userCompetitions = this.userCompetitions.filter(c => c.id !== id)
+          }
+        },
+        error: err => console.error(err)
+      })
+    })
   }
   editCompetition(id: number){
     this.editMode = id

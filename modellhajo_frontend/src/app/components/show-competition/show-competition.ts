@@ -132,14 +132,12 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 
 - lezajlott versenynel eredmenyek az "egy verseny" oldalon
 
-- szolni az uj usernek hogy varjon amig az admin elfogadja a szerepkoret
 - elfogadasrol email
 - docker compose és schedule work
 - valami jobb hibauzenet ha az uj jelszavak nem egyeznek elfelejtettnél
 - tovabbi backend rework
 - email, ha valaki regisztral/nevez
-- rendezo nem tud nevezni, errol szoljunk neki
 - mmszid csak opcionalis
+- mivel rendezo egyben versenyzo is mostmar, role levelek kellenenek. egesz role rendszert at kene irni
 
-- szervezo tudjon nevezni
 */

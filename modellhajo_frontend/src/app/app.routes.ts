@@ -18,5 +18,6 @@ export const routes: Routes = [
     { path: 'competition/:id', loadComponent: () => import('./components/show-competition/show-competition').then(m => m.ShowCompetitonComponent) },
     { path: 'my_entries', canActivate: [roleGuard], data: {roles: [1, 2, 5]}, loadComponent: () => import('./components/myEntries/myEntries').then(m => m.MyEntriesComponent) },
     { path: 'entries', canActivate: [roleGuard], data: {roles: [1]}, loadComponent: () => import('./components/entries/entries').then(m => m.EntriesComponent) },
+    { path: 'results', canActivate: [roleGuard], data: {roles: [1, 3]}, loadComponent: () => import('./components/results-component/results-component').then(m => m.ResultsComponent) },
     { path: '**', redirectTo: '' }
 ];

@@ -31,7 +31,7 @@ export class UserRegisterComponent {
     this.ds.createAccount(this.newUser).subscribe({
       next: (data)=>{
         if(data.success){
-          Swal.fire({title: "Sikeres felhasználó létrehozás", theme: "material-ui-dark"})
+          Swal.fire({title: "Sikeres felhasználó létrehozás", theme: "material-ui-dark", text: "Amennyiben rendezőként regisztrált, várnia kell, míg az adminisztrátor megadja a megfelelő rangot"})
           this.ds.router.navigateByUrl("/login")
         }
         else{

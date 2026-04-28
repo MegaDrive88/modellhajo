@@ -77,6 +77,19 @@ class CompetitionController extends Controller
 
         try {
             DB::transaction(function () use ($request, $competition, $evszam, $id): void {
+                $existingCategoryIds = CompetitionCategoryModel::where('versenyid', $id)
+                    ->pluck('kategoriaid')
+                    ->all();
+
+                $requestedCategoryIds = array_values(array_unique((array) $request->input('categs', [])));
+                $removedCategoryIds = array_values(array_diff($existingCategoryIds, $requestedCategoryIds));
+
+                if (!empty($removedCategoryIds)) {
+                    CompetitionEntryModel::where('versenyid', $id)
+                        ->whereIn('kategoriaid', $removedCategoryIds)
+                        ->delete();
+                }
+
                 $competition->update([
                     ...$request->all(),
                     'evszam' => $evszam,

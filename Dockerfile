@@ -26,5 +26,4 @@ CMD php artisan storage:link || true && \
 # sudo docker exec -it modellhajo_app bash
 # rm -rf public/storage
 # php artisan storage:link
-# ls -l public 
-# You should see something like: storage -> ../storage/app/public
+# php artisan cache:clear
