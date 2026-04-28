@@ -26,7 +26,7 @@
           </ul>
 
           <div class="top-bar-user-right">
-            <span class="top-bar-user-name">Bejelentkezve, mint {{this.ds.getUser()?.megjeleno_nev}}</span>
+            <span class="top-bar-user-name" style="white-space: nowrap;">Bejelentkezve, mint {{this.ds.getUser()?.megjeleno_nev}}</span>
             <button class="btn blue-button px-4 rounded-pill" type="button" (click)="ds.logout()">Kijelentkezés</button>
           </div>
         }

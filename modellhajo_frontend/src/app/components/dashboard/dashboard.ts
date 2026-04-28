@@ -13,10 +13,11 @@ import { DataService } from '../../services/data.service';
 export class DashboardComponent implements OnInit{
   protected ds = inject(DataService)
   ngOnInit(): void { //ideiglenes
-      if(this.ds.getUser()?.szerepkor_id == 1) 
+      if((this.ds.getUser()?.role?.szint ?? 0) >= 2) {
         this.ds.router.navigateByUrl("/competitions")
-      else
+      } else {
         this.ds.router.navigateByUrl("/my_entries")
+      }
       return
   }
 }

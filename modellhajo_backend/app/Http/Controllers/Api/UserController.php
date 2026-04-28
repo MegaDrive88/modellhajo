@@ -57,6 +57,7 @@ class UserController extends Controller
 
         try {
             $user->save();
+            $user->load('role');
 
             return response()->json([
                 'success' => true,
@@ -106,6 +107,7 @@ class UserController extends Controller
 
         try {
             $user->save();
+            $user->load('role');
 
             return response()->json([
                 'success' => true,
@@ -121,18 +123,9 @@ class UserController extends Controller
 
     public function menuItems(Request $request): JsonResponse
     {
-        //atirni ezt is meg a szerepkor elfogadast
-        // $roleId = 4;
-
-        // if ($request->user()->szerepkor_id == 1) {
-        //     if ($request->user()->szerepkor_elfogadva) {
-        //         $roleId = 1;
-        //     }
-        // } else {
-        //     $roleId = $request->user()->szerepkor_id;
-        // }
-
-        // $items = MenuItemModel::where('szerepkor_id', '=', $roleId)->get();
+        $request->user()->loadMissing('role');
+        $roleLevel = (int) ($request->user()->role->szint ?? 0);
+        $items = MenuItemModel::where('min_szerepkor', '<=', $roleLevel)->get();
 
         return response()->json([
             'success' => true,
@@ -144,7 +137,9 @@ class UserController extends Controller
     {
         return response()->json([
             'success' => true,
-            'competitors' => UserModel::whereRaw('szerepkor_id = 2 OR szerepkor_id = 1 OR szerepkor_id = 5')->get(),
+            'competitors' => UserModel::whereHas('role', function ($query) {
+                $query->where('szint', '<=', 2)->where('szint', '>=', 1);
+            })->get(),
         ]);
     }
 }

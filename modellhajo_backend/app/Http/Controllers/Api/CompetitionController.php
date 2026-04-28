@@ -129,7 +129,8 @@ class CompetitionController extends Controller
 
     public function mine(Request $request): JsonResponse
     {
-        if ($request->user()->isadmin){
+        $request->user()->loadMissing('role');
+        if ((int) ($request->user()->role->szint ?? 0) >= 3){
             return response()->json([
                 'success' => true,
                 'data' => CompetitionModel::all(),

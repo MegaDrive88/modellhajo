@@ -10,6 +10,7 @@ import CompetitionCategory from '../interfaces/competition.category.interface';
 import { environment } from '../../environments/environment';
 import { firstValueFrom } from 'rxjs';
 import CompetitionEntry from '../interfaces/competition.entry.interface';
+import Role from '../interfaces/role.interface';
 
 export interface AssociationsAndCategoriesResponse {
   success: boolean;
@@ -72,6 +73,11 @@ export interface CompetitorsResponse {
 export interface ForgotPasswordResponse {
   success: boolean;
   message?: string;
+}
+
+export interface RolesResponse {
+  success: boolean;
+  roles: Role[];
 }
 
 export interface ResetPasswordResponse {
@@ -186,6 +192,10 @@ export class DataService {
     return this.http.get<AssociationsAndCategoriesResponse>(
       `${this.API_URL}/lookups/associations-categories`
     );
+  }
+
+  getRoles() {
+    return this.http.get<RolesResponse>(`${this.API_URL}/lookups/roles`);
   }
 
   getCompetitionCategories() {

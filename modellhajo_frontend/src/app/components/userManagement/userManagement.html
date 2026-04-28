@@ -15,13 +15,13 @@
                 <span class="mandatory-star">E-mail cím</span>
                 <input name="email" type="email" required class="form-control" [(ngModel)]="userCopy.email">
             </div>
-            @if ([1, 2].includes(this.ds.getUser()?.szerepkor_id!)) {
+            @if ((this.ds.getUser()?.role?.szint ?? 0) >= 1) {
                 <div>
                     <span class="">MMSZ Tagsági szám</span>
                     <input name="mmszid" type="text" class="form-control" [(ngModel)]="userCopy.mmsz_id">
                 </div>
             }
-            @if ([1, 2].includes(this.ds.getUser()?.szerepkor_id!)) {
+            @if ((this.ds.getUser()?.role?.szint ?? 0) >= 1) {
                 <div>
                     <span class="">Egyesület</span>
                     <ng-select

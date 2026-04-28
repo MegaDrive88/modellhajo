@@ -28,16 +28,19 @@ class AuthController extends Controller
             ]);
         }
 
-        $roleAbilities = [
-            ['admin'],
-            ['organizer'],
-            ['competitor'],
-            ['supporter'],
-        ];
+        $user->load('role');
+        $roleLevel = (int) ($user->role->szint ?? 0);
+
+        $abilities = match (true) {
+            $roleLevel >= 3 => ['admin', 'organizer', 'competitor', 'supporter'],
+            $roleLevel >= 2 => ['organizer', 'competitor', 'supporter'],
+            $roleLevel >= 1 => ['competitor', 'supporter'],
+            default => [],
+        };
 
         $token = $user->createToken(
             'modellhajo-login-token',
-            $roleAbilities[3]
+            $abilities
         )->plainTextToken;
 
         return response()->json([
@@ -94,6 +97,7 @@ class AuthController extends Controller
         $user->mmsz_id = $request->input('mmszid');
         $user->jelszo = UserModel::createLegacyPasswordHash((string) $request->input('password'));
         $user->save();
+        $user->load('role');
 
         return response()->json([
             'success' => true,
@@ -110,7 +114,9 @@ class AuthController extends Controller
 
     public function checkAdmin(Request $request): JsonResponse
     {
-        return response()->json($request->user()->isadmin);
+        $request->user()->loadMissing('role');
+
+        return response()->json((int) ($request->user()->role->szint ?? 0) >= 3);
     }
 
     public function checkToken(): JsonResponse

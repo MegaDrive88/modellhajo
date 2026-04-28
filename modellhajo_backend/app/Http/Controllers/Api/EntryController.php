@@ -62,7 +62,8 @@ class EntryController extends Controller
 
     public function byOrganizer(Request $request): JsonResponse
     {
-        if ($request->user()->isadmin){
+        $request->user()->loadMissing('role');
+        if ((int) ($request->user()->role->szint ?? 0) >= 3){
             return response()->json([
                 'success' => true,
                 'entries' => CompetitionEntryModel::orderBy('versenyid', 'desc')

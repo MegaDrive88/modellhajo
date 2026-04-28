@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\RoleModel;
 use App\Models\UserModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,7 +13,12 @@ class AdminController extends Controller
     public function roleRequests(): JsonResponse
     {
         return response()->json(
-            UserModel::with('role')->whereRaw('szerepkor_id = 1 AND szerepkort_elfogadta IS NULL')->get()
+            UserModel::with('role')
+                ->whereHas('role', function ($query) {
+                    $query->where('szint', 2);
+                })
+                ->whereNull('szerepkort_elfogadta')
+                ->get()
         );
     }
 
@@ -34,7 +40,13 @@ class AdminController extends Controller
             $user->szerepkort_elfogadta = $request->user()->id;
             $user->szerepkor_elfogadva = now();
         } else {
-            $user->szerepkor_id = 4;
+            $fallbackRole = RoleModel::where('szerepkor_nev', 'versenyző')->first();
+            if (!$fallbackRole) {
+                $fallbackRole = RoleModel::where('szint', 1)->first();
+            }
+            if ($fallbackRole) {
+                $user->szerepkor_id = $fallbackRole->id;
+            }
         }
 
         $user->save();

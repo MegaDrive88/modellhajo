@@ -35,6 +35,7 @@ Route::middleware(['auth:sanctum', 'ability:admin'])->group(function () {
 });
 
 Route::get('/lookups/associations-categories', [MetaController::class, 'associationsAndCategories']);
+Route::get('/lookups/roles', [MetaController::class, 'roles']);
 Route::post('/emails/password-reset', [MetaController::class, 'storeEmail']);
 
 Route::get('/competitions', [CompetitionController::class, 'index']);
@@ -89,6 +90,7 @@ Route::middleware(['auth:sanctum', 'ability:admin'])->group(function () {
 });
 
 Route::get('/getAssociationsAndCategories', [MetaController::class, 'associationsAndCategories']);
+Route::get('/getRoles', [MetaController::class, 'roles']);
 Route::get('/getAllCompetitions', [CompetitionController::class, 'index']);
 Route::get('/getCompetition/{id}', [CompetitionController::class, 'show']);
 Route::get('/getCompetitionCategories', [CompetitionController::class, 'categories']);

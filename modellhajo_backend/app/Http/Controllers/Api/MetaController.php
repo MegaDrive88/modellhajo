@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\AssociationModel;
 use App\Models\CategoryModel;
+use App\Models\RoleModel;
 use App\Models\UserModel;
 use App\Services\PasswordResetService;
 use Illuminate\Http\JsonResponse;
@@ -28,6 +29,14 @@ class MetaController extends Controller
             'success' => true,
             'associations' => cache()->remember('associations', 3600, fn () => AssociationModel::all()),
             'categories' => cache()->remember('categories', 3600, fn () => CategoryModel::all()),
+        ]);
+    }
+
+    public function roles(): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'roles' => RoleModel::orderBy('szint', 'desc')->get(),
         ]);
     }
 
