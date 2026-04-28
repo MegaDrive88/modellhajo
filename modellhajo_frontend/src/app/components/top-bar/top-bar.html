@@ -18,10 +18,21 @@
             <li class="nav-item">
                 <a class="nav-link" [routerLink]="['/user_management']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Adatmódosítás</a>
             </li>
-            @for (item of menuItems; track item.id) {
-              <li class="nav-item">
-                <a class="nav-link" [routerLink]="['/' + item.route]" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">{{item.menupont_nev}}</a>
-              </li>
+            @for (group of groupedMenuItems; track group.level) {
+              @if (group.items.length <= 1) {
+                <li class="nav-item">
+                  <a class="nav-link" [routerLink]="['/' + group.items[0].route]" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">{{group.items[0].menupont_nev}}</a>
+                </li>
+              }@else {
+                <li class="nav-item dropdown" data-bs-theme="dark">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{group.label}}</a>
+                  <ul class="dropdown-menu">
+                    @for (item of group.items; track item.id) {
+                      <li><a class="dropdown-item" [routerLink]="['/' + item.route]">{{item.menupont_nev}}</a></li>
+                    }
+                  </ul>
+                </li>
+              }
             }
           </ul>
 
