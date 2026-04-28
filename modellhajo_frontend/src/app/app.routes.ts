@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
-import { adminGuard } from './guards/admin.guard';
 import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
@@ -10,14 +9,14 @@ export const routes: Routes = [
     { path: 'forgot_password', loadComponent: () => import('./components/forgot-password-component/forgot-password-component').then(m => m.ForgotPasswordComponent) },
     { path: 'reset_password', loadComponent: () => import('./components/reset-password-component/reset-password-component').then(m => m.ResetPasswordComponent) },
     { path: 'calendar', loadComponent: () => import('./components/calendar/calendar').then(m => m.CalendarComponent) },
-    { path: 'competition_register/:id', canActivate: [roleGuard], data: {roles: [1, 2, 5]}, loadComponent: () => import('./components/competitionRegister/competitionRegister').then(m => m.CompetitionRegisterComponent) },
+    { path: 'competition_register/:id', canActivate: [roleGuard], data: {minRole: 1}, loadComponent: () => import('./components/competitionRegister/competitionRegister').then(m => m.CompetitionRegisterComponent) },
     { path: 'dashboard', canActivate: [authGuard], loadComponent: () => import('./components/dashboard/dashboard').then(m => m.DashboardComponent) },
-    { path: 'competitions', canActivate: [roleGuard], data: {roles: [1]}, loadComponent: () => import('./components/competitions/competitions').then(m => m.CompetitionsComponent) },
-    { path: 'admin', canActivate: [adminGuard], loadComponent: () => import('./components/admin/admin').then(m => m.AdminComponent) },
+    { path: 'competitions', canActivate: [roleGuard], data: {minRole: 2}, loadComponent: () => import('./components/competitions/competitions').then(m => m.CompetitionsComponent) },
+    { path: 'admin', canActivate: [roleGuard], data: {minRole: 3}, loadComponent: () => import('./components/admin/admin').then(m => m.AdminComponent) },
     { path: 'user_management', canActivate: [authGuard], loadComponent: () => import('./components/userManagement/userManagement').then(m => m.UserManagementComponent) },
     { path: 'competition/:id', loadComponent: () => import('./components/show-competition/show-competition').then(m => m.ShowCompetitonComponent) },
-    { path: 'my_entries', canActivate: [roleGuard], data: {roles: [1, 2, 5]}, loadComponent: () => import('./components/myEntries/myEntries').then(m => m.MyEntriesComponent) },
-    { path: 'entries', canActivate: [roleGuard], data: {roles: [1]}, loadComponent: () => import('./components/entries/entries').then(m => m.EntriesComponent) },
-    { path: 'results', canActivate: [roleGuard], data: {roles: [1, 3]}, loadComponent: () => import('./components/results-component/results-component').then(m => m.ResultsComponent) },
+    { path: 'my_entries', canActivate: [roleGuard], data: {minRole: 1}, loadComponent: () => import('./components/myEntries/myEntries').then(m => m.MyEntriesComponent) },
+    { path: 'entries', canActivate: [roleGuard], data: {minRole: 2}, loadComponent: () => import('./components/entries/entries').then(m => m.EntriesComponent) },
+    { path: 'results', canActivate: [roleGuard], data: {minRole: 2}, loadComponent: () => import('./components/results-component/results-component').then(m => m.ResultsComponent) },
     { path: '**', redirectTo: '' }
 ];

@@ -1,13 +1,13 @@
 import { inject } from '@angular/core';
-import { CanActivateFn } from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
 import { DataService } from '../services/data.service';
 
 export const roleGuard: CanActivateFn = (route, state) => {
-  // 
-  const ds = inject(DataService);
-  const allowedRoles = route.data['roles'] as number[];
-  if (ds.getUser() && (ds.getUser()?.szerepkor_id == 1 ? ds.getUser()?.szerepkor_elfogadva : true) && allowedRoles?.includes(ds.getUser()?.szerepkor_id!)) {
-    return true;
-  }
-  return ds.router.createUrlTree(['/dashboard']);
+    const ds = inject(DataService);
+    const router = inject(Router)
+    const minimumRole = route.data['minRole'] as number;
+    if (ds.getUser() && ds.getUser()!.role.szint >= minimumRole) {
+        return true;
+    }
+    return router.createUrlTree(['/'], { queryParams: { returnUrl: state.url } });
 };

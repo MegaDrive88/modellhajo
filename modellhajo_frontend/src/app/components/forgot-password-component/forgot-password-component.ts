@@ -2,10 +2,11 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { DataService } from '../../services/data.service';
+import { TopBarComponent } from "../top-bar/top-bar";
 
 @Component({
   selector: 'app-forgot-password-component',
-  imports: [FormsModule],
+  imports: [FormsModule, TopBarComponent],
   templateUrl: './forgot-password-component.html',
   styleUrls: [
     '../../app.scss',

@@ -11,7 +11,6 @@ export default interface User{
     szerepkor_elfogadva: Date;
     tamogatott_versenyzo:number|null|undefined;
     mmsz_id:string|null|undefined;
-    isadmin:boolean;
     egyesulet: string|null|undefined
     role: Role;
 }

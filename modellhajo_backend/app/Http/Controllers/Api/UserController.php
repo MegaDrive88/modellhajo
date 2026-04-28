@@ -121,17 +121,18 @@ class UserController extends Controller
 
     public function menuItems(Request $request): JsonResponse
     {
-        $roleId = 4;
+        //atirni ezt is meg a szerepkor elfogadast
+        // $roleId = 4;
 
-        if ($request->user()->szerepkor_id == 1) {
-            if ($request->user()->szerepkor_elfogadva) {
-                $roleId = 1;
-            }
-        } else {
-            $roleId = $request->user()->szerepkor_id;
-        }
+        // if ($request->user()->szerepkor_id == 1) {
+        //     if ($request->user()->szerepkor_elfogadva) {
+        //         $roleId = 1;
+        //     }
+        // } else {
+        //     $roleId = $request->user()->szerepkor_id;
+        // }
 
-        $items = MenuItemModel::where('szerepkor_id', '=', $roleId)->get();
+        // $items = MenuItemModel::where('szerepkor_id', '=', $roleId)->get();
 
         return response()->json([
             'success' => true,

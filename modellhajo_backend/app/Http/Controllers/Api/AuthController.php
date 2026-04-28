@@ -29,16 +29,15 @@ class AuthController extends Controller
         }
 
         $roleAbilities = [
+            ['admin'],
             ['organizer'],
             ['competitor'],
-            ['helper'],
-            ['guest'],
             ['supporter'],
         ];
 
         $token = $user->createToken(
             'modellhajo-login-token',
-            array_merge($roleAbilities[$user->szerepkor_id - 1], $user->isadmin ? ['admin'] : [])
+            $roleAbilities[3]
         )->plainTextToken;
 
         return response()->json([

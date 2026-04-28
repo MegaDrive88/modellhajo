@@ -19,7 +19,6 @@ class UserModel extends Authenticatable
         'mmsz_id',
         'szerepkort_elfogadta',
         'szerepkor_elfogadva',
-        'isadmin',
         'egyesulet'
     ];
     public function role(){

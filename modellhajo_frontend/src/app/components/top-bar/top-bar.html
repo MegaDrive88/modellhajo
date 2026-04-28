@@ -1,0 +1,37 @@
+<nav class="navbar fancy-navbar fixed-top navbar-expand-lg navbar-dark">
+      <div class="container-fluid px-4 top-bar-layout">
+        <a class="navbar-brand" [routerLink]="['/']" title="Főoldal">
+          <img src="logo.webp" alt="" style="width: 80px">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+
+        @if(!this.ds.getUser()){
+          <div class="top-bar-auth-buttons">
+            <a class="blue-button" routerLink="/login" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Bejelentkezés</a>
+            <a class="blue-inverse-button" routerLink="/user_register" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Regisztráció</a>
+          </div>
+        }@else {
+          <ul class="navbar-nav top-bar-left-menu">
+            <li class="nav-item">
+                <a class="nav-link" [routerLink]="['/user_management']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Adatmódosítás</a>
+            </li>
+            @for (item of menuItems; track item.id) {
+              <li class="nav-item">
+                <a class="nav-link" [routerLink]="['/' + item.route]" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">{{item.menupont_nev}}</a>
+              </li>
+            }
+          </ul>
+
+          <div class="top-bar-user-right">
+            <span class="top-bar-user-name">Bejelentkezve, mint {{this.ds.getUser()?.megjeleno_nev}}</span>
+            <button class="btn blue-button px-4 rounded-pill" type="button" (click)="ds.logout()">Kijelentkezés</button>
+          </div>
+        }
+      </div>
+      </div>
+    </nav>
+    <div class="top-bar-spacer" aria-hidden="true"></div>
+    <div id="landing-bg"></div>

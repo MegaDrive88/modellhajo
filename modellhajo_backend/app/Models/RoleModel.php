@@ -11,6 +11,7 @@ class RoleModel extends Model
     protected $primaryKey = 'id';
     public $timestamps = false;
     protected $fillable = [
-        'szerepkor_nev'
+        'szerepkor_nev',
+        'szint'
     ];
 }

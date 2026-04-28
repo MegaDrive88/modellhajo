@@ -10,7 +10,7 @@ class MenuItemModel extends Model
     protected $primaryKey = 'id';
     public $timestamps = false;
     protected $fillable = [
-        'szerepkor_id',
+        'min_szerepkor',
         'menuitem_nev'
     ];
 }
