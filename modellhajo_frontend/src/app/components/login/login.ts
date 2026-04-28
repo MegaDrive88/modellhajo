@@ -44,7 +44,12 @@ export class LoginComponent implements OnInit {
         if (data.success) {
           this.ds.setUser(data.user!)
           this.ds.setToken(data.access_token!)
-          this.ds.router.navigateByUrl('/dashboard')
+          const roleLevel = (data.user && data.user.role && data.user.role.szint) ? data.user.role.szint : 0
+          if (roleLevel >= 2 && !data.user?.szerepkor_elfogadva) {
+            this.ds.router.navigateByUrl('/my_entries')
+          } else {
+            this.ds.router.navigateByUrl('/dashboard')
+          }
         }
       },
       error: () => {

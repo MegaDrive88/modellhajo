@@ -30,6 +30,8 @@ export class EntriesComponent implements OnInit {
   protected categories!:Category[]
   protected competitors!:User[]
   protected associations!:Association[]
+  protected selectedCategory: Record<string, number | null> = {}
+  protected compCategories: Record<string, Category[]> = {}
 
   protected newEntry: { competitor: number | null; category: number | null; assoc: string | null; number: number | null } = { competitor: null, category: null, assoc: null, number: null }
   ngOnInit(): void {
@@ -48,6 +50,14 @@ export class EntriesComponent implements OnInit {
       this.categories = ca.categories
       this.competitors = competitors.competitors     
       this.associations = ca.associations
+
+      // build per-competition category lists
+      for (const [compId, compEntries] of Object.entries(this.entries)) {
+        const categoryIds = Array.from(new Set(compEntries.map(e => e.kategoriaid)))
+        this.compCategories[compId] = categoryIds.map(id => this.categories.find(c => c.id === id)!).filter(Boolean)
+        // default to -1 (no filter)
+        this.selectedCategory[compId] = -1
+      }
 
       for (const competitionEntries of Object.values(this.entries)) {
         for (const entry of competitionEntries) {
@@ -71,7 +81,13 @@ export class EntriesComponent implements OnInit {
   getEntryArray(compid: string):CompetitionEntry[] {
     let _entries = this.entries[compid]
     if (!_entries) return []
-    return this.entrySort(_entries)
+    const selected = this.selectedCategory[compid]
+    let filtered = _entries
+    if (typeof selected !== 'undefined' && selected !== null && selected !== -1) {
+      const selectedId = Number(selected)
+      filtered = _entries.filter(e => e.kategoriaid === selectedId)
+    }
+    return this.entrySort(filtered)
   }
   entrySort(arr: CompetitionEntry[]){
     if(arr.length == 1) return arr
@@ -164,7 +180,7 @@ export class EntriesComponent implements OnInit {
   createEntry(compid: number){
     if(!this.newEntry.competitor || !this.newEntry.category){
       Swal.fire({
-        title: "Töltse ki mindkét mezőt",
+        title: "Töltse ki mindegyik mezőt",
         theme: "material-ui-dark",
         icon: "error"
       })

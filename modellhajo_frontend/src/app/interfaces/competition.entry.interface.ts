@@ -5,5 +5,7 @@ export default interface CompetitionEntry{
     versenyzoid:number,
     egyesulet: string|null,
     rajtszam: number|null,
-    is_junior: boolean
+    is_junior: boolean,
+    pontszam: null|number,
+    csoportid: null|number
 }

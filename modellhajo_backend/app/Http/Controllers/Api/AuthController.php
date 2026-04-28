@@ -29,7 +29,15 @@ class AuthController extends Controller
         }
 
         $user->load('role');
-        $roleLevel = (int) ($user->role->szint ?? 0);
+        $originalRoleLevel = (int) ($user->role->szint ?? 0);
+
+        // If the user's role requires approval (organizer or above) but hasn't been accepted,
+        // downgrade their effective role to competitor level for abilities.
+        $roleAccepted = !empty($user->szerepkor_elfogadva);
+        $roleLevel = $originalRoleLevel;
+        if ($originalRoleLevel >= 2 && !$roleAccepted) {
+            $roleLevel = 1; // treat as competitor until approved
+        }
 
         $abilities = match (true) {
             $roleLevel >= 3 => ['admin', 'organizer', 'competitor', 'supporter'],
@@ -47,6 +55,7 @@ class AuthController extends Controller
             'success' => true,
             'user' => $user,
             'access_token' => $token,
+            'role_accepted' => $roleAccepted,
         ]);
     }
 

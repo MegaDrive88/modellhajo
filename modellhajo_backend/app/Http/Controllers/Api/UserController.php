@@ -124,7 +124,13 @@ class UserController extends Controller
     public function menuItems(Request $request): JsonResponse
     {
         $request->user()->loadMissing('role');
-        $roleLevel = (int) ($request->user()->role->szint ?? 0);
+        $originalRoleLevel = (int) ($request->user()->role->szint ?? 0);
+        $roleAccepted = !empty($request->user()->szerepkor_elfogadva);
+        $roleLevel = $originalRoleLevel;
+        if ($originalRoleLevel >= 2 && !$roleAccepted) {
+            $roleLevel = 1; // treat as competitor until role is accepted
+        }
+
         $items = MenuItemModel::where('min_szerepkor', '<=', $roleLevel)->get();
 
         return response()->json([

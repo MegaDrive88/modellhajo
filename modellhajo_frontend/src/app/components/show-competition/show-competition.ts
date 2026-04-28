@@ -138,6 +138,6 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - tovabbi backend rework
 - email, ha valaki regisztral/nevez
 - mmszid csak opcionalis
-- mivel rendezo egyben versenyzo is mostmar, role levelek kellenenek. egesz role rendszert at kene irni
-- menu dropdownok?
+- csoport -> futam-> eredmeny -> vegeredmeny
+- nevezesnel junior lehetoseg
 */

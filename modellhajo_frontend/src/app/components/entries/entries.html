@@ -4,28 +4,38 @@
     <h2>Verseny nevezések</h2>
     @for (comp of competitions; track comp.id) {
         <div class="competition-card">
-            @if (comp.kep_url) {
-                <img src="{{ds.STORAGE_URL}}{{comp.kep_url}}" alt="">
-            }@else{
-                <img src="https://media.istockphoto.com/id/1286476479/vector/public-icon-traffic-icons-for-ship.jpg?s=612x612&w=0&k=20&c=NW0sE3lQkkjWwvppDIIiZg0SpVKIdsJYF7cco7CpltM=" alt="">
-            }
             <div class="comp-card-data">
-                <h3>{{comp.nev}}</h3>
+                <div class="d-flex" style="align-items: center; gap: 15px;">
+                    @if (comp.kep_url) {
+                        <img src="{{ds.STORAGE_URL}}{{comp.kep_url}}" alt="">
+                    }@else{
+                        <img src="https://media.istockphoto.com/id/1286476479/vector/public-icon-traffic-icons-for-ship.jpg?s=612x612&w=0&k=20&c=NW0sE3lQkkjWwvppDIIiZg0SpVKIdsJYF7cco7CpltM=" alt="">
+                    }
+                    <h3>{{comp.nev}}</h3>
+                </div>
                 <table style="margin-bottom: 10px;">
                     <thead>
                         <tr>
-                            <th>Kategória</th>
+                            <th>
+                                <select class="form-select" [(ngModel)]="selectedCategory[comp.id]" name="category-{{comp.id}}">
+                                        <option [ngValue]="-1">Összes kategória</option>
+                                        @for (cat of compCategories[comp.id]; track cat.id) {
+                                            <option [ngValue]="cat.id">{{cat.nev}}</option>
+                                        }
+                                </select>
+                            </th>
                             <th>Versenyző</th>
                             <th>Egyesület</th>
-                            <th style="text-align: right;">Rajtszám</th>
-                            <th colspan="2">
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-primary w-100" (click)="saveAllEntries(comp.id)">Összes mentése</button>
-                                    <button class="btn btn-danger w-100" (click)="deleteAllEntries(comp.id)">Összes törlése</button>
-                                </div>
+                            <th style="text-align: center;">Rajtszám</th>
+                            <th style="text-align: center;">Csoport</th>
+                            <th>
+                                <button class="btn btn-primary w-100" (click)="saveAllEntries(comp.id)">Összes mentése</button>
+                            </th>
+                            <th>
+                                <button class="btn btn-danger w-100" (click)="deleteAllEntries(comp.id)">Összes törlése</button>
                             </th>
                         </tr>
-                        <tr><td colspan="6"><hr></td></tr>
+                        <tr><td colspan="7"><hr></td></tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let entry of getEntryArray(comp.id.toString()); let i = index">
@@ -34,6 +44,9 @@
                             <td>{{getAssociationName(entry.egyesulet)}}</td>
                             <td>
                                 <input type="number" min="1" class="form-control" [(ngModel)]="entryNumbers[entry.id]">
+                            </td>
+                            <td>
+                                <input type="number" min="1" class="form-control" value="1">
                             </td>
                             <td>
                                 <button class="btn btn-primary py-0 w-100" (click)="updateNumber(entry.id)">Mentés</button>
@@ -45,7 +58,7 @@
                         @if(getEntryArray(comp.id.toString()).length == 0){
                             <tr><td>A versenyre még nem érkezett nevezés</td></tr>
                         }
-                        <tr><td colspan="6"><hr></td></tr>
+                        <tr><td colspan="7"><hr></td></tr>
                         <tr>
                             <td>
                                 <ng-select
@@ -84,6 +97,9 @@
                             </td>
                             <td>
                                 <input type="number" min="1" class="form-control" [(ngModel)]="newEntry.number">
+                            </td>
+                            <td>
+                                <input type="number" min="1" class="form-control">
                             </td>
                             <td colspan="2">
                                 <button class="btn btn-primary w-100 py-1" (click)="createEntry(comp.id)">Felvétel</button>

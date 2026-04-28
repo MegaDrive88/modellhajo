@@ -6,8 +6,9 @@ export const roleGuard: CanActivateFn = (route, state) => {
     const ds = inject(DataService);
     const router = inject(Router)
     const minimumRole = route.data['minRole'] as number;
-    if (ds.getUser() && ds.getUser()!.role.szint >= minimumRole) {
+    let rolelvl = ds.getUser()?.szerepkor_elfogadva ? ds.getUser()!.role.szint : 1
+    if (ds.getUser() && rolelvl >= minimumRole) {
         return true;
     }
-    return router.createUrlTree(['/'], { queryParams: { returnUrl: state.url } });
+    return router.createUrlTree(['/']);
 };
