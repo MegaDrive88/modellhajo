@@ -35,6 +35,12 @@
                 >
             </ng-select>
         </div>
+        <div>
+            <label class="form-check-label" style="color: white;">
+                <input class="form-check-input" type="checkbox" name="isJunior" [(ngModel)]="isJunior">
+                Junior nevezés
+            </label>
+        </div>
         
         <button class="blue-button" (click)="enterCompetition()" [disabled]="newCompetitionCategories.length == 0">Nevezés</button>
     </form>

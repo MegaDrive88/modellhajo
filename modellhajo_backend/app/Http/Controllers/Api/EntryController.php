@@ -16,6 +16,7 @@ class EntryController extends Controller
     {
         $assocInput = $request->input('assoc');
         $assoc = $assocInput === null || trim((string) $assocInput) === '' ? null : trim((string) $assocInput);
+        $isJunior = filter_var($request->input('is_junior', false), FILTER_VALIDATE_BOOLEAN);
         $skip = [];
 
         $request->user()->mmsz_id = $request->input('mmszid');
@@ -25,6 +26,7 @@ class EntryController extends Controller
             $alreadyRegistered = CompetitionEntryModel::where('versenyzoid', $request->user()->id)
                 ->where('kategoriaid', $categoryId)
                 ->where('versenyid', $id)
+                ->where('is_junior', $isJunior)
                 ->exists();
 
             if ($alreadyRegistered) {
@@ -37,6 +39,7 @@ class EntryController extends Controller
                 'kategoriaid' => $categoryId,
                 'versenyid' => $id,
                 'egyesulet' => $assoc,
+                'is_junior' => $isJunior ? 1 : 0,
             ]);
         }
 

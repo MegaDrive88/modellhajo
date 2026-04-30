@@ -280,8 +280,12 @@ export class DataService {
     return this.http.patch<any>(`${this.API_URL}/users/${id}/password`, passwordModel, {headers: this.getHeaders()} )
   }
 
-  enterCompetition(id: number, entry: number[], assoc: string | null, mmszid: string){
-    return this.http.post<any>(`${this.API_URL}/competitions/${id}/entries`, {entry: entry, assoc: assoc, mmszid: mmszid}, {headers: this.getHeaders()} )
+  enterCompetition(id: number, entry: number[], assoc: string | null, mmszid: string, isJunior: boolean){
+    return this.http.post<any>(
+      `${this.API_URL}/competitions/${id}/entries`,
+      { entry: entry, assoc: assoc, mmszid: mmszid, is_junior: isJunior },
+      { headers: this.getHeaders() }
+    )
   }
 
   getEntriesByUserId(id: number){

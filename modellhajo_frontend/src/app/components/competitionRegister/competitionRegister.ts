@@ -30,6 +30,7 @@ export class CompetitionRegisterComponent implements OnInit{
   protected associations: Association[] = []
   protected selectedAssoc: string | null = null
   protected mmszid:any
+  protected isJunior = false
   ngOnInit(){
       this.mmszid = this.ds.getUser()?.mmsz_id
       this.selectedAssoc = this.ds.getUser()?.egyesulet ?? null
@@ -62,7 +63,7 @@ export class CompetitionRegisterComponent implements OnInit{
     let user = this.ds.getUser()
     user!.mmsz_id = this.mmszid
     this.ds.setUser(user!)
-    this.ds.enterCompetition(this.competition?.id!, this.newCompetitionCategories, this.selectedAssoc, this.mmszid).subscribe({
+    this.ds.enterCompetition(this.competition?.id!, this.newCompetitionCategories, this.selectedAssoc, this.mmszid, this.isJunior).subscribe({
       next:(data)=>{        
         if(data.skipped.length > 0) Swal.fire({title: `Ön már nevezett ${data.skipped.map((x :any)=>this.competitionCategories.find(y=>y.id == x)?.nev).join(", ")} kategóriá(k)ban${data.delta != 0 ? ", a többiben sikeresen nevezett" : ""}`, theme: 'material-ui-dark', icon: 'warning'})
         else Swal.fire({title: `Sikeresen nevezett a(z) ${this.competition?.nev} versenyre`, theme: 'material-ui-dark', icon: 'success'})
