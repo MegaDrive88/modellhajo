@@ -14,7 +14,7 @@
                 <p>Kategóriák:</p>
                 @for (entry of myEntries[key]; track $index) {
                     <div class="category-wrapper">
-                        {{getCategoryName(entry.kategoriaid)}}
+                        {{getCategoryName(entry.kategoriaid)}}@if(entry.is_junior){ (Junior) }
                         <button [disabled]="getCompById(key)?.nevezesi_hatarido! < today" (click)="cancelEntry(entry.id)" class="btn btn-danger" style="font-size: 80%;">Nevezés törlése</button>
                     </div>
                 }

@@ -224,6 +224,7 @@ class EntryController extends Controller
 
         $assocInput = $request->input('assoc');
         $assoc = $assocInput === null || trim((string) $assocInput) === '' ? null : trim((string) $assocInput);
+        $isJunior = filter_var($request->input('is_junior', false), FILTER_VALIDATE_BOOLEAN);
 
         try {
             CompetitionEntryModel::create([
@@ -232,6 +233,7 @@ class EntryController extends Controller
                 'versenyid' => $id,
                 'egyesulet' => $assoc,
                 'rajtszam' => $validated['number'] ?? null,
+                'is_junior' => $isJunior ? 1 : 0,
             ]);
         } catch (UniqueConstraintViolationException $e) {
             return response()->json([

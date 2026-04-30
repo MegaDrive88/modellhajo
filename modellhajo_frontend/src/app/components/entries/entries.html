@@ -26,6 +26,7 @@
                             </th>
                             <th>Versenyző</th>
                             <th>Egyesület</th>
+                            <th style="text-align: center;">Junior</th>
                             <th style="text-align: center;">Rajtszám</th>
                             <th style="text-align: center;">Csoport</th>
                             <th>
@@ -35,13 +36,14 @@
                                 <button class="btn btn-danger w-100" (click)="deleteAllEntries(comp.id)">Összes törlése</button>
                             </th>
                         </tr>
-                        <tr><td colspan="7"><hr></td></tr>
+                        <tr><td colspan="8"><hr></td></tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let entry of getEntryArray(comp.id.toString()); let i = index">
                             <td>{{getCategoryName(entry.kategoriaid)}}</td>
                             <td>{{getCompetitorName(entry.versenyzoid)}}</td>
                             <td>{{getAssociationName(entry.egyesulet)}}</td>
+                            <td style="text-align: center;">{{entry.is_junior ? '✓' : ''}}</td>
                             <td>
                                 <input type="number" min="1" class="form-control" [(ngModel)]="entryNumbers[entry.id]">
                             </td>
@@ -58,7 +60,7 @@
                         @if(getEntryArray(comp.id.toString()).length == 0){
                             <tr><td>A versenyre még nem érkezett nevezés</td></tr>
                         }
-                        <tr><td colspan="7"><hr></td></tr>
+                        <tr><td colspan="8"><hr></td></tr>
                         <tr>
                             <td>
                                 <ng-select
@@ -94,6 +96,12 @@
                                 appendTo="body"
                                 >
                                 </ng-select>
+                            </td>
+                            <td style="text-align: center;">
+                                <label for="isjunior_check">
+                                    <input type="checkbox" class="form-check-input" [(ngModel)]="newEntry.is_junior" id="isjunior_check">
+                                    Junior
+                                </label>
                             </td>
                             <td>
                                 <input type="number" min="1" class="form-control" [(ngModel)]="newEntry.number">

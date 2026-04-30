@@ -33,7 +33,7 @@ export class EntriesComponent implements OnInit {
   protected selectedCategory: Record<string, number | null> = {}
   protected compCategories: Record<string, Category[]> = {}
 
-  protected newEntry: { competitor: number | null; category: number | null; assoc: string | null; number: number | null } = { competitor: null, category: null, assoc: null, number: null }
+  protected newEntry: { competitor: number | null; category: number | null; assoc: string | null; number: number | null; is_junior: boolean } = { competitor: null, category: null, assoc: null, number: null, is_junior: false }
   ngOnInit(): void {
     forkJoin({
       competitions: this.ds.getUserCompetitions(),
@@ -92,14 +92,14 @@ export class EntriesComponent implements OnInit {
   entrySort(arr: CompetitionEntry[]){
     if(arr.length == 1) return arr
     arr.sort((a, b) => {
-        const categoryA = this.categories.find(x=>x.id == a.kategoriaid)!.nev;
-        const categoryB = this.categories.find(x=>x.id == b.kategoriaid)!.nev;
+        const categoryA = this.categories.find(x=>x.id == a.kategoriaid)?.nev ?? '';
+        const categoryB = this.categories.find(x=>x.id == b.kategoriaid)?.nev ?? '';
         
         if (categoryA > categoryB) return 1;
         if (categoryA < categoryB) return -1;
 
-        const nameA = this.competitors.find(x=> x.id == a.versenyzoid)!.megjeleno_nev;
-        const nameB = this.competitors.find(x=> x.id == b.versenyzoid)!.megjeleno_nev;
+        const nameA = this.competitors.find(x=> x.id == a.versenyzoid)?.megjeleno_nev ?? '';
+        const nameB = this.competitors.find(x=> x.id == b.versenyzoid)?.megjeleno_nev ?? '';
 
         if (nameA < nameB) return -1;
         if (nameA > nameB) return 1;
@@ -145,9 +145,10 @@ export class EntriesComponent implements OnInit {
   }
 
   deleteEntry(entry: CompetitionEntry){
+    const juniorSuffix = entry.is_junior ? " (junior)" : ""
     Swal.fire({
       title: "Biztosan törli ezt a nevezést?",
-      text: `${this.getCompetitorName(entry.versenyzoid)} nevezése ${this.getCategoryName(entry.kategoriaid)} kategóriában törlődni fog.`,
+      text: `${this.getCompetitorName(entry.versenyzoid)} nevezése ${this.getCategoryName(entry.kategoriaid)}${juniorSuffix} kategóriában törlődni fog.`,
       theme: "material-ui-dark",
       icon: "question",
       showCancelButton: true,
@@ -161,7 +162,7 @@ export class EntriesComponent implements OnInit {
       this.ds.cancelEntry(entry.id).subscribe({
         next: async () => {
           await Swal.fire({
-            title: `${this.getCompetitorName(entry.versenyzoid)} nevezése ${this.getCategoryName(entry.kategoriaid)} kategóriában sikeresen visszavonva`,
+            title: `${this.getCompetitorName(entry.versenyzoid)} nevezése ${this.getCategoryName(entry.kategoriaid)}${juniorSuffix} kategóriában sikeresen visszavonva`,
             theme: "material-ui-dark",
             icon: "success"
           })

@@ -144,7 +144,7 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'competitors' => UserModel::whereHas('role', function ($query) {
-                $query->where('szint', '<=', 2)->where('szint', '>=', 1);
+                $query->where('szint', '>=', 1);
             })->get(),
         ]);
     }
