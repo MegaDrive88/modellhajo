@@ -21,7 +21,7 @@ imports: [
         password: config.get<string>('DB_PASSWORD'),
         database: config.get<string>('DB_DATABASE'),
         autoLoadEntities: true,
-        synchronize: config.get<boolean>('DB_SYNCHRONIZE'),
+        synchronize: false,
         logging: config.get<boolean>('DB_LOGGING'),
       }),
     }),
