@@ -139,6 +139,5 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - email, ha valaki regisztral/nevez
 - mmszid csak opcionalis
 - csoport -> futam-> eredmeny -> vegeredmeny
-- nevezesnel junior lehetoseg - unique keyt atirni
 - csoport excelbe?
 */
