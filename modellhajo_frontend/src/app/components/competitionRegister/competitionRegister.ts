@@ -44,6 +44,8 @@ export class CompetitionRegisterComponent implements OnInit{
       .subscribe({
         next: ({ competition, categories, associations }) => {
           if (competition.success) this.competition = competition.data;
+          if (new Date(this.competition?.nevezesi_hatarido as string) < new Date()) 
+            this.ds.router.navigate(["/"])
           categories.categories = categories.categories.filter(x => x.versenyid == this.competition?.id);
           this.competitionCategories = categories.categories.map(x => x.category);
           this.associations = associations.associations

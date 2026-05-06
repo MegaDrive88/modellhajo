@@ -28,7 +28,7 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
     protected ds = inject(DataService)
     private route = inject(ActivatedRoute)
     private destroyRef = inject(DestroyRef)
-    protected today = new Date().toISOString()
+    protected today = new Date()
     @ViewChild("map",{ static: false }) map!:ElementRef<HTMLDivElement>
     private leafletMap!:L.Map
     private compLoaded$ = new Subject<Competition>
@@ -52,6 +52,10 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
                 next:({ competition, entries, assocsAndCats, competitors })=>{
                     if (competition.success) {
                         this.competition = competition.data
+                        this.competition.kezdet = new Date(this.competition.kezdet)
+                        this.competition.veg = new Date(this.competition.veg)
+                        this.competition.megjelenik = new Date(this.competition.megjelenik)
+                        this.competition.nevezesi_hatarido = new Date(this.competition.nevezesi_hatarido)
                         this.compLoaded$.next(competition.data)
                     }
                     this.entriesByCompetition = Object.values(entries.entries ?? {}).flat()
@@ -138,5 +142,5 @@ export class ShowCompetitonComponent implements OnInit, AfterViewInit {
 - tovabbi backend rework
 - email, ha valaki regisztral/nevez
 - mmszid csak opcionalis
-- csoport -> futam-> eredmeny -> vegeredmeny
+-  futam-> eredmeny -> vegeredmeny
 */
