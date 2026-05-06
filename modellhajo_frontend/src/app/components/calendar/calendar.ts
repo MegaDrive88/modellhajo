@@ -6,7 +6,7 @@ import { DatePipe, NgClass } from '@angular/common';
 import { DataService } from '../../services/data.service';
 import { forkJoin } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -19,12 +19,15 @@ import Swal from 'sweetalert2';
   ]})
 export class CalendarComponent {
   protected ds = inject(DataService)
+  private route = inject(ActivatedRoute)
   private destroyRef = inject(DestroyRef)
   protected competitions!: Competition[]
   protected competitionCategories!: CompetitionCategory[]
   protected entryCounts: Record<number, Record<number, number>> = {}
   protected today = new Date()
+  protected openOnly = false
   ngOnInit(): void {
+    this.openOnly = this.route.snapshot.queryParamMap.get('openOnly') === '1'
     forkJoin({
       compCats: this.ds.getCompetitionCategories(),
       allComps: this.ds.getAllCompetitions()
@@ -45,6 +48,10 @@ export class CalendarComponent {
             comp.nevezesi_hatarido = new Date(comp.nevezesi_hatarido)
           }
           this.competitions = this.competitions.filter(x => x.megjelenik <= this.today)
+
+          if (this.openOnly) {
+            this.competitions = this.competitions.filter(x => x.nevezesi_hatarido >= this.today)
+          }
 
           const entryRequests = this.competitions.map(comp => this.ds.getEntriesByCompetitionId(comp.id))
           if (entryRequests.length === 0) {

@@ -44,7 +44,11 @@
                 </a>
                 }
                 @empty {
-                    Nincs közelgő verseny
+                    @if (openOnly) {
+                        Jelenleg nem lehet egyetlen versenyre sem nevezni.
+                    } @else {
+                        Nincs közelgő verseny
+                    }
                 }
             </div>
         </div>

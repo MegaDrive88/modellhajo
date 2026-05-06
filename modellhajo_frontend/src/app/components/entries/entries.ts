@@ -192,7 +192,7 @@ export class EntriesComponent implements OnInit {
     return parsed
   }
 
-  private normalizeGroupValue(value: string | number | null | undefined, isJunior: boolean): string | null | undefined {
+  private normalizeGroupValue(value: string | number | null | undefined, isJuniorEntry: boolean): string | null | undefined {
     if (value === null || value === undefined || value === '') {
       return null
     }
@@ -203,7 +203,8 @@ export class EntriesComponent implements OnInit {
     }
 
     const upper = trimmed.toUpperCase()
-    const numericPart = upper.startsWith('J') ? upper.slice(1) : upper
+    const hasJuniorPrefix = upper.startsWith('J')
+    const numericPart = hasJuniorPrefix ? upper.slice(1) : upper
 
     if (!/^[0-9]+$/.test(numericPart)) {
       return undefined
@@ -215,7 +216,10 @@ export class EntriesComponent implements OnInit {
     }
 
     const normalized = String(numericValue)
-    return isJunior ? `J${normalized}` : normalized
+    if (!isJuniorEntry && hasJuniorPrefix) {
+      return undefined
+    }
+    return hasJuniorPrefix ? `J${normalized}` : normalized
   }
 
   private formatGroupLabel(value: string, isJunior: boolean): string {
@@ -227,7 +231,10 @@ export class EntriesComponent implements OnInit {
 
   getGroupOptions(compId: number, isJunior: boolean): GroupOption[] {
     const options = this.compGroups[compId.toString()] ?? []
-    return options.filter(option => option.junior === isJunior)
+    if (isJunior) {
+      return options
+    }
+    return options.filter(option => !option.junior)
   }
 
   addGroupTag = (name: string, compId: number, isJunior: boolean) => {
@@ -236,11 +243,13 @@ export class EntriesComponent implements OnInit {
       return null
     }
 
-    const key = `${isJunior ? 'J' : 'S'}:${normalized}`
+    const isJuniorGroup = normalized.toUpperCase().startsWith('J')
+
+    const key = `${isJuniorGroup ? 'J' : 'S'}:${normalized}`
     const option: GroupOption = {
       value: normalized,
-      label: this.formatGroupLabel(normalized, isJunior),
-      junior: isJunior
+      label: this.formatGroupLabel(normalized, isJuniorGroup),
+      junior: isJuniorGroup
     }
 
     if (!this.compGroups[compId.toString()]) {

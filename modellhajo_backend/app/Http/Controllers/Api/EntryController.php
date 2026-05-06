@@ -41,6 +41,7 @@ class EntryController extends Controller
                 'kategoriaid' => $categoryId,
                 'versenyid' => $id,
                 'egyesulet' => $assoc,
+                'csoportid' => $this->resolveHighestGroupId($id, (int) $categoryId, $isJunior),
                 'is_junior' => $isJunior ? 1 : 0,
             ]);
         }
@@ -140,6 +141,10 @@ class EntryController extends Controller
         ]);
 
         try {
+            if ($request->has('sorszam')) {
+                $this->ensureGroupSelection($validated['sorszam'] ?? null, (bool) $entry->is_junior);
+            }
+
             DB::transaction(function () use ($entry, $validated, $request): void {
                 $entry->rajtszam = $validated['rajtszam'] ?? null;
 
@@ -155,6 +160,11 @@ class EntryController extends Controller
 
                 $entry->save();
             });
+        } catch (\InvalidArgumentException $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 422);
         } catch (UniqueConstraintViolationException $e) {
             return response()->json([
                 'success' => false,
@@ -202,6 +212,7 @@ class EntryController extends Controller
                     $entry->rajtszam = $entryData['rajtszam'] ?? null;
 
                     if (array_key_exists('sorszam', $entryData)) {
+                        $this->ensureGroupSelection($entryData['sorszam'] ?? null, (bool) $entry->is_junior);
                         $sorszam = $entryData['sorszam'] ?? null;
                         $entry->csoportid = $this->resolveGroupId(
                             $entry->versenyid,
@@ -214,6 +225,11 @@ class EntryController extends Controller
                     $entry->save();
                 }
             });
+        } catch (\InvalidArgumentException $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 422);
         } catch (UniqueConstraintViolationException $e) {
             return response()->json([
                 'success' => false,
@@ -226,27 +242,6 @@ class EntryController extends Controller
         ]);
     }
 
-    public function deleteAllEntries(int $id, Request $request): JsonResponse
-    {
-        $competition = CompetitionModel::where('id', $id)
-            ->where('letrehozo_id', $request->user()->id)
-            ->first();
-
-        if (!$competition) {
-            return response()->json([
-                'success' => false,
-                'error' => 'NO_SUCH_COMPETITION',
-            ], 404);
-        }
-
-        DB::transaction(function () use ($id): void {
-            CompetitionEntryModel::where('versenyid', '=', $id)->delete();
-        });
-
-        return response()->json([
-            'success' => true,
-        ]);
-    }
 
     public function manuallyEnterCompetitor(int $id, Request $request): JsonResponse
     {
@@ -260,20 +255,24 @@ class EntryController extends Controller
         $isJunior = filter_var($request->input('is_junior', false), FILTER_VALIDATE_BOOLEAN);
 
         try {
+            if ($request->has('sorszam')) {
+                $this->ensureGroupSelection($validated['sorszam'] ?? null, $isJunior);
+            }
+
             CompetitionEntryModel::create([
                 'kategoriaid' => $request->input('category'),
                 'versenyzoid' => $request->input('competitor'),
                 'versenyid' => $id,
                 'egyesulet' => $assoc,
                 'rajtszam' => $validated['number'] ?? null,
-                'csoportid' => $this->resolveGroupId(
-                    $id,
-                    (int) $request->input('category'),
-                    $validated['sorszam'] ?? null,
-                    $isJunior
-                ),
+                'csoportid' => $this->resolveHighestGroupId($id, (int) $request->input('category'), $isJunior),
                 'is_junior' => $isJunior ? 1 : 0,
             ]);
+        } catch (\InvalidArgumentException $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 422);
         } catch (UniqueConstraintViolationException $e) {
             return response()->json([
                 'success' => false,
@@ -334,25 +333,66 @@ class EntryController extends Controller
         }
     }
 
-    private function resolveGroupId(int $competitionId, int $categoryId, ?string $sorszam, bool $isJunior): ?int
+    private function resolveGroupId(int $competitionId, int $categoryId, ?string $sorszam, bool $isJuniorEntry): ?int
     {
-        $normalized = $this->normalizeGroupSorszam($sorszam, $isJunior);
+        $parsed = $this->parseGroupInput($sorszam);
 
-        if ($normalized === null) {
+        if ($parsed === null) {
             return null;
+        }
+
+        if (!$isJuniorEntry && $parsed['isJunior']) {
+            throw new \InvalidArgumentException('JUNIOR_GROUP_NOT_ALLOWED');
         }
 
         $group = GroupModel::firstOrCreate([
             'versenyid' => $competitionId,
             'kategoriaid' => $categoryId,
-            'sorszam' => $normalized,
-            'junior' => $isJunior ? 1 : 0,
+            'sorszam' => $parsed['normalized'],
+            'junior' => $parsed['isJunior'] ? 1 : 0,
         ]);
 
         return $group->id;
     }
 
-    private function normalizeGroupSorszam(?string $sorszam, bool $isJunior): ?string
+    private function resolveHighestGroupId(int $competitionId, int $categoryId, bool $isJunior): int
+    {
+        $groups = GroupModel::where('versenyid', $competitionId)
+            ->where('kategoriaid', $categoryId)
+            ->where('junior', $isJunior ? 1 : 0)
+            ->get(['id', 'sorszam']);
+
+        $maxNumber = null;
+        $maxId = null;
+
+        foreach ($groups as $group) {
+            $number = $this->parseGroupNumeric($group->sorszam);
+            if ($number === null) {
+                continue;
+            }
+
+            if ($maxNumber === null || $number > $maxNumber) {
+                $maxNumber = $number;
+                $maxId = $group->id;
+            }
+        }
+
+        if ($maxId !== null) {
+            return (int) $maxId;
+        }
+
+        $sorszam = $isJunior ? 'J1' : '1';
+        $group = GroupModel::firstOrCreate([
+            'versenyid' => $competitionId,
+            'kategoriaid' => $categoryId,
+            'sorszam' => $sorszam,
+            'junior' => $isJunior ? 1 : 0,
+        ]);
+
+        return (int) $group->id;
+    }
+
+    private function parseGroupNumeric(?string $sorszam): ?int
     {
         if ($sorszam === null) {
             return null;
@@ -375,8 +415,57 @@ class EntryController extends Controller
             return null;
         }
 
-        $normalized = (string) $numericValue;
+        return $numericValue;
+    }
 
-        return $isJunior ? ('J' . $normalized) : $normalized;
+    private function parseGroupInput(?string $sorszam): ?array
+    {
+        if ($sorszam === null) {
+            return null;
+        }
+
+        $trimmed = trim($sorszam);
+        if ($trimmed === '') {
+            return null;
+        }
+
+        $upper = strtoupper($trimmed);
+        $isJunior = str_starts_with($upper, 'J');
+        $numericPart = $isJunior ? substr($upper, 1) : $upper;
+
+        if ($numericPart === '' || !ctype_digit($numericPart)) {
+            return null;
+        }
+
+        $numericValue = (int) $numericPart;
+        if ($numericValue < 1) {
+            return null;
+        }
+
+        $normalized = (string) $numericValue;
+        if ($isJunior) {
+            $normalized = 'J' . $normalized;
+        }
+
+        return [
+            'normalized' => $normalized,
+            'isJunior' => $isJunior,
+        ];
+    }
+
+    private function ensureGroupSelection(?string $sorszam, bool $isJuniorEntry): void
+    {
+        if ($sorszam === null || trim($sorszam) === '') {
+            return;
+        }
+
+        $parsed = $this->parseGroupInput($sorszam);
+        if ($parsed === null) {
+            throw new \InvalidArgumentException('INVALID_GROUP');
+        }
+
+        if (!$isJuniorEntry && $parsed['isJunior']) {
+            throw new \InvalidArgumentException('JUNIOR_GROUP_NOT_ALLOWED');
+        }
     }
 }
