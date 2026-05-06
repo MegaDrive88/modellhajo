@@ -141,7 +141,7 @@
                         <span>{{comp.kezdet | date:"y.MM.dd, hh:mm"}} - {{comp.veg | date:"y.MM.dd, hh:mm"}}</span>
                         <ul style="display: grid; grid-template-columns: 1fr 1fr 1fr; margin-top: 5px;">
                             @for (cat of comp.categories; track cat.id) {
-                                <li>{{cat.nev}}</li>
+                                <li>{{cat.nev}} ({{getEntryCount(comp.id, cat.id)}} fő)</li>
                             }
                         </ul>
                         <div style="margin-left: auto; margin-top: auto; display: flex; gap: 10px;">

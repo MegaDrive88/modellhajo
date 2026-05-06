@@ -11,13 +11,30 @@
             }
             <div class="comp-card-data" style="overflow: auto;">
                 <h3 style="color: black;">{{getCompById(key)?.nev}}</h3>
-                <p>Kategóriák:</p>
-                @for (entry of myEntries[key]; track $index) {
-                    <div class="category-wrapper">
-                        {{getCategoryName(entry.kategoriaid)}}@if(entry.is_junior){ (Junior) }
-                        <button [disabled]="getCompById(key)?.nevezesi_hatarido! < today" (click)="cancelEntry(entry.id)" class="btn btn-danger" style="font-size: 80%;">Nevezés törlése</button>
-                    </div>
-                }
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Kategória</th>
+                            <th>Junior</th>
+                            <th>Rajtszám</th>
+                            <th>Csoport</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (entry of myEntries[key]; track $index) {
+                            <tr>
+                                <td>{{getCategoryName(entry.kategoriaid)}}</td>
+                                <td>@if(entry.is_junior){ ✓ }@else{ - }</td>
+                                <td>{{entry.rajtszam ?? '-'}}</td>
+                                <td>{{entry.group?.sorszam ?? '-'}}</td>
+                                <td>
+                                    <button [disabled]="getCompById(key)?.nevezesi_hatarido! < today" (click)="cancelEntry(entry.id)" class="btn btn-danger" style="font-size: 80%;">Nevezés törlése</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
     }@empty {

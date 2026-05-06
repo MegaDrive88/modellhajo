@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AssociationModel;
 use App\Models\CompetitionEntryModel;
 use App\Models\CompetitionModel;
+use App\Models\GroupModel;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,8 +16,8 @@ class EntryController extends Controller
 {
     public function enterCompetition(int $id, Request $request): JsonResponse
     {
-        $assocInput = $request->input('assoc');
-        $assoc = $assocInput === null || trim((string) $assocInput) === '' ? null : trim((string) $assocInput);
+        $assoc = $this->normalizeAssociation($request->input('assoc'));
+        $this->storeAssociationIfNew($assoc);
         $isJunior = filter_var($request->input('is_junior', false), FILTER_VALIDATE_BOOLEAN);
         $skip = [];
 
@@ -52,7 +54,8 @@ class EntryController extends Controller
 
     public function byUser(int $id): JsonResponse
     {
-        $entries = CompetitionEntryModel::where('versenyzoid', $id)
+        $entries = CompetitionEntryModel::with('group')
+            ->where('versenyzoid', $id)
             ->orderBy('versenyid', 'desc')
             ->get()
             ->groupBy('versenyid');
@@ -69,12 +72,14 @@ class EntryController extends Controller
         if ((int) ($request->user()->role->szint ?? 0) >= 3){
             return response()->json([
                 'success' => true,
-                'entries' => CompetitionEntryModel::orderBy('versenyid', 'desc')
+                'entries' => CompetitionEntryModel::with('group')
+                    ->orderBy('versenyid', 'desc')
                     ->get()
                     ->groupBy('versenyid'),
             ]);
         }
-        $entries = CompetitionEntryModel::whereHas('competition', function ($query) use ($request) {
+        $entries = CompetitionEntryModel::with('group')
+            ->whereHas('competition', function ($query) use ($request) {
             $query->where('letrehozo_id', $request->user()->id);
         })
             ->orderBy('versenyid', 'desc')
@@ -89,7 +94,8 @@ class EntryController extends Controller
 
     public function byCompetition(int $id): JsonResponse
     {
-        $entries = CompetitionEntryModel::where('versenyid', $id)
+        $entries = CompetitionEntryModel::with('group')
+            ->where('versenyid', $id)
             ->get()
             ->groupBy('versenyid');
 
@@ -130,11 +136,25 @@ class EntryController extends Controller
 
         $validated = $request->validate([
             'rajtszam' => ['nullable', 'integer', 'min:1'],
+            'sorszam' => ['nullable', 'string', 'regex:/^J?[1-9][0-9]*$/i'],
         ]);
 
         try {
-            $entry->rajtszam = $validated['rajtszam'] ?? null;
-            $entry->save();
+            DB::transaction(function () use ($entry, $validated, $request): void {
+                $entry->rajtszam = $validated['rajtszam'] ?? null;
+
+                if ($request->has('sorszam')) {
+                    $sorszam = $validated['sorszam'] ?? null;
+                    $entry->csoportid = $this->resolveGroupId(
+                        $entry->versenyid,
+                        $entry->kategoriaid,
+                        $sorszam,
+                        (bool) $entry->is_junior
+                    );
+                }
+
+                $entry->save();
+            });
         } catch (UniqueConstraintViolationException $e) {
             return response()->json([
                 'success' => false,
@@ -165,6 +185,7 @@ class EntryController extends Controller
             'entries' => ['required', 'array'],
             'entries.*.id' => ['required', 'integer'],
             'entries.*.rajtszam' => ['nullable', 'integer', 'min:1'],
+            'entries.*.sorszam' => ['nullable', 'string', 'regex:/^J?[1-9][0-9]*$/i'],
         ]);
 
         try {
@@ -179,6 +200,17 @@ class EntryController extends Controller
                     }
 
                     $entry->rajtszam = $entryData['rajtszam'] ?? null;
+
+                    if (array_key_exists('sorszam', $entryData)) {
+                        $sorszam = $entryData['sorszam'] ?? null;
+                        $entry->csoportid = $this->resolveGroupId(
+                            $entry->versenyid,
+                            $entry->kategoriaid,
+                            $sorszam,
+                            (bool) $entry->is_junior
+                        );
+                    }
+
                     $entry->save();
                 }
             });
@@ -220,10 +252,11 @@ class EntryController extends Controller
     {
         $validated = $request->validate([
             'number' => ['nullable', 'integer', 'min:1'],
+            'sorszam' => ['nullable', 'string', 'regex:/^J?[1-9][0-9]*$/i'],
         ]);
 
-        $assocInput = $request->input('assoc');
-        $assoc = $assocInput === null || trim((string) $assocInput) === '' ? null : trim((string) $assocInput);
+        $assoc = $this->normalizeAssociation($request->input('assoc'));
+        $this->storeAssociationIfNew($assoc);
         $isJunior = filter_var($request->input('is_junior', false), FILTER_VALIDATE_BOOLEAN);
 
         try {
@@ -233,6 +266,12 @@ class EntryController extends Controller
                 'versenyid' => $id,
                 'egyesulet' => $assoc,
                 'rajtszam' => $validated['number'] ?? null,
+                'csoportid' => $this->resolveGroupId(
+                    $id,
+                    (int) $request->input('category'),
+                    $validated['sorszam'] ?? null,
+                    $isJunior
+                ),
                 'is_junior' => $isJunior ? 1 : 0,
             ]);
         } catch (UniqueConstraintViolationException $e) {
@@ -267,5 +306,77 @@ class EntryController extends Controller
             'type' => 'UNIQUE_CONSTRAINT',
             'message' => 'Egyedi megszorítás sérült.',
         ];
+    }
+
+    private function normalizeAssociation(mixed $assocInput): ?string
+    {
+        if ($assocInput === null) {
+            return null;
+        }
+
+        $assoc = trim((string) $assocInput);
+
+        return $assoc === '' ? null : $assoc;
+    }
+
+    private function storeAssociationIfNew(?string $assoc): void
+    {
+        if ($assoc === null) {
+            return;
+        }
+
+        $record = AssociationModel::firstOrCreate([
+            'nev' => $assoc,
+        ]);
+
+        if ($record->wasRecentlyCreated) {
+            cache()->forget('associations');
+        }
+    }
+
+    private function resolveGroupId(int $competitionId, int $categoryId, ?string $sorszam, bool $isJunior): ?int
+    {
+        $normalized = $this->normalizeGroupSorszam($sorszam, $isJunior);
+
+        if ($normalized === null) {
+            return null;
+        }
+
+        $group = GroupModel::firstOrCreate([
+            'versenyid' => $competitionId,
+            'kategoriaid' => $categoryId,
+            'sorszam' => $normalized,
+            'junior' => $isJunior ? 1 : 0,
+        ]);
+
+        return $group->id;
+    }
+
+    private function normalizeGroupSorszam(?string $sorszam, bool $isJunior): ?string
+    {
+        if ($sorszam === null) {
+            return null;
+        }
+
+        $trimmed = trim($sorszam);
+        if ($trimmed === '') {
+            return null;
+        }
+
+        $upper = strtoupper($trimmed);
+        $numericPart = str_starts_with($upper, 'J') ? substr($upper, 1) : $upper;
+
+        if ($numericPart === '' || !ctype_digit($numericPart)) {
+            return null;
+        }
+
+        $numericValue = (int) $numericPart;
+        if ($numericValue < 1) {
+            return null;
+        }
+
+        $normalized = (string) $numericValue;
+
+        return $isJunior ? ('J' . $normalized) : $normalized;
     }
 }

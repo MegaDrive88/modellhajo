@@ -304,7 +304,7 @@ export class DataService {
     return this.http.delete<BasicResponse>(`${this.API_URL}/deleteAllEntries/${compId}`, {headers: this.getHeaders()})
   }
 
-  bulkUpdateEntryNumbers(compId: number, entries: { id: number; rajtszam: number | null }[]){
+  bulkUpdateEntryNumbers(compId: number, entries: { id: number; rajtszam: number | null; sorszam?: string | null }[]){
     return this.http.patch<BasicResponse>(
       `${this.API_URL}/bulkUpdateEntryNumbers/${compId}`,
       { entries },
@@ -312,10 +312,10 @@ export class DataService {
     )
   }
 
-  updateEntryNumber(id: number, rajtszam: number | null){
+  updateEntryNumber(id: number, rajtszam: number | null, sorszam?: string | null){
     return this.http.patch<BasicResponse>(
       `${this.API_URL}/entries/${id}`,
-      { rajtszam },
+      { rajtszam, sorszam },
       { headers: this.getHeaders() }
     )
   }

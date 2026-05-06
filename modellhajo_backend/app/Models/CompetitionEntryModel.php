@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\CompetitionModel;
+use App\Models\GroupModel;
 
 
 class CompetitionEntryModel extends Model
@@ -33,5 +34,10 @@ class CompetitionEntryModel extends Model
     public function category()
     {
         return $this->belongsTo(CategoryModel::class, 'kategoriaid', 'id');
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(GroupModel::class, 'csoportid', 'id');
     }
 }

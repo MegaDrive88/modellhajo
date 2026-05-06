@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AssociationModel;
 use App\Models\MenuItemModel;
 use App\Models\UserModel;
 use Illuminate\Http\JsonResponse;
@@ -52,8 +53,9 @@ class UserController extends Controller
             $user->mmsz_id = $request->input('mmsz_id');
         }
 
-        $egyesulet = $request->input('egyesulet');
-        $user->egyesulet = ($egyesulet === null || $egyesulet === '') ? null : $egyesulet;
+        $assoc = $this->normalizeAssociation($request->input('egyesulet'));
+        $this->storeAssociationIfNew($assoc);
+        $user->egyesulet = $assoc;
 
         try {
             $user->save();
@@ -147,5 +149,31 @@ class UserController extends Controller
                 $query->where('szint', '>=', 1);
             })->get(),
         ]);
+    }
+
+    private function normalizeAssociation(mixed $assocInput): ?string
+    {
+        if ($assocInput === null) {
+            return null;
+        }
+
+        $assoc = trim((string) $assocInput);
+
+        return $assoc === '' ? null : $assoc;
+    }
+
+    private function storeAssociationIfNew(?string $assoc): void
+    {
+        if ($assoc === null) {
+            return;
+        }
+
+        $record = AssociationModel::firstOrCreate([
+            'nev' => $assoc,
+        ]);
+
+        if ($record->wasRecentlyCreated) {
+            cache()->forget('associations');
+        }
     }
 }

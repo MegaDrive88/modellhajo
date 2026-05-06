@@ -22,6 +22,7 @@ export class CalendarComponent {
   private destroyRef = inject(DestroyRef)
   protected competitions!: Competition[]
   protected competitionCategories!: CompetitionCategory[]
+  protected entryCounts: Record<number, Record<number, number>> = {}
   protected today = new Date()
   ngOnInit(): void {
     forkJoin({
@@ -44,6 +45,32 @@ export class CalendarComponent {
             comp.nevezesi_hatarido = new Date(comp.nevezesi_hatarido)
           }
           this.competitions = this.competitions.filter(x => x.megjelenik <= this.today)
+
+          const entryRequests = this.competitions.map(comp => this.ds.getEntriesByCompetitionId(comp.id))
+          if (entryRequests.length === 0) {
+            this.entryCounts = {}
+            return
+          }
+
+          forkJoin(entryRequests).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+            next: (entriesResponses) => {
+              const counts: Record<number, Record<number, number>> = {}
+              entriesResponses.forEach((entriesResponse, index) => {
+                const compId = this.competitions[index].id
+                const compEntries = entriesResponse.entries?.[compId.toString()] ?? []
+                const compCounts: Record<number, number> = {}
+                for (const entry of compEntries) {
+                  compCounts[entry.kategoriaid] = (compCounts[entry.kategoriaid] ?? 0) + 1
+                }
+                counts[compId] = compCounts
+              })
+              this.entryCounts = counts
+            },
+            error: (err) => {
+              console.error('Failed to load entry counts', err)
+              this.entryCounts = {}
+            }
+          })
         }
       },
       error: (err) => {
@@ -51,5 +78,9 @@ export class CalendarComponent {
         Swal.fire({title: 'Hiba történt a versenyek betöltésekor.', theme: 'material-ui-dark', icon: 'error'})
       }
     })
+  }
+
+  getEntryCount(compId: number, categoryId: number): number {
+    return this.entryCounts[compId]?.[categoryId] ?? 0
   }
 }

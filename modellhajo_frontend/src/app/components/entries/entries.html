@@ -24,16 +24,26 @@
                                         }
                                 </select>
                             </th>
-                            <th>Versenyző</th>
+                            <th>
+                                <select class="form-select" [(ngModel)]="selectedCompetitor[comp.id]" name="competitor-{{comp.id}}">
+                                        <option [ngValue]="-1">Összes versenyző</option>
+                                        @for (competitor of compCompetitors[comp.id]; track competitor.id) {
+                                            <option [ngValue]="competitor.id">{{competitor.megjeleno_nev}}</option>
+                                        }
+                                </select>
+                            </th>
                             <th>Egyesület</th>
-                            <th style="text-align: center;">Junior</th>
+                            <th>
+                                <select class="form-select" [(ngModel)]="selectedJunior[comp.id]" name="junior-{{comp.id}}">
+                                        <option [ngValue]="-1">Összes korosztály</option>
+                                        <option [ngValue]="1">Csak junior</option>
+                                        <option [ngValue]="0">Csak senior</option>
+                                </select>
+                            </th>
                             <th style="text-align: center;">Rajtszám</th>
                             <th style="text-align: center;">Csoport</th>
-                            <th>
+                            <th colspan="2">
                                 <button class="btn btn-primary w-100" (click)="saveAllEntries(comp.id)">Összes mentése</button>
-                            </th>
-                            <th>
-                                <button class="btn btn-danger w-100" (click)="deleteAllEntries(comp.id)">Összes törlése</button>
                             </th>
                         </tr>
                         <tr><td colspan="8"><hr></td></tr>
@@ -43,15 +53,25 @@
                             <td>{{getCategoryName(entry.kategoriaid)}}</td>
                             <td>{{getCompetitorName(entry.versenyzoid)}}</td>
                             <td>{{getAssociationName(entry.egyesulet)}}</td>
-                            <td style="text-align: center;">{{entry.is_junior ? '✓' : ''}}</td>
+                            <td style="text-align: center;">{{entry.is_junior ? 'Junior' : 'Senior'}}</td>
                             <td>
                                 <input type="number" min="1" class="form-control" [(ngModel)]="entryNumbers[entry.id]">
                             </td>
                             <td>
-                                <input type="number" min="1" class="form-control" value="1">
+                                <ng-select
+                                [items]="getGroupOptions(comp.id, entry.is_junior)"
+                                bindLabel="label"
+                                bindValue="value"
+                                [addTag]="getGroupTagHandler(comp.id, entry.is_junior)"
+                                [clearable]="true"
+                                placeholder="Csoport"
+                                [(ngModel)]="entryGroups[entry.id]"
+                                appendTo="body"
+                                >
+                                </ng-select>
                             </td>
                             <td>
-                                <button class="btn btn-primary py-0 w-100" (click)="updateNumber(entry.id)">Mentés</button>
+                                <button class="btn btn-primary py-0 w-100" (click)="updateNumber(entry)">Mentés</button>
                             </td>
                             <td>
                                 <button class="btn btn-danger py-0 w-100" (click)="deleteEntry(entry)">Törlés</button>
@@ -107,7 +127,17 @@
                                 <input type="number" min="1" class="form-control" [(ngModel)]="newEntry.number">
                             </td>
                             <td>
-                                <input type="number" min="1" class="form-control">
+                                <ng-select
+                                [items]="getGroupOptions(comp.id, newEntry.is_junior)"
+                                bindLabel="label"
+                                bindValue="value"
+                                [addTag]="getGroupTagHandler(comp.id, newEntry.is_junior)"
+                                [clearable]="true"
+                                placeholder="Csoport"
+                                [(ngModel)]="newEntry.sorszam"
+                                appendTo="body"
+                                >
+                                </ng-select>
                             </td>
                             <td colspan="2">
                                 <button class="btn btn-primary w-100 py-1" (click)="createEntry(comp.id)">Felvétel</button>

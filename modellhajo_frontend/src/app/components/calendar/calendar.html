@@ -30,7 +30,7 @@
                             <ul style="column-count: 3;">
                                 @for (cat of comp.categories; track cat.id) {
                                     <li>
-                                        {{cat.nev}}
+                                        {{cat.nev}} ({{getEntryCount(comp.id, cat.id)}} fő)
                                     </li>
                                 }
                             </ul>

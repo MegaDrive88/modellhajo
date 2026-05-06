@@ -1,3 +1,5 @@
+import Group from './group.interface';
+
 export default interface CompetitionEntry{
     id:number,
     versenyid:number,
@@ -7,5 +9,6 @@ export default interface CompetitionEntry{
     rajtszam: number|null,
     is_junior: boolean,
     pontszam: null|number,
-    csoportid: null|number
+    csoportid: null|number,
+    group?: Group | null
 }

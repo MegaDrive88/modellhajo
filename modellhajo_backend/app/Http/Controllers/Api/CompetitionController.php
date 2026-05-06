@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AssociationModel;
 use App\Models\CompetitionCategoryModel;
 use App\Models\CompetitionEntryModel;
 use App\Models\CompetitionModel;
@@ -33,6 +34,9 @@ class CompetitionController extends Controller
             $evszam = explode('-', $request->input('kezdet'))[0];
         }
 
+        $assoc = $this->normalizeAssociation($request->input('szervezo_egyesulet'));
+        $this->storeAssociationIfNew($assoc);
+
         $request->validate([
             'nev' => 'required',
             'helyszin' => 'required',
@@ -42,9 +46,10 @@ class CompetitionController extends Controller
         ]);
 
         $competition = CompetitionModel::create([
-            ...$request->all(), 
+            ...$request->all(),
             'evszam' => $evszam,
             'letrehozo_id' => $request->user()->id,
+            'szervezo_egyesulet' => $assoc,
         ]);
 
         return response()->json([
@@ -59,6 +64,9 @@ class CompetitionController extends Controller
         if ($request->input('evszam') === '') {
             $evszam = explode('-', $request->input('kezdet'))[0];
         }
+
+        $assoc = $this->normalizeAssociation($request->input('szervezo_egyesulet'));
+        $this->storeAssociationIfNew($assoc);
 
         $request->validate([
             'nev' => 'required',
@@ -76,7 +84,7 @@ class CompetitionController extends Controller
         }
 
         try {
-            DB::transaction(function () use ($request, $competition, $evszam, $id): void {
+            DB::transaction(function () use ($request, $competition, $evszam, $id, $assoc): void {
                 $existingCategoryIds = CompetitionCategoryModel::where('versenyid', $id)
                     ->pluck('kategoriaid')
                     ->all();
@@ -93,6 +101,7 @@ class CompetitionController extends Controller
                 $competition->update([
                     ...$request->all(),
                     'evszam' => $evszam,
+                    'szervezo_egyesulet' => $assoc,
                 ]);
 
                 if ($request->has('categs') && is_array($request->input('categs'))) {
@@ -211,5 +220,31 @@ class CompetitionController extends Controller
         return response()->json([
             'success' => true,
         ]);
+    }
+
+    private function normalizeAssociation(mixed $assocInput): ?string
+    {
+        if ($assocInput === null) {
+            return null;
+        }
+
+        $assoc = trim((string) $assocInput);
+
+        return $assoc === '' ? null : $assoc;
+    }
+
+    private function storeAssociationIfNew(?string $assoc): void
+    {
+        if ($assoc === null) {
+            return;
+        }
+
+        $record = AssociationModel::firstOrCreate([
+            'nev' => $assoc,
+        ]);
+
+        if ($record->wasRecentlyCreated) {
+            cache()->forget('associations');
+        }
     }
 }

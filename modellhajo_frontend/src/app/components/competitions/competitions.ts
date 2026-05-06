@@ -31,6 +31,7 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
   protected newCompetitionCategories: number[] = []
   protected userCompetitions!: Competition[]
   protected competitionCategories!: CompetitionCategory[]
+  protected entryCounts: Record<number, Record<number, number>> = {}
   protected formEditable = false
   private editMode = -1
   private markerPlaced = false
@@ -150,9 +151,10 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
     forkJoin({
       assocAndCats: this.ds.getAssociationsAndCategories(),
       compCats: this.ds.getCompetitionCategories(),
-      userComps: this.ds.getUserCompetitions()
+      userComps: this.ds.getUserCompetitions(),
+      organizerEntries: this.ds.getEntriesByOrganizerId()
     }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: ({ assocAndCats, compCats, userComps }) => {
+      next: ({ assocAndCats, compCats, userComps, organizerEntries }) => {
         this.associations = assocAndCats.associations
         this.categories = assocAndCats.categories.sort((a, b) => a.nev.localeCompare(b.nev))
         this.competitionCategories = compCats.categories
@@ -165,12 +167,26 @@ export class CompetitionsComponent implements OnInit, AfterViewInit {
           comp.szervezo_egyesulet = comp.szervezo_egyesulet === null ? null : String(comp.szervezo_egyesulet)
           comp.categories = this.competitionCategories.filter(x => x.versenyid == comp.id).map(x => x.category)
         }
+
+        const counts: Record<number, Record<number, number>> = {}
+        for (const [compId, compEntries] of Object.entries(organizerEntries.entries ?? {})) {
+          const compCounts: Record<number, number> = {}
+          for (const entry of compEntries) {
+            compCounts[entry.kategoriaid] = (compCounts[entry.kategoriaid] ?? 0) + 1
+          }
+          counts[Number(compId)] = compCounts
+        }
+        this.entryCounts = counts
       },
       error: (err) => {
         console.error('Failed to load competition data', err)
         Swal.fire({title: 'Hiba történt az adatok betöltésekor.', theme: 'material-ui-dark', icon: 'error'})
       }
     })
+  }
+
+  getEntryCount(compId: number, categoryId: number): number {
+    return this.entryCounts[compId]?.[categoryId] ?? 0
   }
   async sendCompetitionData(){
       const fileInput = this.thumbnailInput.nativeElement

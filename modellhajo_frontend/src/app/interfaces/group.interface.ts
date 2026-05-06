@@ -1,6 +1,7 @@
 export default interface Group{
     id: number;
-    sorszam: number;
+    sorszam: string;
     versenyid: number;
     kategoriaid: number;
+    junior: boolean
 }
